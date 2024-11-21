@@ -1,5 +1,8 @@
 package dev_final_team10.GoodBuyUS.domain.category;
 
+import lombok.Getter;
+
+@Getter
 public enum SubCategory {
     // 식료품
     FRESH_FOOD("신선식품"),
@@ -68,7 +71,4 @@ public enum SubCategory {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }
