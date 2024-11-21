@@ -3,25 +3,21 @@ import lombok.Getter;
 
 @Getter
 public enum ProductCategory {
-    FOOD("식료품", FoodCategory.class),
-    LIFESTYLE("생활용품", HouseholdCategory.class),
-    FASHION("패션/의류", FashionCategory.class),
-    ELECTRONICS("전자제품", ElectronicsCategory.class),
-    FURNITURE("가구/인테리어", FurnitureCategory.class),
-    KIDS("유아/아동용품", KidsCategory.class),
-    SPORTS("스포츠/레저", SportsCategory.class),
-    PETS("반려동물 용품", PetSuppliesCategory.class),
-    BEAUTY("미용/건강", BeautyHealthCategory.class),
-    SEASONAL("계절용품", SeasonalGoodsCategory.class),
-    HOBBIES("이벤트/취미", EventsHobbiesCategory.class),
-    AUTOMOTIVE("자동차/공구", AutoToolsCategory.class);
-
+    FOOD("식료품"),
+    LIFESTYLE("생활용품"),
+    FASHION("패션/의류"),
+    ELECTRONICS("전자제품"),
+    FURNITURE("가구/인테리어"),
+    KIDS("유아/아동용품"),
+    SPORTS("스포츠/레저"),
+    PETS("반려동물 용품"),
+    BEAUTY("미용/건강"),
+    SEASONAL("계절용품"),
+    HOBBIES("이벤트/취미"),
+    AUTOMOTIVE("자동차/공구");
     private final String categoryName;
-    private final Class<? extends Enum<?>> subCategory;
-
-    ProductCategory(String categoryName, Class<? extends Enum<?>> subCategory) {
+    ProductCategory(String categoryName) {
         this.categoryName = categoryName;
-        this.subCategory = subCategory;
     }
 }
 
