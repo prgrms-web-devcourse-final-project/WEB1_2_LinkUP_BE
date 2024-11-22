@@ -6,7 +6,6 @@ import dev_final_team10.GoodBuyUS.domain.category.SubCategory;
 import dev_final_team10.GoodBuyUS.repository.ProductRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -18,6 +17,10 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class initDB {
     private final ProductRepository productRepository;
+
+    /**
+     * 식료품, 생활용품, 패션/의류
+     */
     @PostConstruct
     public void createProduct(){
         Product fruit1 = Product.createProduct("싱싱한 사과", 5000, "imageUrl1", ProductCategory.FOOD, SubCategory.FRESH_FOOD, DetailCategory.FRESH_FOOD_FRUITS);
@@ -175,6 +178,9 @@ public class initDB {
 
     }
 
+    /**
+     * product를 포함하는 게시글 생성
+     */
     @PostConstruct
     public void createProductPost(){}
 }
