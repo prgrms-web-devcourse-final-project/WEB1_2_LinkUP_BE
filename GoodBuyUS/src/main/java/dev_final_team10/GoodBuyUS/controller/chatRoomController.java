@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 public class chatRoomController {
     private final ChatRoomService chatRoomService;
 
+    //채팅방 생성
     @PostMapping()
     public ResponseEntity<ChatRoom> createChatRoom(@RequestBody ChatRoomDTO chatRoomDTO) {
         return ResponseEntity.ok(chatRoomService.createChatRoom(chatRoomDTO));
     }
 
+    //채팅방 삭제
     @DeleteMapping("/{chatRoomId}")
     public void removeChatRoom(@PathVariable Long chatRoomId) {
         chatRoomService.removeChatRoom(chatRoomId);

@@ -30,9 +30,9 @@ public class ChatRoomService {
         }
     }
 
+    //채팅방 삭제
     public void removeChatRoom(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
         chatRoomRepository.delete(chatRoom);
     }
-
 }
