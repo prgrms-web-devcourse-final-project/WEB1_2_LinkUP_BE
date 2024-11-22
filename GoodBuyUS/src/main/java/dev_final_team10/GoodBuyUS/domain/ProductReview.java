@@ -37,6 +37,11 @@ public class ProductReview extends BaseEntity{
         this.product = product;
     }
 
+    public void bindUser(User user){
+        user.getProductReviewLists().add(this);
+        this.user = user;
+    }
+
     /**
      * Product가 없을 때 리뷰를 생성하면 안됨, 리뷰를 생성할 때 product가 있는지 검증이 필요함
      * @param product
@@ -44,11 +49,12 @@ public class ProductReview extends BaseEntity{
      * @param rating
      * @return
      */
-    public static ProductReview createProductReview(Product product, String content, int rating){
+    public static ProductReview createProductReview(Product product, String content, int rating, User user){
         ProductReview productReview = new ProductReview();
         productReview.product = product;
         productReview.content = content;
         productReview.rating = rating;
+        productReview.user = user;
         return productReview;
     }
 }
