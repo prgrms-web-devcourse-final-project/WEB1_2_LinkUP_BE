@@ -1,22 +1,36 @@
 package dev_final_team10.GoodBuyUS.config;
 import dev_final_team10.GoodBuyUS.domain.Product;
+import dev_final_team10.GoodBuyUS.domain.ProductPost;
+import dev_final_team10.GoodBuyUS.domain.Role;
+import dev_final_team10.GoodBuyUS.domain.User;
 import dev_final_team10.GoodBuyUS.domain.category.DetailCategory;
 import dev_final_team10.GoodBuyUS.domain.category.ProductCategory;
 import dev_final_team10.GoodBuyUS.domain.category.SubCategory;
+import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductRepository;
+import dev_final_team10.GoodBuyUS.repository.UserRepository;
+import dev_final_team10.GoodBuyUS.service.ProductPostService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * 상단 상품를 초기에 미리 생성
  */
+@EnableJpaAuditing
 @Component
 @RequiredArgsConstructor
 public class initDB {
     private final ProductRepository productRepository;
+    private final ProductPostRepository productPostRepository;
+    private final ProductPostService productPostService;
+    private final UserRepository userRepository;
 
     /**
      * 식료품, 생활용품, 패션/의류
@@ -182,5 +196,23 @@ public class initDB {
      * product를 포함하는 게시글 생성
      */
     @PostConstruct
-    public void createProductPost(){}
+    public void createUser(){
+        User user = new User("홍공진", Role.USER, "네이버메일","123","0101010101", "홍0진", "사진" );
+        userRepository.save(user);
+        User user1 = new User("관리자", Role.ADMIN, "지메일","1234","0101020101", "관리자", "관리자사진" );
+        userRepository.save(user1);
+    }
+
+    @PostConstruct
+    public void createProPost(){
+        List<Product> products = productRepository.findAll();
+        Random random = new Random();
+        for (Product product : products) {
+            int minAmount = random.nextInt(2) + 2;
+            int stockQuantity = random.nextInt(51) + 50;
+            int dayCount = random.nextInt(3)+1;
+            ProductPost productPost = ProductPost.createProPost(product,product.getProductName()+"에 관한 상품 설명입니다.",minAmount, LocalDate.now().plusDays(dayCount),stockQuantity);
+            productPostRepository.save(productPost);
+        }
+    }
 }
