@@ -6,10 +6,7 @@ import dev_final_team10.GoodBuyUS.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/posts")
@@ -17,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody PostDTO postDTO) {
-        Post createdPost = postService.createPost(postDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+    @PostMapping()
+    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
+        return ResponseEntity.ok(postService.createPost(postDTO));
     }
+
 }

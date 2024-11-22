@@ -2,7 +2,6 @@ package dev_final_team10.GoodBuyUS.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -23,7 +22,7 @@ public class ChatRoom {
 
     private String roomName;
 
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chatRoom")
     private List<ChatMember> members = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
