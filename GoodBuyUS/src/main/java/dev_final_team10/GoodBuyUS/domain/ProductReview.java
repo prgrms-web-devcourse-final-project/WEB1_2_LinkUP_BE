@@ -28,6 +28,10 @@ public class ProductReview extends BaseEntity{
     @Max(value = 5, message = "최대 5점을 넘을 수 없습니다.")
     private int rating;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     /**
      * 연관관계 편의 메서드
      * @param product
