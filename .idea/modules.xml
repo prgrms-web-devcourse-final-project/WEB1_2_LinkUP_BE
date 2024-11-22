@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GoodBuyUS.main.iml" filepath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/WEB1_2_LinkUP_BE.iml" filepath="$PROJECT_DIR$/.idea/WEB1_2_LinkUP_BE.iml" />
     </modules>
   </component>

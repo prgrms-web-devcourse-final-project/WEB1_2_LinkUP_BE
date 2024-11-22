@@ -17,7 +17,7 @@ public class ChatRoomService {
     private final ChatMemberRepository chatMemberRepository;
     private final PostRepository postRepository;
 
-
+    //채팅방 생성
     public ChatRoom createChatRoom(ChatRoomDTO chatRoomDTO) {
         Post post = postRepository.findById(chatRoomDTO.getPostId()).orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -30,6 +30,9 @@ public class ChatRoomService {
         }
     }
 
-
+    public void removeChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+        chatRoomRepository.delete(chatRoom);
+    }
 
 }

@@ -17,4 +17,9 @@ public class chatRoomController {
     public ResponseEntity<ChatRoom> createChatRoom(@RequestBody ChatRoomDTO chatRoomDTO) {
         return ResponseEntity.ok(chatRoomService.createChatRoom(chatRoomDTO));
     }
+
+    @DeleteMapping("/{chatRoomId}")
+    public void removeChatRoom(@PathVariable Long chatRoomId) {
+        chatRoomService.removeChatRoom(chatRoomId);
+    }
 }
