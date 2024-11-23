@@ -5,11 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MessageDTO {
-    private String userName;
-    private String message;
+public class ChatRoomDTO {
+    private Long postId;
+    private int capacity;
+    private String roomName;
+
 }

@@ -1,5 +1,7 @@
 package dev_final_team10.GoodBuyUS.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,15 +19,18 @@ public class ChatMember {
 
     @ManyToOne
     @JoinColumn(name = "chat_room_id")
+    @JsonIgnore
     private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private Post post;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-    private Long user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     private Boolean isPaid;
 
