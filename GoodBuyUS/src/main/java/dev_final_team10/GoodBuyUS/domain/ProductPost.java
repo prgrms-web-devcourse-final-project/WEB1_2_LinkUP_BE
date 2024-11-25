@@ -24,13 +24,14 @@ public class ProductPost extends BaseEntity{
 
     private String postURL;
 
-    //최소 인원(2명으로 고정)
-    @Column(name = "post_member")
+    //최소 개수(2명으로 고정)
+    @Column(name = "min_amount")
     private int minAmount;
 
     //판매 기간
     private LocalDate product_period;
 
+    private String title;
     /**
      * OneToOne은 항상 eager ?
      */
@@ -56,6 +57,8 @@ public class ProductPost extends BaseEntity{
         productPost.stockQuantity = stockQuantity;
         productPost.available = true;
         productPost.originalPrice = product.getProductPrice();
+        productPost.setOriginalandDiscount();
+        productPost.title = product.getProductName();
         return productPost;
     }
 
@@ -82,6 +85,7 @@ public class ProductPost extends BaseEntity{
             throw new IllegalArgumentException("구매 수량은 1 이상이어야 합니다.");
         }
         if (this.stockQuantity < count) {
+            this.available = false;
             throw new IllegalStateException("재고가 부족합니다. 남은 재고: " + this.stockQuantity);
         }
         this.stockQuantity -= count;
@@ -93,6 +97,7 @@ public class ProductPost extends BaseEntity{
         }
         this.stockQuantity += count;
     }
+
     /**
      * 글 마다 재고를 두고 그 재고가 줄어드는 것을 가시적으로 표시
      * 데드라인과 재고 안에선 무제한 구매 가능

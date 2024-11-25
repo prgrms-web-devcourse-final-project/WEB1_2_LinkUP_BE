@@ -51,10 +51,12 @@ public class ProductReview extends BaseEntity{
      */
     public static ProductReview createProductReview(Product product, String content, int rating, User user){
         ProductReview productReview = new ProductReview();
-        productReview.product = product;
-        productReview.content = content;
-        productReview.rating = rating;
-        productReview.user = user;
+        if (product != null) {
+            productReview.product = product;
+            productReview.content = content;
+            productReview.rating = rating;
+            productReview.user = user;
+        }
         return productReview;
     }
 }
