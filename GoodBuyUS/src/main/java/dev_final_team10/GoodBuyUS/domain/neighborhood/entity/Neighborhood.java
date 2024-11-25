@@ -11,6 +11,6 @@ import lombok.*;
 public class Neighborhood {
 
     @Id
-    private Double code;
-    private String areaName;
+    private Double neighborhoodCode;    //지역 코드
+    private String neighborhoodName;    //지역 이름
 }
