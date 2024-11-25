@@ -39,6 +39,8 @@ public class Product {
 
     private int reviewscount;
 
+    private double averageRating;
+
     public static Product createProduct(String productName, int productPrice, String productImage, ProductCategory productCategory, SubCategory subCategory, DetailCategory detailCategory) {
         Product product = new Product();
         product.productName = productName;
@@ -47,10 +49,21 @@ public class Product {
         product.detailCategory = detailCategory;
         product.subCategory = subCategory;
         product.productPrice = productPrice;
+        product.averageRating = product.calculateAverageRating();
         return product;
     }
 
     public void AmountOfReviews(){
         this.reviewscount = reviews.size();
+    }
+
+    public double calculateAverageRating() {
+        if (reviews.isEmpty()) {
+            return 0.0; // 리뷰가 없을 때 기본값
+        }
+        return reviews.stream()
+                .mapToDouble(ProductReview::getRating)
+                .average()
+                .orElse(0.0);
     }
 }
