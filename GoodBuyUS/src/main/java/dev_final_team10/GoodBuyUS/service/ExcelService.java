@@ -7,10 +7,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 @Service
@@ -21,8 +24,9 @@ public class ExcelService {
 
     public void readExcelFileAndSaveToDatabase(String filePath) throws IOException {
 
-
-        FileInputStream fis = new FileInputStream(filePath);
+        // ClassPathResource로 파일을 읽기
+        Resource resource = new ClassPathResource(filePath);
+        InputStream fis = resource.getInputStream();
 
         // 엑셀 파일을 읽기 위한 Workbook 객체 생성
         Workbook workbook = new XSSFWorkbook(fis);
