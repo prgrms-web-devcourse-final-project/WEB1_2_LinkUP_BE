@@ -19,8 +19,7 @@ public class GoodBuyUsApplication implements CommandLineRunner {
 	//애플리케이션 실행 시 자동 실행 되도록
 	@Override
 	public void run(String... args) throws Exception {
-		String filePath = "GoodBuyUS/src/main/resources/code.xlsx"; //엑셀파일 경로
-		excelService.readExcelFileAndSaveToDatabase(filePath);
+		excelService.readExcelFileAndSaveToDatabase("code.xlsx");
 	}
 }
 

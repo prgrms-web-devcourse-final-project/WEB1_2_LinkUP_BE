@@ -1,8 +1,10 @@
 package dev_final_team10.GoodBuyUS.service;
 
+import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Role;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NeighborhoodRepository neighborhoodRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -46,6 +51,14 @@ public class UserService {
         //프로필 이미지 저장
         String profileImagePath = saveProfileImage(profile);
 
+        //<-----동네 코드 삽입 부분
+        //1.사용자 주소에서 지역명(시도군) 추출
+        String neighborhoodName = extractNeighborhoodName(userSignUpDto.getAddress());
+
+        //2. 지역명 토대로 해당 행 추출
+        Neighborhood neighborhood = neighborhoodRepository.findByNeighborhoodName(neighborhoodName);
+
+        //------->
 
         //User Entity 생성 후 DB저장
         User user = User.builder()
@@ -55,6 +68,10 @@ public class UserService {
                 .phone(userSignUpDto.getPhone())
                 .nickname(userSignUpDto.getNickname())
                 .profile(profileImagePath)
+                //사용자가 입력한 주소 회원테이블에 삽입
+                .address(userSignUpDto.getAddress())
+                //사용자가 입력한 주소 토대로 동네코드 회원테이블에 삽입
+                .neighborhood(neighborhood)
                 .role(Role.USER)
                 .refreshToken(null)
                 .build();
@@ -87,4 +104,20 @@ public class UserService {
         // 저장된 이미지 파일 경로 반환 (URL로 변경 가능)
         return targetLocation.toString();  // 또는 저장된 경로의 URL 반환 가능
     }
+
+    //사용자 주소에서 지역명(시도군) 추출하는 메소드
+    private String extractNeighborhoodName(String address){
+        List<Neighborhood> neighborhoodList = neighborhoodRepository.findAll();
+
+        String neighborhoodName = null;
+        for(Neighborhood neighborhood: neighborhoodList){
+            if(address.contains(neighborhood.getNeighborhoodName())){
+                neighborhoodName = neighborhood.getNeighborhoodName();
+                break;
+            }
+        }
+        return neighborhoodName;
+    }
+
+
 }
