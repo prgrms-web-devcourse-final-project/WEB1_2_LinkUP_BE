@@ -1,8 +1,8 @@
-package dev_final_team10.GoodBuyUS.domain;
+package dev_final_team10.GoodBuyUS.domain.product.entity;
 
-import dev_final_team10.GoodBuyUS.domain.category.DetailCategory;
-import dev_final_team10.GoodBuyUS.domain.category.ProductCategory;
-import dev_final_team10.GoodBuyUS.domain.category.SubCategory;
+import dev_final_team10.GoodBuyUS.domain.product.category.DetailCategory;
+import dev_final_team10.GoodBuyUS.domain.product.category.ProductCategory;
+import dev_final_team10.GoodBuyUS.domain.product.category.SubCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,6 +41,8 @@ public class Product {
 
     private double averageRating;
 
+    private int hits;
+
     public static Product createProduct(String productName, int productPrice, String productImage, ProductCategory productCategory, SubCategory subCategory, DetailCategory detailCategory) {
         Product product = new Product();
         product.productName = productName;
@@ -51,10 +53,6 @@ public class Product {
         product.productPrice = productPrice;
         product.averageRating = product.calculateAverageRating();
         return product;
-    }
-
-    public void AmountOfReviews(){
-        this.reviewscount = reviews.size();
     }
 
     public double calculateAverageRating() {

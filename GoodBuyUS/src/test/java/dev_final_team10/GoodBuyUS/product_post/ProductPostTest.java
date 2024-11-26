@@ -1,13 +1,12 @@
 package dev_final_team10.GoodBuyUS.product_post;
 
-import dev_final_team10.GoodBuyUS.domain.Product;
-import dev_final_team10.GoodBuyUS.domain.ProductPost;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
+import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

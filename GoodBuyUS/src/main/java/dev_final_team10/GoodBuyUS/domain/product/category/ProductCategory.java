@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.domain.category;
+package dev_final_team10.GoodBuyUS.domain.product.category;
 import lombok.Getter;
 
 @Getter

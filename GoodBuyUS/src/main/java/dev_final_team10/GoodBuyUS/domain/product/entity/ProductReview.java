@@ -1,5 +1,7 @@
-package dev_final_team10.GoodBuyUS.domain;
+package dev_final_team10.GoodBuyUS.domain.product.entity;
 
+import dev_final_team10.GoodBuyUS.domain.BaseEntity;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class ProductReview extends BaseEntity{
+public class ProductReview extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productReviewId;
 
@@ -28,6 +30,10 @@ public class ProductReview extends BaseEntity{
     @Max(value = 5, message = "최대 5점을 넘을 수 없습니다.")
     private int rating;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     /**
      * 연관관계 편의 메서드
      * @param product
@@ -38,25 +44,25 @@ public class ProductReview extends BaseEntity{
     }
 
     public void bindUser(User user){
-        user.getProductReviewLists().add(this);
+        user.getProductReviews().add(this);
         this.user = user;
     }
 
     /**
-     * Product가 없을 때 리뷰를 생성하면 안됨, 리뷰를 생성할 때 product가 있는지 검증이 필요함
      * @param product
      * @param content
      * @param rating
      * @return
      */
-    public static ProductReview createProductReview(Product product, String content, int rating, User user){
-        ProductReview productReview = new ProductReview();
-        if (product != null) {
-            productReview.product = product;
-            productReview.content = content;
-            productReview.rating = rating;
-            productReview.user = user;
+    public static ProductReview createProductReview(Product product, String content, int rating, User user) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product cannot be null when creating a ProductReview.");
         }
+        ProductReview productReview = new ProductReview();
+        productReview.product = product;
+        productReview.content = content;
+        productReview.rating = rating;
+        productReview.user = user;
         return productReview;
     }
 }

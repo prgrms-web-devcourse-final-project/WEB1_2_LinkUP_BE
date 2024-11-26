@@ -1,8 +1,13 @@
 package dev_final_team10.GoodBuyUS.domain.user.entity;
 
+import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
+import dev_final_team10.GoodBuyUS.domain.product.entity.ProductReview;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -26,6 +31,12 @@ public class User {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;    //권한
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<ProductReview> productReviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
 
     private String refreshToken;   //리프레쉬 토큰
 

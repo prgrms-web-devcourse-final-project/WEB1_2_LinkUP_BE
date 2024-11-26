@@ -1,5 +1,6 @@
-package dev_final_team10.GoodBuyUS.domain;
+package dev_final_team10.GoodBuyUS.domain.product.entity;
 
+import dev_final_team10.GoodBuyUS.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,15 +8,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class ProductPost extends BaseEntity{
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
+public class ProductPost extends BaseEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "post_id")
+    private Long postId;
 
     // 할인이 적용된 최종 판매가격
     private int prouctDiscount;

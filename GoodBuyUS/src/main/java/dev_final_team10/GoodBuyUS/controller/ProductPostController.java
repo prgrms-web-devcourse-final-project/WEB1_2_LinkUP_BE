@@ -1,14 +1,11 @@
 package dev_final_team10.GoodBuyUS.controller;
-
-import dev_final_team10.GoodBuyUS.domain.category.DetailCategory;
-import dev_final_team10.GoodBuyUS.dto.productpost.PostDetailDTO;
-import dev_final_team10.GoodBuyUS.dto.productpost.ProductPostDTO;
+import dev_final_team10.GoodBuyUS.domain.order.dto.OrderRequestDTO;
+import dev_final_team10.GoodBuyUS.domain.product.dto.OrderResponseDTO;
+import dev_final_team10.GoodBuyUS.domain.product.dto.PostDetailDTO;
+import dev_final_team10.GoodBuyUS.domain.product.dto.ProductPostDTO;
 import dev_final_team10.GoodBuyUS.service.ProductPostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,9 +19,13 @@ public class ProductPostController {
        return productPostService.findAllProduct();
     }
 
-    @GetMapping("/homepage/{product_name}")
-    public PostDetailDTO detailProduct(@RequestParam String product_name){
-
+    @GetMapping("/homepage/{product_id}")
+    public PostDetailDTO detailProduct(@PathVariable Long product_id){
+        return productPostService.findPost(product_id);
     }
 
+    @PostMapping("/homepage/order/{post_id}")
+    public OrderResponseDTO createOrder(@RequestBody OrderRequestDTO orderRequestDTO, @PathVariable Long post_id){
+        return productPostService.requestPayment(orderRequestDTO, post_id);
+    }
 }

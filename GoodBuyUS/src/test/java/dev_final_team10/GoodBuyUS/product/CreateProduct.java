@@ -1,9 +1,9 @@
 package dev_final_team10.GoodBuyUS.product;
 
-import dev_final_team10.GoodBuyUS.domain.Product;
-import dev_final_team10.GoodBuyUS.domain.category.DetailCategory;
-import dev_final_team10.GoodBuyUS.domain.category.ProductCategory;
-import dev_final_team10.GoodBuyUS.domain.category.SubCategory;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
+import dev_final_team10.GoodBuyUS.domain.product.category.DetailCategory;
+import dev_final_team10.GoodBuyUS.domain.product.category.ProductCategory;
+import dev_final_team10.GoodBuyUS.domain.product.category.SubCategory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
