@@ -1,11 +1,9 @@
 package dev_final_team10.GoodBuyUS.config;
-import dev_final_team10.GoodBuyUS.domain.Product;
-import dev_final_team10.GoodBuyUS.domain.ProductPost;
-import dev_final_team10.GoodBuyUS.domain.Role;
-import dev_final_team10.GoodBuyUS.domain.User;
-import dev_final_team10.GoodBuyUS.domain.category.DetailCategory;
-import dev_final_team10.GoodBuyUS.domain.category.ProductCategory;
-import dev_final_team10.GoodBuyUS.domain.category.SubCategory;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
+import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
+import dev_final_team10.GoodBuyUS.domain.product.category.DetailCategory;
+import dev_final_team10.GoodBuyUS.domain.product.category.ProductCategory;
+import dev_final_team10.GoodBuyUS.domain.product.category.SubCategory;
 import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
@@ -190,17 +188,6 @@ public class initDB {
                 kidsShoes1, kidsShoes2
                 ));
 
-    }
-
-    /**
-     * product를 포함하는 게시글 생성
-     */
-    @PostConstruct
-    public void createUser(){
-        User user = new User("홍공진", Role.USER, "네이버메일","123","0101010101", "홍0진", "사진" );
-        userRepository.save(user);
-        User user1 = new User("관리자", Role.ADMIN, "지메일","1234","0101020101", "관리자", "관리자사진" );
-        userRepository.save(user1);
     }
 
     @PostConstruct
