@@ -4,6 +4,7 @@ import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Role;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final NeighborhoodRepository neighborhoodRepository;
+    private final JwtService jwtService;
+    private final EmailService emailService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+
 
     //자체 회원 가입 메소드
     public ResponseEntity<String> signUp(UserSignUpDto userSignUpDto, MultipartFile profile) throws Exception {
@@ -83,6 +87,7 @@ public class UserService {
         return ResponseEntity.ok("회원가입 완료");
     }
 
+
     // 프로필 이미지를 서버에 저장하는 메소드
     private String saveProfileImage(MultipartFile profile) throws IOException {
         if (profile == null || profile.isEmpty()) {
@@ -119,5 +124,36 @@ public class UserService {
         return neighborhoodName;
     }
 
+    //비밀번호 찾기 - 사용자 이메일 인증 확인 후 비밀번호 재설정하는 메소드
+    public ResponseEntity<?> findPassword(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
 
+        //---가입되지 않은 이메일인 경우
+        if(user == null){
+            return ResponseEntity.badRequest().body("가입되지 않은 이메일입니다.");
+        }
+
+        //---가입된 이메일인 경우
+        //비밀번호 재설정 때 사용할 토큰 발급
+        String token = jwtService.createAccessToken(email);
+        //비밀번호 재설정 링크(이메일로 보내줄 링크)
+        String resetLink = "http://localhost:8080/users/reset?token=" + token;
+        //이메일 전송
+        emailService.sendEmail(email, "비밀번호 재설정 링크", "비밀번호를 재설정하려면 아래 링크를 클릭하세요:\n" + resetLink);
+
+        return ResponseEntity.ok("비밀번호 재설정 링크가 이메일로 전송되었습니다.");
+    }
+
+    //비밀번호 찾기 했을 때 비밀번호 변경 메소드 (DB업데이트)
+    public void updatePassword(String token, String newPassword) {
+        String email = jwtService.extractEmail(token).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user != null) {
+            user = User.builder()
+                    .password(newPassword).build();
+
+            user.passwordEncode(passwordEncoder);
+            userRepository.save(user);
+        }
+    }
 }
