@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .authorizeRequests(authz -> authz
                 // 아이콘, css, js 관련
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
-                .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage").permitAll()
+                .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage","/users/find","/users/reset").permitAll()
                 .requestMatchers("/users").permitAll() // 회원가입 접근 가능
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 );
