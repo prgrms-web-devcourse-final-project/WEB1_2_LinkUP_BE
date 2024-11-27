@@ -7,6 +7,7 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -127,7 +128,7 @@ public class UserService {
     }
 
     //비밀번호 찾기 - 사용자 이메일 인증 확인 후 비밀번호 재설정하는 메소드
-    public ResponseEntity<?> findPassword(String email) {
+    public ResponseEntity<?> findPassword(String email) throws MessagingException, IOException {
         User user = userRepository.findByEmail(email).orElse(null);
 
         //---가입되지 않은 이메일인 경우
@@ -141,7 +142,17 @@ public class UserService {
         //비밀번호 재설정 링크(이메일로 보내줄 링크)
         String resetLink = "http://localhost:8080/users/reset?token=" + token;
         //이메일 전송
-        emailService.sendEmail(email, "비밀번호 재설정 링크", "비밀번호를 재설정하려면 아래 링크를 클릭하세요:\n" + resetLink);
+        String htmlContent = "<html><body style='background-color: #ffffff !important; margin: 0 auto; max-width: 600px; word-break: break-all; padding-top: 50px; color: #000000;'>"
+        + "<img class='logo' src='cid:logo'>"
+        + "<h1 style='padding-top: 50px; font-size: 30px;'>이메일 주소 인증</h1>"
+         + "<p style='padding-top: 20px; font-size: 18px; opacity: 0.6; line-height: 30px; font-weight: 400;'>안녕하세요? GoodBuyUs 입니다.<br />"
+         + "하단의 버튼을 클릭하여, 비밀번호 재설정을 완료해주세요.<br />"
+         + "감사합니다.</p>"
+         + "<div class='code-box' style='margin-top: 50px; padding-top: 20px; color: #000000; padding-bottom: 20px; font-size: 25px; text-align: center; background-color: #f4f4f4; border-radius: 10px;'>"
+         + "<a href='" + resetLink + "' style='text-decoration: none; color: #000000;'>비밀번호 재설정</a>"
+         + "</div>"
+         + "</body></html>";
+        emailService.sendEmail(email, "비밀번호 재설정 링크", htmlContent);
 
         return ResponseEntity.ok(Map.of("message","비밀번호 재설정 링크가 이메일로 전송되었습니다."));
     }
