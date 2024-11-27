@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.domain.user.entity;
 
+import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ public class User {
     private String phone;   //전화번호
     private String nickname;    //닉네임
     private String profile;     //프로필이미지
+    private String address; //주소
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
@@ -29,10 +31,11 @@ public class User {
 
     private String refreshToken;   //리프레쉬 토큰
 
-    //User 기본 권한 설정 메소드
-    public void authorizeUser() {
-        this.role = Role.USER;
-    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "neighborhood_code")
+    private Neighborhood neighborhood;   //지역코드
+
 
     //비밀번호 암호화 메소드
     public void passwordEncode(PasswordEncoder passwordEncoder) {
