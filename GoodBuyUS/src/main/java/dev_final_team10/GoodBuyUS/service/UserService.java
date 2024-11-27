@@ -9,6 +9,7 @@ import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -40,16 +42,16 @@ public class UserService {
 
 
     //자체 회원 가입 메소드
-    public ResponseEntity<String> signUp(UserSignUpDto userSignUpDto, MultipartFile profile) throws Exception {
+    public ResponseEntity<?> signUp(UserSignUpDto userSignUpDto, MultipartFile profile) throws Exception {
 
         if(userRepository.findByEmail(userSignUpDto.getEmail()).isPresent()){
-            throw new Exception("이미 존재하는 이메일입니다.");
+            return new ResponseEntity<>(Map.of("error", "이미 존재하는 이메일입니다."), HttpStatus.BAD_REQUEST);
         }
         if(userRepository.findByNickname(userSignUpDto.getNickname()).isPresent()){
-            throw new Exception("이미 존재하는 닉네임입니다.");
+            return new ResponseEntity<>(Map.of("error", "이미 존재하는 닉네임입니다."), HttpStatus.BAD_REQUEST);
         }
         if(userRepository.findByPhone(userSignUpDto.getPhone()).isPresent()){
-            throw new Exception("이미 존재하는 전화번호입니다.");
+            return new ResponseEntity<>(Map.of("error", "이미 존재하는 전화번호입니다."), HttpStatus.BAD_REQUEST);
         }
 
         //프로필 이미지 저장
@@ -84,7 +86,7 @@ public class UserService {
         userRepository.save(user);
         userRepository.flush();
 
-        return ResponseEntity.ok("회원가입 완료");
+        return new ResponseEntity<>(Map.of("message", "회원가입이 완료되었습니다."), HttpStatus.CREATED);
     }
 
 
@@ -130,7 +132,7 @@ public class UserService {
 
         //---가입되지 않은 이메일인 경우
         if(user == null){
-            return ResponseEntity.badRequest().body("가입되지 않은 이메일입니다.");
+            return ResponseEntity.badRequest().body(Map.of("error","가입되지 않은 이메일입니다."));
         }
 
         //---가입된 이메일인 경우
@@ -141,16 +143,17 @@ public class UserService {
         //이메일 전송
         emailService.sendEmail(email, "비밀번호 재설정 링크", "비밀번호를 재설정하려면 아래 링크를 클릭하세요:\n" + resetLink);
 
-        return ResponseEntity.ok("비밀번호 재설정 링크가 이메일로 전송되었습니다.");
+        return ResponseEntity.ok(Map.of("message","비밀번호 재설정 링크가 이메일로 전송되었습니다."));
     }
 
     //비밀번호 찾기 했을 때 비밀번호 변경 메소드 (DB업데이트)
-    public void updatePassword(String token, String newPassword) {
+    public ResponseEntity<?> updatePassword(String token, String newPassword) {
         String email = jwtService.extractEmail(token).orElse(null);
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
         }
+        return ResponseEntity.ok(Map.of("message","비밀번호가 성공적으로 변경되었습니다."));
     }
 }
