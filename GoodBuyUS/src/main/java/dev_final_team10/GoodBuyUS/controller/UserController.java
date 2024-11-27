@@ -4,11 +4,13 @@ import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.service.UserService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -29,7 +31,7 @@ public class UserController {
 
     //비밀번호 찾기 기능
     @PostMapping("/find")
-    public ResponseEntity<?> findPassword(@RequestBody Map<String, String> request){
+    public ResponseEntity<?> findPassword(@RequestBody Map<String, String> request) throws MessagingException, IOException {
         return userService.findPassword(request.get("email"));
     }
 
