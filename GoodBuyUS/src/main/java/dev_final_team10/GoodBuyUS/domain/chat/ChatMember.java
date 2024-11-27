@@ -1,17 +1,17 @@
-package dev_final_team10.GoodBuyUS.domain;
+package dev_final_team10.GoodBuyUS.domain.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev_final_team10.GoodBuyUS.domain.Post;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "chat_room_member")
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,19 +19,14 @@ public class ChatMember {
 
     @ManyToOne
     @JoinColumn(name = "chat_room_id")
-    @JsonIgnore
     private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @JsonIgnore
     private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
-
-    private Boolean isPaid;
 
 }

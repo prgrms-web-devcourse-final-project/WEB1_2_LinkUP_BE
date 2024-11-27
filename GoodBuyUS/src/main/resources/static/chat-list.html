@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room List</title>
+</head>
+<body>
+<h1>Chat Room List</h1>
+
+<!-- 채팅방 목록 -->
+<section>
+    <button id="loadRoomsBtn">Load Rooms</button>
+    <ul id="chatRoomList"></ul>
+</section>
+
+<script>
+    const baseURL = 'http://localhost:8080'; // 백엔드 URL
+
+    // 채팅방 목록 조회
+    document.getElementById('loadRoomsBtn').addEventListener('click', async () => {
+        const userId = 1; // 테스트용 userId
+        try {
+            const response = await fetch(`${baseURL}/chat/${userId}`);
+            const chatRooms = await response.json();
+
+            const chatRoomList = document.getElementById('chatRoomList');
+            chatRoomList.innerHTML = '';
+            chatRooms.forEach((room) => {
+                const li = document.createElement('li');
+                // room.postId를 사용하여 링크 생성
+                li.innerHTML = `<a href="chat-room.html?roomId=${room.postId}">Room ID: ${room.postId}, Name: ${room.roomName}</a>`;
+                chatRoomList.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error loading chat rooms:', error);
+        }
+    });
+</script>
+
+</body>
+</html>

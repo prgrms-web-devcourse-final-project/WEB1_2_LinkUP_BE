@@ -1,12 +1,16 @@
 package dev_final_team10.GoodBuyUS.repository;
 
-import dev_final_team10.GoodBuyUS.domain.ChatMember;
-import dev_final_team10.GoodBuyUS.domain.Post;
+import dev_final_team10.GoodBuyUS.domain.chat.ChatMember;
+import dev_final_team10.GoodBuyUS.domain.chat.ChatRoom;
+import dev_final_team10.GoodBuyUS.domain.chat.ChatRoomDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface ChatMemberRepository extends JpaRepository<ChatMember, Long> {
-    List<ChatMember> findByPostAndIsPaid(Post post, boolean isPaid);
+
+    @Query("SELECT c.chatRoom FROM ChatMember c WHERE c.user.id = :userId")
+    List<ChatRoom> findChatRoomByUserId(@Param("userId") Long userId);
 }

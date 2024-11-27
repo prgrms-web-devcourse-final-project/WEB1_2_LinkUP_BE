@@ -1,10 +1,10 @@
-package dev_final_team10.GoodBuyUS.domain;
+package dev_final_team10.GoodBuyUS.domain.chat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev_final_team10.GoodBuyUS.domain.Post;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -15,7 +15,9 @@ import java.util.List;
 @Table(name = "chat_room")
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,15 +33,9 @@ public class ChatRoom {
     @JsonIgnore
     private Post post;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
     private int capacity;
 
-    public ChatRoom(String roomName, Post post, int capacity) {
-        this.roomName = roomName;
-        this.post = post;
-        this.capacity = capacity;
-        this.createdAt = LocalDateTime.now();
-
-    }
 }

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+</head>
+<body>
+<h1>Chat Room</h1>
+
+<section>
+    <h2>Chat Room Messages</h2>
+    <input id="userName" type="text" placeholder="Your Name" />
+    <input id="message" type="text" placeholder="Message" />
+    <button id="sendMessageBtn">Send Message</button>
+
+    <h3>Messages</h3>
+    <div id="messages"></div>
+</section>
+
+<script>
+    const baseURL = 'http://localhost:8080'; // 백엔드 URL
+    let stompClient = null;
+    let isConnected = false;
+
+    // URL에서 roomId 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomId = urlParams.get('roomId');
+
+    if (!roomId) {
+        alert('roomId가 지정되지 않았습니다. URL에 ?roomId=123과 같은 형식으로 추가하세요.');
+        throw new Error('roomId is required');
+    }
+
+    // 페이지 로드 시 WebSocket 연결 및 기존 메시지 표시
+    window.onload = () => {
+        displayStoredMessages(); // 로컬 저장소에서 기존 메시지 표시
+        connectWebSocket(); // WebSocket 연결
+    };
+
+    // 로컬 저장소에서 기존 메시지 불러오기
+    function displayStoredMessages() {
+        const storedMessages = JSON.parse(localStorage.getItem(`messages_${roomId}`)) || [];
+        storedMessages.forEach(displayMessage); // 기존 메시지 화면에 표시
+    }
+
+    // WebSocket 연결
+    function connectWebSocket() {
+        const socket = new SockJS(`${baseURL}/websocket`);
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, () => {
+            console.log(`Connected to WebSocket: roomId=${roomId}`);
+            isConnected = true;
+
+            // 특정 roomId에 대한 메시지 구독
+            stompClient.subscribe(`/sub/message/${roomId}`, (messageOutput) => {
+                const message = JSON.parse(messageOutput.body);
+                displayMessage(message);
+            });
+        }, (error) => {
+            console.error('WebSocket 연결 실패:', error);
+        });
+    }
+
+    // 메시지 표시
+    function displayMessage({ userName, message, time }) {
+        const messagesDiv = document.getElementById('messages');
+        const messageElement = document.createElement('div');
+        messageElement.textContent = `[${new Date(time).toLocaleTimeString()}] ${userName}: ${message}`;
+        messagesDiv.appendChild(messageElement);
+    }
+
+    // 메시지 전송
+    document.getElementById('sendMessageBtn').addEventListener('click', () => {
+        const userName = document.getElementById('userName').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (!userName || !message) {
+            alert('이름과 메시지를 모두 입력하세요.');
+            return;
+        }
+
+        if (!isConnected) {
+            alert('WebSocket이 연결되지 않았습니다. 잠시 후 다시 시도하세요.');
+            return;
+        }
+
+        const messageData = {
+            roomId: roomId,
+            userName: userName,
+            message: message,
+            time: new Date().toISOString(),
+        };
+
+        // WebSocket을 통해 메시지 전송
+        stompClient.send(
+            `/pub/message/${roomId}`,
+            {},
+            JSON.stringify(messageData)
+        );
+
+        // 전송된 메시지를 로컬 저장소에 저장
+        saveMessageToLocalStorage(messageData);
+
+        // 메시지 입력 필드 초기화
+        document.getElementById('message').value = '';
+    });
+
+    // 메시지를 로컬 저장소에 저장
+    function saveMessageToLocalStorage(messageData) {
+        const storedMessages = JSON.parse(localStorage.getItem(`messages_${roomId}`)) || [];
+        storedMessages.push(messageData);
+        localStorage.setItem(`messages_${roomId}`, JSON.stringify(storedMessages));
+    }
+</script>
+
+</body>
+</html>

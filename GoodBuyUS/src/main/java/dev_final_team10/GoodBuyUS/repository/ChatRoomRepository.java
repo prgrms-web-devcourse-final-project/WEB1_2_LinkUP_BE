@@ -1,10 +1,7 @@
 package dev_final_team10.GoodBuyUS.repository;
 
-import dev_final_team10.GoodBuyUS.domain.ChatRoom;
-import dev_final_team10.GoodBuyUS.domain.Post;
+import dev_final_team10.GoodBuyUS.domain.chat.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 //

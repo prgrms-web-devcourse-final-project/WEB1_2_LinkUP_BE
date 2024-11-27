@@ -1,16 +1,18 @@
 package dev_final_team10.GoodBuyUS.controller;
 
-import dev_final_team10.GoodBuyUS.domain.ChatRoom;
-import dev_final_team10.GoodBuyUS.domain.ChatRoomDTO;
+import dev_final_team10.GoodBuyUS.domain.chat.ChatRoom;
+import dev_final_team10.GoodBuyUS.domain.chat.ChatRoomDTO;
 import dev_final_team10.GoodBuyUS.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
-public class chatRoomController {
+public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
     //채팅방 생성
@@ -23,5 +25,11 @@ public class chatRoomController {
     @DeleteMapping("/{chatRoomId}")
     public void removeChatRoom(@PathVariable Long chatRoomId) {
         chatRoomService.removeChatRoom(chatRoomId);
+    }
+
+    //채팅방 목록
+    @GetMapping("/{userId}")
+    public List<ChatRoomDTO> chatRoomList(@PathVariable Long userId) {
+        return chatRoomService.getListChatRoom(userId);
     }
 }
