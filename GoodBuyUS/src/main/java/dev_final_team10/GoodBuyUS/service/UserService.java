@@ -1,6 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
-import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
+import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Role;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
