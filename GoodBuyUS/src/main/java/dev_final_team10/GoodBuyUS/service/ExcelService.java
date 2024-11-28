@@ -1,6 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
-import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
+import dev_final_team10.GoodBuyUS.domain.neighborhood.Neighborhood;
 import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;

@@ -1,6 +1,6 @@
-package dev_final_team10.GoodBuyUS.domain.user.entity;
+package dev_final_team10.GoodBuyUS.domain.user;
 
-import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
+import dev_final_team10.GoodBuyUS.domain.neighborhood.Neighborhood;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
