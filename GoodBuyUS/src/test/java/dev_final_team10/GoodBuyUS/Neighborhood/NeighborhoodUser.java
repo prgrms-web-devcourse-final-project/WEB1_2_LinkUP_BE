@@ -1,7 +1,7 @@
 package dev_final_team10.GoodBuyUS.Neighborhood;
 
-import dev_final_team10.GoodBuyUS.domain.user.UserSignUpDto;
-import dev_final_team10.GoodBuyUS.domain.user.User;
+import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import dev_final_team10.GoodBuyUS.service.UserService;
 import org.junit.jupiter.api.DisplayName;
