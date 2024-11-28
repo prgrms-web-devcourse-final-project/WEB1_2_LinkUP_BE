@@ -1,27 +1,56 @@
 package dev_final_team10.GoodBuyUS.controller;
 
 import com.auth0.jwt.JWT;
-import dev_final_team10.GoodBuyUS.domain.order.dto.PaymentRequestDTO;
-import dev_final_team10.GoodBuyUS.domain.order.dto.PaymentResponseDTO;
-import dev_final_team10.GoodBuyUS.domain.order.dto.TossRequestDTO;
+import dev_final_team10.GoodBuyUS.domain.order.dto.*;
+import dev_final_team10.GoodBuyUS.domain.payment.PaymentDTO;
+import dev_final_team10.GoodBuyUS.domain.payment.PaymentStatus;
+import dev_final_team10.GoodBuyUS.domain.product.dto.DetailProductDTo;
 import dev_final_team10.GoodBuyUS.service.OrderService;
+import dev_final_team10.GoodBuyUS.service.PayService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/goodbuyUs")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    @GetMapping("/orders/{postId}")
+    public DetailProductDTo readyToOrder(@RequestBody CountRequestDTO countRequestDTO, @PathVariable Long postId) {
+        return orderService.readyToOrder(countRequestDTO, postId);
+    }
 
-    @PostMapping("/api/v1/payments")
-    public PaymentResponseDTO<?> createOrder(@RequestBody PaymentRequestDTO paymentRequestDTO,
-                                      @RequestHeader("Authorization") String token){
+    // 성공 실패 URl 추가 예정
+    @PostMapping("/orders/{postId}/payment")
+    public PaymentDTO payment(@RequestBody OrderRequestDTO orderRequestDTO,
+                              @RequestHeader("Authorization") String token,
+                              @PathVariable Long postId){
         String userEmail = extractEmailFromToken(token);
-        UUID orderId = orderService.requestPayment(paymentRequestDTO, userEmail);
-        TossRequestDTO tossRequestDTO = orderService.matchTossRequest(orderId);
-        return orderService.payment(tossRequestDTO);
+        TossRequestDTO tossRequestDTO = orderService.createOrder(orderRequestDTO, userEmail, postId);
+        PaymentDTO paymentDTO =  orderService.payment(tossRequestDTO);
+        if(paymentDTO.getStatus() == PaymentStatus.FAIL){
+            paymentDTO.setRedirectURL("실패 url");
+        }
+        else paymentDTO.setRedirectURL("성공 url");
+        return paymentDTO;
+    }
+
+    @GetMapping("/user")
+    public List<OrdersDTO> findOrder(@RequestHeader("Authorization") String token){
+        String email = extractEmailFromToken(token);
+        return orderService.findUsersOrderList(email);
+    }
+
+    // 내 주문 내역에서 환불을 선택했다고 가정
+    @PutMapping("/orders/refunds/{payId}")
+    public String refundOrder(@PathVariable Long payId){
+        return orderService.refund(payId);
     }
 
     private String extractEmailFromToken(String token) {
@@ -29,4 +58,6 @@ public class OrderController {
         String tokenValue = token.replace("Bearer ", "");
         return JWT.decode(tokenValue).getClaim("email").asString();
     }
+
+
 }

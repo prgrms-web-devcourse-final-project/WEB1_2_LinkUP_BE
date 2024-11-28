@@ -1,6 +1,4 @@
 package dev_final_team10.GoodBuyUS.service;
-import dev_final_team10.GoodBuyUS.domain.order.dto.OrderRequestDTO;
-import dev_final_team10.GoodBuyUS.domain.product.dto.OrderResponseDTO;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.domain.product.dto.PostDetailDTO;
 import dev_final_team10.GoodBuyUS.domain.product.dto.ProductPostDTO;
@@ -58,28 +56,5 @@ public class ProductPostService {
             reviewDTOS.add(create_reviewDTO);
         }
         return PostDetailDTO.of(productPost,reviewDTOS);
-    }
-
-    /**
-     * 결제하기를 눌렀을 때 주문서에 데이터가 들어갈 수 있도록 데이터를 전달해야함
-     * 만약 구매수량이 게시글의 최소 수량보다 적다면 original price를 리턴하고 구매수량이 게시글의 최소 수량과 같거나 크다면 discount price를 리턴한다.
-     * @return
-     */
-    public OrderResponseDTO requestPayment(OrderRequestDTO orderRequestDTO, Long postId){
-        ProductPost productPost = productPostRepository.findById(postId).orElseThrow(()-> new NoSuchElementException("없는 게시글입니다."));
-        OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
-        orderResponseDTO.setProductName(orderRequestDTO.getProductName());
-        orderResponseDTO.setUrl(orderRequestDTO.getUrl());
-        orderResponseDTO.setAmount(orderRequestDTO.getAmount());
-        orderResponseDTO.setPostId(postId);
-
-        // 주문 최소 개수가 미니멈보다 적을 때 원가로 결제해야함
-        if(orderRequestDTO.getAmount() < productPost.getMinAmount()){
-            orderResponseDTO.setPrice(productPost.getOriginalPrice());
-            orderResponseDTO.setFinalPrice(orderRequestDTO.getAmount()*orderRequestDTO.getPrice());
-        }
-        else{ orderResponseDTO.setPrice(productPost.getProuctDiscount());
-        orderResponseDTO.setFinalPrice(orderRequestDTO.getAmount()*orderRequestDTO.getDiscountPrice());}
-        return orderResponseDTO;
     }
 }

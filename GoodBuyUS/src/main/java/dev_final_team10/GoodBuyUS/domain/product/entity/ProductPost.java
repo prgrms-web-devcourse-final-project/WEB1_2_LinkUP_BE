@@ -1,6 +1,8 @@
 package dev_final_team10.GoodBuyUS.domain.product.entity;
 
 import dev_final_team10.GoodBuyUS.domain.BaseEntity;
+import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
+import dev_final_team10.GoodBuyUS.domain.payment.Payment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,12 +29,11 @@ public class ProductPost extends BaseEntity {
 
     private String postURL;
 
-    //최소 개수(2명으로 고정)
     @Column(name = "min_amount")
     private int minAmount;
 
     //판매 기간
-    private LocalDate product_period;
+    private LocalDateTime product_period;
 
     private String title;
     /**
@@ -42,23 +46,23 @@ public class ProductPost extends BaseEntity {
     // 물건 원가
     private int originalPrice;
 
-    // 판매 재고
-    private int stockQuantity;
+    @OneToMany(mappedBy = "productPost")
+    private List<Order> orders = new ArrayList<>();
 
     //구매 가능 여부
     private boolean available;
-    public static ProductPost createProPost(Product product, String postDescription, int minAmount,LocalDate product_period, int stockQuantity){
+    public static ProductPost createProPost(Product product, String postDescription, int minAmount,LocalDateTime product_period){
         ProductPost productPost = new ProductPost();
         productPost.postDescription = postDescription;
         productPost.product = product;
         productPost.product_period = product_period;
         productPost.minAmount = minAmount;
         productPost.postURL = product.getProductImage();
-        productPost.stockQuantity = stockQuantity;
         productPost.available = true;
         productPost.originalPrice = product.getProductPrice();
         productPost.setOriginalandDiscount();
         productPost.title = product.getProductName();
+        productPost.available = true;
         return productPost;
     }
 
@@ -76,31 +80,7 @@ public class ProductPost extends BaseEntity {
         }
     }
 
-    /**
-     * 동시성 이슈는 고려하지 않음(고려해야함 ㅠㅠ)
-     * @param count
-     */
-    public void purchaseProduct(int count){
-        if (count <= 0) {
-            throw new IllegalArgumentException("구매 수량은 1 이상이어야 합니다.");
-        }
-        if (this.stockQuantity < count) {
-            this.available = false;
-            throw new IllegalStateException("재고가 부족합니다. 남은 재고: " + this.stockQuantity);
-        }
-        this.stockQuantity -= count;
+    public void unAvailable(){
+        this.available = false;
     }
-
-    public void cancelPurchase(int count){
-        if (count <= 0) {
-            throw new IllegalArgumentException("취소 수량은 1 이상이어야 합니다.");
-        }
-        this.stockQuantity += count;
-    }
-
-    /**
-     * 글 마다 재고를 두고 그 재고가 줄어드는 것을 가시적으로 표시
-     * 데드라인과 재고 안에선 무제한 구매 가능
-     * 최소 인원을 정해두고 그 인원이 넘어서면
-     */
 }

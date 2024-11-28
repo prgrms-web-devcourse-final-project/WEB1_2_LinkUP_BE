@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +21,10 @@ public class PostDetailDTO {
     private String description;
     private List<ReviewDTO> reviews;
     private Long productPostId;
+    private LocalDateTime createdAt;
+    private LocalDateTime deadline;
+    private int currentStock;
+    private boolean available;
 
     @Data
     public static class ReviewDTO{
@@ -36,7 +42,11 @@ public class PostDetailDTO {
                 productPost.getPostURL(),
                 productPost.getPostDescription(),
                 reviews,
-                productPost.getPostId()
+                productPost.getPostId(),
+                productPost.getCreatedAt(),
+                productPost.getProduct_period(),
+                productPost.getProduct().getStock(),
+                productPost.isAvailable()
         );
     }
 }

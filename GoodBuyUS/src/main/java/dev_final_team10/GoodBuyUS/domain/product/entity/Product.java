@@ -37,13 +37,13 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<ProductReview> reviews = new ArrayList<>();
 
-    private int reviewscount;
+    private int reviewsCount;
 
     private double averageRating;
 
-    private int hits;
+    private int stock;
 
-    public static Product createProduct(String productName, int productPrice, String productImage, ProductCategory productCategory, SubCategory subCategory, DetailCategory detailCategory) {
+    public static Product createProduct(String productName, int productPrice, String productImage, ProductCategory productCategory, SubCategory subCategory, DetailCategory detailCategory, int stock) {
         Product product = new Product();
         product.productName = productName;
         product.productImage = productImage;
@@ -52,6 +52,7 @@ public class Product {
         product.subCategory = subCategory;
         product.productPrice = productPrice;
         product.averageRating = product.calculateAverageRating();
+        product.stock = stock;
         return product;
     }
 
@@ -63,5 +64,13 @@ public class Product {
                 .mapToDouble(ProductReview::getRating)
                 .average()
                 .orElse(0.0);
+    }
+
+    public void decreaseStock(int count){
+        this.stock -= count;
+    }
+
+    public void increaseStock(int count){
+        this.stock += count;
     }
 }

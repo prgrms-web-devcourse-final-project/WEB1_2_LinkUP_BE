@@ -8,8 +8,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-
 import java.util.UUID;
 
 @Entity
@@ -24,17 +22,21 @@ public class Order extends BaseEntity {
 
     private String orderName;
 
+    // 수량
     private int quantity;
 
     @Embedded
     private Address address;
 
+
     private int price;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
     private ProductPost productPost;
 
     private String needed;
@@ -42,19 +44,15 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    private String payMethod;
-
-    public static Order createOrder(ProductPost productPost, User user, int quantity, Address address, int price, String needed, String payMethod){
+    public static Order createOrder(ProductPost productPost, User user, int quantity, Address address, int price, String needed){
         Order order = new Order();
         order.orderName =  user.getName()+"의 "+ productPost.getProduct().getProductName()+" 주문";
         order.quantity = quantity;
         order.address = address;
         order.price = price;
         order.productPost = productPost;
-        order.registUser(user);
         order.needed = needed;
         order.orderStatus = OrderStatus.WAITING;
-        order.payMethod = payMethod;
         return order;
     }
 
@@ -66,4 +64,6 @@ public class Order extends BaseEntity {
     public void changeOrderStatus(OrderStatus orderStatus){
         this.orderStatus = orderStatus;
     }
+
+
 }
