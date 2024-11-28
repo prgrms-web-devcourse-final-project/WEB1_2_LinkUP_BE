@@ -3,10 +3,7 @@ package dev_final_team10.GoodBuyUS.controller;
 import dev_final_team10.GoodBuyUS.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -33,9 +30,6 @@ public class MypageController {
     }
 
 
-
-
-
     //비밀번호 변경
     @PostMapping("/change")
     public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request){
@@ -43,6 +37,12 @@ public class MypageController {
 
         mypageService.updateNewPassword(userEmail, request.get("newPassword"));
         return ResponseEntity.ok(Map.of("message","비밀번호가 성공적으로 변경되었습니다."));
+    }
+
+    //동네 변경
+    @PutMapping("/changeneighbor")
+    public ResponseEntity<?> changeNeighbor(@RequestBody Map<String, String> request){
+        return mypageService.chageNeighbor(request.get("newAddress"));
     }
 
 }

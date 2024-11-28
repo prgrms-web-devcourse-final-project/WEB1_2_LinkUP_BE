@@ -116,7 +116,7 @@ public class UserService {
     }
 
     //사용자 주소에서 지역명(시도군) 추출하는 메소드
-    private String extractNeighborhoodName(String address){
+    public String extractNeighborhoodName(String address){
         List<Neighborhood> neighborhoodList = neighborhoodRepository.findAll();
 
         String neighborhoodName = null;
