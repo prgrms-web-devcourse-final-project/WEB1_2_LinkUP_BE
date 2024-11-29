@@ -4,7 +4,7 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "particioations")
+@Table(name = "participations")
 public class Participations {
 
     @Id

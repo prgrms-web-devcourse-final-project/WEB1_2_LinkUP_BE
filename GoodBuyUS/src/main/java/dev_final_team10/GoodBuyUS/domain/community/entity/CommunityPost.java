@@ -3,9 +3,15 @@ package dev_final_team10.GoodBuyUS.domain.community.entity;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "community_post")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Builder
 public class CommunityPost {
 
     @Id
@@ -18,19 +24,20 @@ public class CommunityPost {
     private String imageUrl;    //이미지 Url
     private String category;    //상품 카테고리       //추후 추가 예정
     private Long availableNumber;   //참여 가능 수량
-    private Long participantNumber;     //현재 참여 인원 수
-    private String createdAt;   //글 작성 시간
-    private String modifiedAt;  //글 수정 시간
-    private Long period;     //모집 기간
-    private String place;       //수령 가능 지역
-    private Long  personalAmount;   //한 개당 가격
+    private LocalDateTime createdAt;   //글 작성 시간
+    private LocalDateTime modifiedAt;  //글 수정 시간
+    private LocalDateTime period;     //모집 기간 = 글 생성 시간(날짜) + 글작성할 때 입력하는 일수
+    private Long  unitAmount;   //한 개당 가격
+
+    @Enumerated(EnumType.STRING)
+    private postStatus status; //글의 상태(승인대기, 승인완료 등등)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;  //글작성자
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "neighborhood_code")
-    private Neighborhood neighborhood;
+    private Neighborhood neighborhood;  //글작성자의 동네코드
 
 }
