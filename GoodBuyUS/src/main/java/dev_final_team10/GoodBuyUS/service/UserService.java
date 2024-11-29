@@ -1,9 +1,9 @@
 package dev_final_team10.GoodBuyUS.service;
 
-import dev_final_team10.GoodBuyUS.domain.neighborhood.Neighborhood;
-import dev_final_team10.GoodBuyUS.domain.user.UserSignUpDto;
-import dev_final_team10.GoodBuyUS.domain.user.Role;
-import dev_final_team10.GoodBuyUS.domain.user.User;
+import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
+import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
+import dev_final_team10.GoodBuyUS.domain.user.entity.Role;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
@@ -12,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

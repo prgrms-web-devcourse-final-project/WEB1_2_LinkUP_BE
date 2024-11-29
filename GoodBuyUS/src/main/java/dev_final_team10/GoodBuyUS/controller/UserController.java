@@ -1,6 +1,6 @@
 package dev_final_team10.GoodBuyUS.controller;
 
-import dev_final_team10.GoodBuyUS.domain.user.UserSignUpDto;
+import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.service.UserService;
 import jakarta.mail.MessagingException;
