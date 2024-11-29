@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.domain.user.entity;
 
+import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductReview;
 import jakarta.persistence.*;
@@ -40,10 +41,10 @@ public class User {
 
     private String refreshToken;   //리프레쉬 토큰
 
-    //User 기본 권한 설정 메소드
-    public void authorizeUser() {
-        this.role = Role.USER;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "neighborhood_code")
+    private Neighborhood neighborhood;
+
 
     //비밀번호 암호화 메소드
     public void passwordEncode(PasswordEncoder passwordEncoder) {

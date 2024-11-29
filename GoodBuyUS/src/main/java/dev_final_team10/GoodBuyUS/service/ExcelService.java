@@ -46,8 +46,8 @@ public class ExcelService {
 
             // MySQL에 저장하는 로직
             Neighborhood neighborhood = Neighborhood.builder()
-                    .code(code)
-                    .areaName(areaName)
+                    .neighborhoodCode(code)
+                    .neighborhoodName(areaName)
                     .build();
 
             neighborhoodRepository.save(neighborhood);
