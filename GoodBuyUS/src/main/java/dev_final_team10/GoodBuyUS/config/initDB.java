@@ -196,8 +196,7 @@ public class initDB {
         List<Product> products = productRepository.findAll();
         Random random = new Random();
         for (Product product : products) {
-            int minAmount = random.nextInt(2) + 2;
-//            int stockQuantity = random.nextInt(51) + 50;
+            int minAmount = random.nextInt(2) + 3;
             int dayCount = random.nextInt(3)+1;
             ProductPost productPost = ProductPost.createProPost(product,product.getProductName()+"에 관한 상품 설명입니다.",minAmount, LocalDateTime.now().plusDays(dayCount));
             productPostRepository.save(productPost);

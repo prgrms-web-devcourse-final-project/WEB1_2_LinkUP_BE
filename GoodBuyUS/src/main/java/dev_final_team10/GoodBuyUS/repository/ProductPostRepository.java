@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ProductPostRepository extends JpaRepository<ProductPost, Long> {
    public List<ProductPost> findAllByAvailableIsFalse();
+   public List<ProductPost> findAllByAvailableIsTrue();
 }

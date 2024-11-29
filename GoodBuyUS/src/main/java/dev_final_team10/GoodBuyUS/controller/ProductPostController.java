@@ -13,7 +13,7 @@ import java.util.List;
 public class ProductPostController {
     private final ProductPostService productPostService;
 
-    @GetMapping("")
+    @GetMapping()
     public List<ProductPostDTO> getPosts(){
        return productPostService.findAllProduct();
     }
@@ -22,5 +22,4 @@ public class ProductPostController {
     public PostDetailDTO detailProduct(@PathVariable Long post_id){
         return productPostService.findPost(post_id);
     }
-
 }

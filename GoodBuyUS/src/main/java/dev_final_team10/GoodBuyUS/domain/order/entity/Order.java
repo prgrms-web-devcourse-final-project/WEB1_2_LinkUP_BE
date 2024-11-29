@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.print.DocFlavor;
 import java.util.UUID;
 
 @Entity
@@ -44,6 +46,9 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Enumerated(EnumType.STRING)
+    private Delivery delivery;
+
     public static Order createOrder(ProductPost productPost, User user, int quantity, Address address, int price, String needed){
         Order order = new Order();
         order.orderName =  user.getName()+"의 "+ productPost.getProduct().getProductName()+" 주문";
@@ -65,5 +70,7 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
     }
 
-
+    public void defineDelivery(Delivery delivery){
+        this.delivery = delivery;
+    }
 }

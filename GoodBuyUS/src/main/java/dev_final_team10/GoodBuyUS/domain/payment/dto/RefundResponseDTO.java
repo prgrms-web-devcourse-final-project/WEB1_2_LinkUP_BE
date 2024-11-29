@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.domain.payment;
+package dev_final_team10.GoodBuyUS.domain.payment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

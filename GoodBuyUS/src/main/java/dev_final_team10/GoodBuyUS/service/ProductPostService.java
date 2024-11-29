@@ -30,6 +30,7 @@ public class ProductPostService {
 
     /**
      * 전체 판매 리스트 전달(썸네일), 쿼리 최적화 필요
+     * 현재 판매 중인 것들만!
      */
     public List<ProductPostDTO> findAllProduct(){
         List<ProductPost> productPosts = productPostRepository.findAll();

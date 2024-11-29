@@ -17,6 +17,7 @@ public class ProductPostDTO {
     private String url;
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
+    private boolean available;
     public static ProductPostDTO of(ProductPost productPost){
         ProductPostDTO productPostDTO = new ProductPostDTO();
         productPostDTO.id = productPost.getPostId();
@@ -27,6 +28,7 @@ public class ProductPostDTO {
         productPostDTO.rating = productPost.getProduct().getAverageRating();
         productPostDTO.url = productPost.getPostURL();
         productPostDTO.category = productPost.getProduct().getProductCategory();
+        productPostDTO.available = productPost.isAvailable();
         return productPostDTO;
     }
 }

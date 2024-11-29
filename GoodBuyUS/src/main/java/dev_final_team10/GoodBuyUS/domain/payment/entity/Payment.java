@@ -1,13 +1,10 @@
-package dev_final_team10.GoodBuyUS.domain.payment;
+package dev_final_team10.GoodBuyUS.domain.payment.entity;
 
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor

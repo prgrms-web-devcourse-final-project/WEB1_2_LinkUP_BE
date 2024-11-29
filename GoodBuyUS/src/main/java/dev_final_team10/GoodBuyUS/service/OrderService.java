@@ -1,12 +1,13 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.order.dto.*;
+import dev_final_team10.GoodBuyUS.domain.order.entity.Delivery;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
-import dev_final_team10.GoodBuyUS.domain.payment.Payment;
-import dev_final_team10.GoodBuyUS.domain.payment.PaymentDTO;
-import dev_final_team10.GoodBuyUS.domain.payment.PaymentStatus;
-import dev_final_team10.GoodBuyUS.domain.payment.RefundDTO;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.Payment;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.PaymentDTO;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.RefundDTO;
 import dev_final_team10.GoodBuyUS.domain.product.dto.DetailProductDTo;
 import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
@@ -37,12 +38,6 @@ public class OrderService {
     // 주문을 위해 이전 페이지에서 결정한 수량과 가격을 업데이트
     public DetailProductDTo readyToOrder(CountRequestDTO orderRequestDTO, Long postId){
         ProductPost productPost = productPostRepository.findById(postId).orElseThrow(() -> new NoSuchElementException("잘못된 게시글입니다 - 주문"));
-        if(productPost.isAvailable() == false){
-            // 예외 발생, 재고가 다 떨어졌거나 가격이 0보다 작아서 판매를 못하는 경우
-        }
-        if(orderRequestDTO.getAmount() > productPost.getProduct().getStock()){
-            // 예외 발생, 주문 수량은 재고보다 클 수 없음
-        }
         return DetailProductDTo.createDTO(productPost, orderRequestDTO.getAmount());
     }
 
@@ -54,13 +49,30 @@ public class OrderService {
      * @return
      */
     public TossRequestDTO createOrder(OrderRequestDTO orderRequestDTO, String userEmail, Long postId){
-        ProductPost productPost = productPostRepository.findById(postId).orElseThrow(() -> new NoSuchElementException("잘못된 게시글입니다 - 주문"));
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
-        Order order = Order.createOrder(productPost, user, orderRequestDTO.getQuantity(), orderRequestDTO.getDeliveryRequestDTO().getAddress(),
-                orderRequestDTO.getPrice(),orderRequestDTO.getDeliveryRequestDTO().getNeeded());
-        order.registUser(user);
-        orderRepository.save(order);
-        return new TossRequestDTO(order.getOrderId(),user.getId(),productPost.getPostId(),orderRequestDTO.getPrice(), orderRequestDTO.getQuantity());
+        try {
+            ProductPost productPost = productPostRepository.findById(postId)
+                    .orElseThrow(() -> new NoSuchElementException("잘못된 게시글입니다 - 주문"));
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
+
+            if (orderRequestDTO.getQuantity() > productPost.getProduct().getStock()) {
+                throw new IllegalArgumentException("주문 수량은 현재 상품의 재고보다 많을 수 없습니다.");
+            }
+
+            Order order = Order.createOrder(productPost, user, orderRequestDTO.getQuantity(),
+                    orderRequestDTO.getDeliveryRequestDTO().getAddress(),
+                    orderRequestDTO.getPrice(), orderRequestDTO.getDeliveryRequestDTO().getNeeded());
+            order.registUser(user);
+            orderRepository.save(order);
+
+            return new TossRequestDTO(order.getOrderId(), user.getId(), productPost.getPostId(),
+                    orderRequestDTO.getPrice(), orderRequestDTO.getQuantity());
+        } catch (NoSuchElementException | IllegalArgumentException e) {
+            // 적절한 예외 처리: 메시지 로깅 및 전달
+            throw new RuntimeException("주문 생성 중 문제가 발생했습니다: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("알 수 없는 오류가 발생했습니다.", e);
+        }
     }
 
     /**
@@ -72,17 +84,21 @@ public class OrderService {
         Order order = orderRepository.findById(tossRequestDTO.getOrderId()).orElseThrow(()->new NoSuchElementException("없는 오더"));
         ProductPost post = productPostRepository.findById(tossRequestDTO.getPostId()).orElseThrow(()->new NoSuchElementException("없는 게시글"));
         Product product = post.getProduct();
-
         PaymentDTO paymentDTO = payService.paymentCheck(order,tossRequestDTO);
 
         //결제 성공, 성공 url로 리다이렉트
         if (paymentDTO.getStatus() == PaymentStatus.SUCCESS){
             // 배송이 끝나야 complete로 전환
-            order.changeOrderStatus(OrderStatus.WAITING);
+            order.defineDelivery(Delivery.COMPLETE);
+            order.changeOrderStatus(OrderStatus.COMPLETE);
             product.decreaseStock(tossRequestDTO.getQuantity());
+            // 결제에 성공함, 재고가 0이거나 0보다 작을 때 판매 불가 상태로 변환, 재고는 데드라인과 관계 없음
+            if(product.getStock() <= 0){
+                post.unAvailable();
+            }
             return paymentDTO;
         }
-        //결제 실패, 실패 url로 리다이렉트
+        //결제 실패, 실패 url로 리다이렉트, 수량 안 줄어들음
         else order.changeOrderStatus(OrderStatus.FAILED);
         return paymentDTO;
     }
@@ -91,7 +107,7 @@ public class OrderService {
      * 주문 내역 조회
      */
     public List<OrdersDTO> findUsersOrderList(String userEmail){
-        User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new NoSuchElementException("에러"));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new NoSuchElementException("잘못된 사용자입니다"));
         List<Order> orders = orderRepository.findOrderByUser(user);
         List<OrdersDTO> ordersDTOS = new ArrayList<>();
         for (Order order : orders) {
@@ -102,6 +118,7 @@ public class OrderService {
             ordersDTO.setOrderDate(order.getCreatedAt());
             ordersDTO.setPaymentStatus(payment.getPaymentStatus());
             ordersDTO.setPaymentId(payment.getPaymentId());
+            ordersDTO.setQuantity(order.getQuantity());
             ordersDTOS.add(ordersDTO);
         }
         return ordersDTOS;
@@ -110,11 +127,22 @@ public class OrderService {
     /**
      * 사용자 환불
      **/
-    public String refund(Long payId){
-        Payment payment = paymentRepository.findById(payId).orElseThrow(()-> new NoSuchElementException("잘못된 오더"));
-        Order order = orderRepository.findById(payment.getOrder().getOrderId()).orElseThrow();
-        RefundDTO refundDTO = new RefundDTO(order.getOrderId(),payment.getPrice(),LocalDateTime.now());
-        return payService.refundPayment(refundDTO);
+    public String refund(Long payId) {
+        try {
+            Payment payment = paymentRepository.findById(payId)
+                    .orElseThrow(() -> new NoSuchElementException("잘못된 오더"));
+            if (payment.getPaymentStatus() == PaymentStatus.REFUND) {
+                throw new IllegalStateException("이미 환불된 주문입니다");
+            }
+            Order order = orderRepository.findById(payment.getOrder().getOrderId())
+                    .orElseThrow(() -> new NoSuchElementException("주문 정보를 찾을 수 없습니다"));
+            RefundDTO refundDTO = new RefundDTO(order.getOrderId(), payment.getPrice(), LocalDateTime.now());
+            return payService.refundPayment(refundDTO);
+        } catch (IllegalStateException e) {
+            return e.getMessage(); // "이미 환불된 주문입니다"
+        } catch (NoSuchElementException e) {
+            return e.getMessage();
+        }
     }
 
     /**

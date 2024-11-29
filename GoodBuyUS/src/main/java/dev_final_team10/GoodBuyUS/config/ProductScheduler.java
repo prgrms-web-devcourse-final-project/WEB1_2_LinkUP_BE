@@ -1,7 +1,6 @@
 package dev_final_team10.GoodBuyUS.config;
 
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
-import dev_final_team10.GoodBuyUS.domain.payment.Payment;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.repository.OrderRepository;
 import dev_final_team10.GoodBuyUS.repository.PaymentRepository;

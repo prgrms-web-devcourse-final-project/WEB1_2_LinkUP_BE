@@ -2,14 +2,12 @@ package dev_final_team10.GoodBuyUS.domain.product.entity;
 
 import dev_final_team10.GoodBuyUS.domain.BaseEntity;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
-import dev_final_team10.GoodBuyUS.domain.payment.Payment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +60,6 @@ public class ProductPost extends BaseEntity {
         productPost.originalPrice = product.getProductPrice();
         productPost.setOriginalandDiscount();
         productPost.title = product.getProductName();
-        productPost.available = true;
         return productPost;
     }
 
@@ -82,5 +79,9 @@ public class ProductPost extends BaseEntity {
 
     public void unAvailable(){
         this.available = false;
+    }
+
+    public void canSelling(){
+        this.available = true;
     }
 }
