@@ -149,10 +149,7 @@ public class UserService {
         String email = jwtService.extractEmail(token).orElse(null);
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
-            user = User.builder()
-                    .password(newPassword).build();
-
-            user.passwordEncode(passwordEncoder);
+            user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
         }
     }
