@@ -6,14 +6,10 @@ import dev_final_team10.GoodBuyUS.domain.product.category.ProductCategory;
 import dev_final_team10.GoodBuyUS.domain.product.category.SubCategory;
 import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductRepository;
-import dev_final_team10.GoodBuyUS.repository.UserRepository;
-import dev_final_team10.GoodBuyUS.service.ProductPostService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +24,6 @@ import java.util.Random;
 public class initDB {
     private final ProductRepository productRepository;
     private final ProductPostRepository productPostRepository;
-    private final ProductPostService productPostService;
-    private final UserRepository userRepository;
 
     /**
      * 식료품, 생활용품, 패션/의류
