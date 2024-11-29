@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.domain.user.dto;
+package dev_final_team10.GoodBuyUS.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

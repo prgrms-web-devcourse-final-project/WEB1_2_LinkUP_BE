@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.domain.neighborhood.entity;
+package dev_final_team10.GoodBuyUS.domain.neighborhood;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

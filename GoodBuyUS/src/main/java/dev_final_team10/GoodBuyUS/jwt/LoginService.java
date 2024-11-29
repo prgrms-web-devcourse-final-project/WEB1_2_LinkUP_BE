@@ -1,6 +1,6 @@
 package dev_final_team10.GoodBuyUS.jwt;
 
-import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.domain.user.User;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
