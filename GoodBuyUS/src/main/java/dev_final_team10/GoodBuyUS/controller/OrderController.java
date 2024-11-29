@@ -16,13 +16,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    @GetMapping("/orders/{postId}")
-    public DetailProductDTo readyToOrder(@RequestBody CountRequestDTO countRequestDTO, @PathVariable Long postId) {
+    @GetMapping("/orders")
+    public DetailProductDTo readyToOrder(@RequestBody CountRequestDTO countRequestDTO, @RequestParam Long postId) {
         return orderService.readyToOrder(countRequestDTO, postId);
     }
 
     // 성공 실패 URl 추가 예정
-    @PostMapping("/orders/{postId}/payment")
+    @PostMapping("/orders/payment/{postId}")
     public PaymentDTO payment(@RequestBody OrderRequestDTO orderRequestDTO,
                               @RequestHeader("Authorization") String token,
                               @PathVariable Long postId){

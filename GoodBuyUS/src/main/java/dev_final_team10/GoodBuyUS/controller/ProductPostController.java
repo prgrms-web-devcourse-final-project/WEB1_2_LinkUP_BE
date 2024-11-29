@@ -18,8 +18,8 @@ public class ProductPostController {
        return productPostService.findAllProduct();
     }
 
-    @GetMapping("/{post_id}")
-    public PostDetailDTO detailProduct(@PathVariable Long post_id){
-        return productPostService.findPost(post_id);
+    @GetMapping("/product")
+    public PostDetailDTO detailProduct(@RequestParam Long postid){
+        return productPostService.findPost(postid);
     }
 }
