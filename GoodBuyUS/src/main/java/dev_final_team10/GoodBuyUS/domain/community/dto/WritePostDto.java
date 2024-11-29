@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class WritePostDto {
     private Long unitAmount;
     private String description;
     private String productUrl;
+    private List<String> imageUrls;
     private String imageUrl;
 
     public CommunityPost toEntity(User user, Neighborhood neighborhood){
@@ -33,7 +35,7 @@ public class WritePostDto {
                 .unitAmount(unitAmount)
                 .description(description)
                 .productUrl(productUrl)
-                .imageUrl(imageUrl)
+                .imageUrls(imageUrls)
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())

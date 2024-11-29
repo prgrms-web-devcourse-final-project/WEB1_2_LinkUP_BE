@@ -30,13 +30,11 @@ public class CommunityService {
         //현재 사용자 동네 정도 가져오기
         Neighborhood neighborhood = user.getNeighborhood();
 
-        log.info("DTO 확인" + writePostDto.getDescription(),writePostDto.getAvailableNumber(),writePostDto.getImageUrl());
         //DTO -> entity로 변환
         CommunityPost communityPost = writePostDto.toEntity(user, neighborhood);
 
         //DB 저장
         communityPostRepository.save(communityPost);
-
     }
 
 }
