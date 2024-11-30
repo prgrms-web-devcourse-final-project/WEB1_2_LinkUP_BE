@@ -17,11 +17,11 @@ public class CommunityPaymentService {
 
     private final WebClient webClient;
     private final CommunityPaymentRepository paymentRepository;
-    private final ObjectMapper objectMapper; // ObjectMapper 추가
+    private final ObjectMapper objectMapper;
 
     public CommunityPaymentService(WebClient.Builder webClientBuilder,
                                    CommunityPaymentRepository paymentRepository,
-                                   ObjectMapper objectMapper) { // 생성자 주입
+                                   ObjectMapper objectMapper) {
         this.webClient = webClientBuilder
                 .baseUrl("https://api.tosspayments.com/v1/payments")
                 .defaultHeaders(headers -> {
@@ -30,7 +30,7 @@ public class CommunityPaymentService {
                 })
                 .build();
         this.paymentRepository = paymentRepository;
-        this.objectMapper = objectMapper; // 초기화
+        this.objectMapper = objectMapper;
     }
 
     public CommunityPaymentResponseDto createAndRequestPayment(CommunityPaymentRequestDto requestDto) {
@@ -50,8 +50,8 @@ public class CommunityPaymentService {
                     .participationsOrderId(requestDto.getOrderId())
                     .amount(requestDto.getAmount())
                     .paymentStatus("WAITING_FOR_APPROVAL")
-                    .communityPaymentKey(responseDto.getPaymentKey()) // Null 방지
-                    .payType(requestDto.getPayType()) // PayType 설정
+                    .communityPaymentKey(responseDto.getPaymentKey())
+                    .payType(requestDto.getPayType())
                     .communityCreatedAt(LocalDateTime.now())
                     .build();
 
@@ -88,7 +88,7 @@ public class CommunityPaymentService {
                     .accountNumber(responseDto.getVirtualAccount().getAccountNumber())
                     .bankId(responseDto.getVirtualAccount().getBankCode())
                     .customerName(responseDto.getVirtualAccount().getCustomerName())
-                    .communityApprovedAt(LocalDateTime.now()) // 승인 시간
+                    .communityApprovedAt(LocalDateTime.now())
                     .build();
 
             paymentRepository.save(payment);
@@ -101,7 +101,7 @@ public class CommunityPaymentService {
     public void updatePaymentStatus(String paymentKey) {
         try {
             String rawResponse = webClient.get()
-                    .uri("/" + paymentKey) // GET 요청
+                    .uri("/" + paymentKey)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -112,11 +112,11 @@ public class CommunityPaymentService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 결제를 찾을 수 없습니다: " + paymentKey));
 
             payment = payment.toBuilder()
-                    .paymentStatus(responseDto.getStatus()) // 결제 상태 업데이트
-                    .communityApprovedAt(LocalDateTime.now()) // 입금 승인 시간 기록
+                    .paymentStatus(responseDto.getStatus())
+                    .communityApprovedAt(LocalDateTime.now())
                     .build();
 
-            paymentRepository.save(payment); // DB에 저장
+            paymentRepository.save(payment);
         } catch (Exception e) {
             throw new RuntimeException("결제 상태 업데이트 중 오류 발생: " + e.getMessage(), e);
         }

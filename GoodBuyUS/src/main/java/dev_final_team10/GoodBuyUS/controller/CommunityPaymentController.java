@@ -29,7 +29,7 @@ public class CommunityPaymentController {
         requestDto.setFailUrl("http://localhost:8080/api/v1/virtual/fail");
 
         // PayType 추가로 로직 확장
-        if (requestDto.getPayType() == PayType.VIRTUAL_ACCOUNT) { // payType 때문에 추가
+        if (requestDto.getPayType() == PayType.VIRTUAL_ACCOUNT) {
             System.out.println("결제 방식: 가상계좌");
         } else if (requestDto.getPayType() == PayType.CARD) {
             System.out.println("결제 방식: 카드");
@@ -70,10 +70,8 @@ public class CommunityPaymentController {
             int amount = (int) requestBody.get("amount");
             String orderId = (String) requestBody.get("orderId");
 
-            // 서비스 호출
             CommunityPaymentResponseDto responseDto = paymentService.confirmAndSavePayment(paymentKey, orderId, amount);
 
-            // 전체 응답값 반환
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -83,7 +81,7 @@ public class CommunityPaymentController {
     @GetMapping("/update-payment/{paymentKey}")
     public ResponseEntity<String> updatePaymentStatus(@PathVariable String paymentKey) {
         try {
-            paymentService.updatePaymentStatus(paymentKey); // 서비스 호출
+            paymentService.updatePaymentStatus(paymentKey);
             return ResponseEntity.ok("결제 상태가 업데이트되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
