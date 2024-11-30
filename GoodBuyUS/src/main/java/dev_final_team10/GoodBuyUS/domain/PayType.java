@@ -11,3 +11,4 @@ public enum PayType {
 
     private final String name;
 }
+// 상단계좌에서 어떤식으로 쓸지 고민 중
