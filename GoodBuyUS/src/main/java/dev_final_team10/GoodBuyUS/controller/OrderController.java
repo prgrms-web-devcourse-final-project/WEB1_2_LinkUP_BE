@@ -36,14 +36,14 @@ public class OrderController {
         return paymentDTO;
     }
 
-    @GetMapping("/user")
+    @GetMapping("/mypage/orders")
     public List<OrdersDTO> findOrder(@RequestHeader("Authorization") String token){
         String email = extractEmailFromToken(token);
         return orderService.findUsersOrderList(email);
     }
 
     // 내 주문 내역에서 환불을 선택했다고 가정
-    @PutMapping("/orders/refunds/{payId}")
+    @PutMapping("/mypage/orders/refund/{payId}")
     public String refundOrder(@PathVariable Long payId){
         return orderService.refund(payId);
     }
