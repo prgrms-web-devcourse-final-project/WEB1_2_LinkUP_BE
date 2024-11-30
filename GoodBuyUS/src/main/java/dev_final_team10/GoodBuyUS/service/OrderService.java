@@ -17,6 +17,7 @@ import dev_final_team10.GoodBuyUS.repository.PaymentRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -37,7 +39,13 @@ public class OrderService {
 
     // 주문을 위해 이전 페이지에서 결정한 수량과 가격을 업데이트
     public DetailProductDTo readyToOrder(CountRequestDTO orderRequestDTO, Long postId){
+        /**
+         * Todo : 요청 개수가 상품의 현재 재고보다 크진 않은지 , 0은 아닌지
+         */
         ProductPost productPost = productPostRepository.findById(postId).orElseThrow(() -> new NoSuchElementException("잘못된 게시글입니다 - 주문"));
+        if(orderRequestDTO.getAmount() > productPost.getProduct().getStock()){
+            throw new IllegalStateException("요청 수량이 재고를 초과했습니다.");
+        }
         return DetailProductDTo.createDTO(productPost, orderRequestDTO.getAmount());
     }
 
@@ -96,19 +104,26 @@ public class OrderService {
             if(product.getStock() <= 0){
                 post.unAvailable();
             }
+            log.info("결제 성공 - orderID : {}",order.getOrderId());
             return paymentDTO;
         }
-        //결제 실패, 실패 url로 리다이렉트, 수량 안 줄어들음
-        else order.changeOrderStatus(OrderStatus.FAILED);
+        /**
+         * 결제 실패, 실패 url로 리다이렉트, 수량 안 줄어들음
+         * 예외처리 커스텀 : 결제 성공을 디폴트, 실패 시 예외처리하면 깔끔해질 것 같음
+         */
+        else {
+            order.changeOrderStatus(OrderStatus.FAILED);
+            log.warn("결제 실패 - : orderId : {} 주문 실패",order.getOrderId());
+        }
         return paymentDTO;
     }
 
     /**
-     * 주문 내역 조회
+     * 주문 내역 조회, 배달 상태도 추가
      */
     public List<OrdersDTO> findUsersOrderList(String userEmail){
         User user = userRepository.findByEmail(userEmail).orElseThrow(()-> new NoSuchElementException("잘못된 사용자입니다"));
-        List<Order> orders = orderRepository.findOrderByUser(user);
+        List<Order> orders =  user.getOrders();//orderRepository.findOrderByUser(user);
         List<OrdersDTO> ordersDTOS = new ArrayList<>();
         for (Order order : orders) {
             OrdersDTO ordersDTO = new OrdersDTO();
@@ -119,6 +134,9 @@ public class OrderService {
             ordersDTO.setPaymentStatus(payment.getPaymentStatus());
             ordersDTO.setPaymentId(payment.getPaymentId());
             ordersDTO.setQuantity(order.getQuantity());
+            if (ordersDTO.getPaymentStatus() ==PaymentStatus.REFUND) {
+                ordersDTO.setDelivery(Delivery.REFUND);
+            } else ordersDTO.setDelivery(Delivery.COMPLETE);
             ordersDTOS.add(ordersDTO);
         }
         return ordersDTOS;
