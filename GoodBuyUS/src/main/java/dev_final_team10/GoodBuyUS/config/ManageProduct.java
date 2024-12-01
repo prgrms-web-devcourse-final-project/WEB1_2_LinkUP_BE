@@ -27,7 +27,7 @@ public class ManageProduct {
     private final ProductPostRepository productPostRepository;
     private final OrderRepository orderRepository;
     private final PayService payService;
-    @Scheduled(fixedRate = 1800000)  // 1800000ms = 30분
+    @Scheduled(fixedRate = 600000)
     public void verifyAvailable(){
         List<ProductPost> allproducts = productPostRepository.findAll();
         for (ProductPost productPost : allproducts) {
