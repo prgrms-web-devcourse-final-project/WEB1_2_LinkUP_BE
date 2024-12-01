@@ -1,7 +1,7 @@
 package dev_final_team10.GoodBuyUS.controller;
 
-import dev_final_team10.GoodBuyUS.domain.chat.ChatRoom;
-import dev_final_team10.GoodBuyUS.domain.chat.ChatRoomDTO;
+import dev_final_team10.GoodBuyUS.domain.chat.entity.ChatRoom;
+import dev_final_team10.GoodBuyUS.domain.chat.dto.ChatRoomDTO;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import dev_final_team10.GoodBuyUS.service.ChatRoomService;

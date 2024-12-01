@@ -1,7 +1,6 @@
-package dev_final_team10.GoodBuyUS.domain.chat;
+package dev_final_team10.GoodBuyUS.domain.chat.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev_final_team10.GoodBuyUS.domain.Post;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,6 +8,7 @@ import lombok.*;
 @Entity
 @Table(name = "chat_room_member")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,10 +23,12 @@ public class ChatMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    private CommunityPost post;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    private boolean isPaid;
 
 }

@@ -1,6 +1,7 @@
-package dev_final_team10.GoodBuyUS.domain.chat;
+package dev_final_team10.GoodBuyUS.domain.chat.dto;
 
-import dev_final_team10.GoodBuyUS.domain.Post;
+import dev_final_team10.GoodBuyUS.domain.chat.entity.ChatRoom;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +16,9 @@ public class ChatRoomDTO {
     private int capacity;
     private String roomName;
 
-    public ChatRoom toEntity(Post post){
+    public ChatRoom toEntity(CommunityPost post){
         return ChatRoom.builder()
-                .roomName(roomName)
+                .roomName(post.getTitle()+"의 채팅방")
                 .post(post)
                 .capacity(capacity)
                 .build();

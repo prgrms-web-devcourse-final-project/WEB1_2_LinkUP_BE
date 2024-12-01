@@ -1,7 +1,7 @@
-package dev_final_team10.GoodBuyUS.domain.chat;
+package dev_final_team10.GoodBuyUS.domain.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev_final_team10.GoodBuyUS.domain.Post;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,8 +15,8 @@ import java.util.List;
 @Table(name = "chat_room")
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class ChatRoom {
     @Id
@@ -26,12 +26,13 @@ public class ChatRoom {
     private String roomName;
 
     @OneToMany(mappedBy = "chatRoom")
+    @JsonIgnore
     private List<ChatMember> members = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "post_id")
     @JsonIgnore
-    private Post post;
+    private CommunityPost post;
 
     @CreatedDate
     private LocalDateTime createdAt;
