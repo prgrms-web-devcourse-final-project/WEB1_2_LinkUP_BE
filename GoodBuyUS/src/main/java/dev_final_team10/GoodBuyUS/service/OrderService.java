@@ -113,6 +113,7 @@ public class OrderService {
          */
         else {
             order.changeOrderStatus(OrderStatus.FAILED);
+            order.defineDelivery(Delivery.REFUND);
             log.warn("결제 실패 - : orderId : {} 주문 실패",order.getOrderId());
         }
         return paymentDTO;
