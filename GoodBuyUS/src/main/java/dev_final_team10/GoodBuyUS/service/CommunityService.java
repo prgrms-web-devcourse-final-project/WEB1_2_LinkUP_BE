@@ -1,6 +1,7 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.WritePostDto;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
@@ -26,12 +27,13 @@ public class CommunityService {
         //현재 사용자 정보 가져오기(글 작성자)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(authentication.getName()).orElse(null);
-
         //현재 사용자 동네 정도 가져오기
         Neighborhood neighborhood = user.getNeighborhood();
+        //카테고리 설정
+        CommunityCategory communityCategory = CommunityCategory.fromString(writePostDto.getCategory());
 
         //DTO -> entity로 변환
-        CommunityPost communityPost = writePostDto.toEntity(user, neighborhood);
+        CommunityPost communityPost = writePostDto.toEntity(user, neighborhood, communityCategory);
 
         //DB 저장
         communityPostRepository.save(communityPost);
