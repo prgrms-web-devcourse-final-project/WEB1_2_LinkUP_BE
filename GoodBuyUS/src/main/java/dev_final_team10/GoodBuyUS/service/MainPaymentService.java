@@ -61,6 +61,9 @@ public class MainPaymentService {
                     .bodyToMono(String.class)
                     .block();
 
+            // Toss API 응답 로그 출력
+            log.info("Toss API 응답: {}", rawResponse);
+
             // 응답 데이터 처리
             Map<String, Object> responseMap = objectMapper.readValue(rawResponse, Map.class);
             String paymentPageUrl = (String) responseMap.get("checkoutPageUrl");
@@ -86,6 +89,8 @@ public class MainPaymentService {
 
     @Transactional
     public void handlePaymentSuccess(String paymentKey, String orderId, int amount) {
+        log.info("결제 성공 요청: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
+
         MainPayment payment = paymentRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
 
@@ -100,4 +105,5 @@ public class MainPaymentService {
 
         log.info("결제 성공 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
     }
+
 }

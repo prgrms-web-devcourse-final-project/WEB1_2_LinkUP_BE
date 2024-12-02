@@ -20,7 +20,7 @@ public class MainPaymentController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PostMapping("/success")
+    @RequestMapping(value = "/success", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<String> handlePaymentSuccess(
             @RequestParam String paymentKey,
             @RequestParam String orderId,
@@ -28,6 +28,7 @@ public class MainPaymentController {
         paymentService.handlePaymentSuccess(paymentKey, orderId, amount);
         return ResponseEntity.ok("결제가 성공적으로 완료되었습니다.");
     }
+
 
     @PostMapping("/fail")
     public ResponseEntity<String> handlePaymentFail(
