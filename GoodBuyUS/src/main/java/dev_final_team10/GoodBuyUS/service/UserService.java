@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
+import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpEmailDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Role;
@@ -9,6 +10,7 @@ import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ import java.util.Map;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Log4j2
 public class UserService {
 
     private final UserRepository userRepository;
@@ -42,38 +45,71 @@ public class UserService {
 
 
     //자체 회원 가입 메소드(이름, 이메일, 비밀번호 전화번호)
-    public ResponseEntity<?> signUpCheckEmail(UserSignUpDto userSignUpDto) throws Exception {
+    public ResponseEntity<?> signUpCheckEmail(UserSignUpEmailDto userSignUpEmailDto) throws Exception {
 
-        if(userRepository.findByEmail(userSignUpDto.getEmail()).isPresent()){
+        if(userRepository.findByEmail(userSignUpEmailDto.getEmail()).isPresent()){
             return new ResponseEntity<>(Map.of("error", "이미 존재하는 이메일입니다."), HttpStatus.BAD_REQUEST);
         }
-        if(userRepository.findByPhone(userSignUpDto.getPhone()).isPresent()){
+        if(userRepository.findByPhone(userSignUpEmailDto.getPhone()).isPresent()){
             return new ResponseEntity<>(Map.of("error", "이미 존재하는 전화번호입니다."), HttpStatus.BAD_REQUEST);
         }
 
-
-//        user.passwordEncode(passwordEncoder);
-//        userRepository.save(user);
-//        userRepository.flush();
-
-        return new ResponseEntity<>(Map.of("message", "이메일, 전화번호 중복 확인 완료"), HttpStatus.CREATED);
+        return new ResponseEntity<>(Map.of("message", "이메일, 전화번호 중복 확인 완료"), HttpStatus.OK);
     }
 
-//    public ResponseEntity<?> signUpCheckAddress(String address) {
-//        //1.사용자 주소에서 지역명(시도군) 추출
-//        String neighborhoodName = extractNeighborhoodName(address);
-//
-//        //2. 지역명 토대로 해당 행 추출
-//        Neighborhood neighborhood = neighborhoodRepository.findByNeighborhoodName(neighborhoodName);
-//
-//
-//    }
+    //자체 회원 가입 메소드(닉네임)
+    public ResponseEntity<?> signUpCheckNickname(String nickname) {
+        if(userRepository.findByNickname(nickname).isPresent()){
+            return new ResponseEntity<>(Map.of("error", "이미 존재하는 닉네임입니다."), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(Map.of("message", "닉네임 중복 확인 완료"), HttpStatus.OK);
+
+    }
+
+
+    //자체 회원 가입 메소드
+    public ResponseEntity<?> signUp(UserSignUpDto userSignUpDto, MultipartFile profile) throws Exception {
+
+        //프로필 이미지 저장
+        String profileImagePath = saveProfileImage(profile);
+
+        //<-----동네 코드 삽입 부분
+        //1.사용자 주소에서 지역명(시도군) 추출
+        String neighborhoodName = extractNeighborhoodName(userSignUpDto.getAddress());
+
+        //2. 지역명 토대로 해당 행 추출
+        Neighborhood neighborhood = neighborhoodRepository.findByNeighborhoodName(neighborhoodName);
+
+        //------->
+
+        //User Entity 생성 후 DB저장
+        User user = User.builder()
+                .email(userSignUpDto.getEmail())
+                .password(userSignUpDto.getPassword())
+                .name(userSignUpDto.getName())
+                .phone(userSignUpDto.getPhone())
+                .nickname(userSignUpDto.getNickname())
+                .profile(profileImagePath)
+                //사용자가 입력한 주소 회원테이블에 삽입
+                .address(userSignUpDto.getAddress())
+                //사용자가 입력한 주소 토대로 동네코드 회원테이블에 삽입
+                .neighborhood(neighborhood)
+                .role(Role.USER)
+                .refreshToken(null)
+                .build();
+
+        user.passwordEncode(passwordEncoder);
+        userRepository.save(user);
+        userRepository.flush();
+
+        return new ResponseEntity<>(Map.of("message", "회원가입이 완료되었습니다."), HttpStatus.CREATED);
+    }
 
 
 
 
 
-    // 프로필 이미지를 서버에 저장하는 메소드
+    //프로필 이미지를 서버에 저장하는 메소드
     private String saveProfileImage(MultipartFile profile) throws IOException {
         if (profile == null || profile.isEmpty()) {
             throw new IOException("프로필 이미지를 선택해 주세요.");
@@ -149,7 +185,6 @@ public class UserService {
         }
         return ResponseEntity.ok(Map.of("message","비밀번호가 성공적으로 변경되었습니다."));
     }
-
 
 
 }
