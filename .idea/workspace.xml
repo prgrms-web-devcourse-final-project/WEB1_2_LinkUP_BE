@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="develop">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.test.iml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

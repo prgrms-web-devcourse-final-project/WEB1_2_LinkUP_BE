@@ -13,6 +13,12 @@
     <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
     </content>
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
+    </content>
     <orderEntry type="jdk" jdkName="temurin-17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="GoodBuyUS.main" />
