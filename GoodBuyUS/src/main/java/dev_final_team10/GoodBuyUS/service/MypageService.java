@@ -1,7 +1,11 @@
 package dev_final_team10.GoodBuyUS.service;
 
+import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,7 @@ public class MypageService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final NeighborhoodRepository neighborhoodRepository;
+    private final CommunityPostRepository communityPostRepository;
 
     //현재 로그인한 사용자의 이메일을 가져오는 메소드
     public String getCurrentUserEmail() {
@@ -64,5 +69,17 @@ public class MypageService {
         userRepository.save(user);
 
         return ResponseEntity.ok(Map.of("message","주소가 성공적으로 변경되었습니다."));
+    }
+
+    //커뮤니티에 작성한 글 수정하는 메소드
+    public void modifyPost(WriteModifyPostDto writeModifyPostDto, Long communityPostId) {
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+        //카테고리 설정
+        CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
+        //DTO -> entity로 변환
+//        communityPost.updateFields(writeModifyPostDto);
+
+        //DB 저장
+        communityPostRepository.save(communityPost);
     }
 }

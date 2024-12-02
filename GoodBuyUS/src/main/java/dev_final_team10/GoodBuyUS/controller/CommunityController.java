@@ -1,6 +1,6 @@
 package dev_final_team10.GoodBuyUS.controller;
 
-import dev_final_team10.GoodBuyUS.domain.community.dto.WritePostDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ public class CommunityController {
 
     //공구 모집글 작성
     @PostMapping("/post")
-    public ResponseEntity<?> writePost(@RequestBody WritePostDto writePostDto){
-        communityService.writePost(writePostDto);
+    public ResponseEntity<?> writePost(@RequestBody WriteModifyPostDto writeModifyPostDto){
+        communityService.writePost(writeModifyPostDto);
         return ResponseEntity.ok(Map.of("message","글 작성이 완료되었습니다."));
 
     }

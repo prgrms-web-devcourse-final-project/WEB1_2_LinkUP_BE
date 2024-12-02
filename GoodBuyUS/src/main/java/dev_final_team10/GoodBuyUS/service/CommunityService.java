@@ -1,6 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
-import dev_final_team10.GoodBuyUS.domain.community.dto.WritePostDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
@@ -15,8 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Log4j2
 @Transactional
 @RequiredArgsConstructor
@@ -26,18 +24,16 @@ public class CommunityService {
     private final CommunityPostRepository communityPostRepository;
 
     //글 작성 메소드
-    public void writePost(WritePostDto writePostDto) {
+    public void writePost(WriteModifyPostDto writeModifyPostDto) {
         //현재 사용자 정보 가져오기(글 작성자)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(authentication.getName()).orElse(null);
-        //현재 사용자 동네 정도 가져오기
+        //현재 사용자 동네 정보 가져오기
         Neighborhood neighborhood = user.getNeighborhood();
         //카테고리 설정
-        CommunityCategory communityCategory = CommunityCategory.fromString(writePostDto.getCategory());
-        //글 상태 설정 -> 승인대기
-        postStatus postStatus = dev_final_team10.GoodBuyUS.domain.community.entity.postStatus.NOT_APPROVED;
+        CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
         //DTO -> entity로 변환
-        CommunityPost communityPost = writePostDto.toEntity(user, neighborhood, communityCategory, postStatus);
+        CommunityPost communityPost = writeModifyPostDto.toEntityForCreate(user, neighborhood, communityCategory);
 
         //DB 저장
         communityPostRepository.save(communityPost);
