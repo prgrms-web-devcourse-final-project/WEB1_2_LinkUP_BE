@@ -3,8 +3,11 @@ package dev_final_team10.GoodBuyUS.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev_final_team10.GoodBuyUS.Naver.NaverLoginSuccessHandler;
 import dev_final_team10.GoodBuyUS.jwt.*;
+import dev_final_team10.GoodBuyUS.jwt.NaverAuthenticationFilter;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
+import dev_final_team10.GoodBuyUS.service.NaverOAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +20,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /*
@@ -32,6 +36,8 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final NaverOAuthService naverOAuthService;
+    private final NaverAuthenticationFilter naverAuthenticationFilter;
 
 
     @Bean
@@ -43,20 +49,20 @@ public class SecurityConfig {
                 // 세션 사용하지 않으므로 STATELESS로 설정
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함 (Stateless 방식)
 
-                //== URL별 권한 관리 옵션 ==
+                //== URL별 권한 관리 옵션 ==//
                 .authorizeRequests(authz -> authz
-                // 아이콘, css, js 관련
-                // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
-                .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage").permitAll()
-                .requestMatchers("/users").permitAll() // 회원가입 접근 가능
-                .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/homepage", "/users/**", "/success").permitAll()
+                        .requestMatchers("/users", "/naver/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // ADMIN 권한이 있는 사용자만 접근 가능
+                        .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 );
 
-        // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
-        // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+        // 필터 추가
         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
+
+        // NaverAuthenticationFilter 추가 및 성공 핸들러 연결
+        http.addFilterBefore(naverAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -118,5 +124,18 @@ public class SecurityConfig {
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
         return jwtAuthenticationFilter;
+    }
+
+    // NaverAuthenticationFilter 빈 생성
+    @Bean
+    public NaverAuthenticationFilter naverAuthenticationFilter() {
+        return new NaverAuthenticationFilter(naverOAuthService, userRepository, naverLoginSuccessHandler());
+    }
+
+
+    // NaverLoginSuccessHandler 빈 생성
+    @Bean
+    public NaverLoginSuccessHandler naverLoginSuccessHandler() {
+        return new NaverLoginSuccessHandler(jwtService, userRepository);
     }
 }

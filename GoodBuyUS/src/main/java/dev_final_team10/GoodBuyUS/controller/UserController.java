@@ -17,7 +17,7 @@ public class UserController {
     //자체 회원가입 기능
     @PostMapping
     public ResponseEntity<String> signUp( @RequestPart("user") UserSignUpDto userSignUpDto,  // 나머지 데이터는 DTO로 받기
-                                          @RequestPart("profile") MultipartFile profile) throws Exception {  // 프로필 이미지는 파일로 받기
+                                          @RequestPart(value = "profile", required = false) MultipartFile profile) throws Exception {  // 프로필 이미지는 파일로 받기
 
         return userService.signUp(userSignUpDto, profile);
 
