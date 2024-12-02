@@ -3,6 +3,7 @@ package dev_final_team10.GoodBuyUS.service;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WritePostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
+import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
@@ -32,8 +33,10 @@ public class CommunityService {
         //카테고리 설정
         CommunityCategory communityCategory = CommunityCategory.fromString(writePostDto.getCategory());
 
+        postStatus postStatus = dev_final_team10.GoodBuyUS.domain.community.entity.postStatus.NOT_APPROVED;
+
         //DTO -> entity로 변환
-        CommunityPost communityPost = writePostDto.toEntity(user, neighborhood, communityCategory);
+        CommunityPost communityPost = writePostDto.toEntity(user, neighborhood, communityCategory, postStatus);
 
         //DB 저장
         communityPostRepository.save(communityPost);

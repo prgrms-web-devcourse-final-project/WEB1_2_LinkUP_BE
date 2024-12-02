@@ -26,7 +26,7 @@ public class WritePostDto {
     private List<String> imageUrls;
     private String imageUrl;
 
-    public CommunityPost toEntity(User user, Neighborhood neighborhood, CommunityCategory communityCategory){
+    public CommunityPost toEntity(User user, Neighborhood neighborhood, CommunityCategory communityCategory, postStatus postStatus){
         return CommunityPost.builder()
                 .title(title)
                 .category(communityCategory)
@@ -40,7 +40,7 @@ public class WritePostDto {
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
-                .status(postStatus.NOT_APPROVED)
+                .status(postStatus)
                 .neighborhood(neighborhood).build();
     }
 }
