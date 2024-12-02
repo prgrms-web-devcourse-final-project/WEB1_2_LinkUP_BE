@@ -24,7 +24,6 @@ public class WriteModifyPostDto {
     private String description;
     private String productUrl;
     private List<String> imageUrls;
-    private String imageUrl;
 
     //글 작성 시 사용할 메소드
     public CommunityPost toEntityForCreate(User user, Neighborhood neighborhood, CommunityCategory communityCategory){
@@ -32,34 +31,14 @@ public class WriteModifyPostDto {
                 .title(title)
                 .category(communityCategory)
                 .availableNumber(availableNumber)
-                .period(LocalDateTime.now().plusDays(period))   //글 작성시간(현재시간) + 사용자가 입력한 모집일수 = 모집기간
                 .totalAmount(totalAmount)
                 .unitAmount(unitAmount)
                 .description(description)
                 .productUrl(productUrl)
                 .imageUrls(imageUrls)
                 .user(user)
-                .createdAt(LocalDateTime.now())
                 //글 상태 - 승인대기
                 .status(postStatus.NOT_APPROVED)
-                .neighborhood(neighborhood).build();
-    }
-
-    //글 수정 시 사용할 메소드
-    public CommunityPost toEntityForModify(User user, Neighborhood neighborhood, CommunityCategory communityCategory){
-        return CommunityPost.builder()
-                .title(title)
-                .category(communityCategory)
-                .availableNumber(availableNumber)
-                .period(LocalDateTime.now().plusDays(period))   //글 작성시간(현재시간) + 사용자가 입력한 모집일수 = 모집기간
-                .totalAmount(totalAmount)
-                .unitAmount(unitAmount)
-                .description(description)
-                .productUrl(productUrl)
-                .imageUrls(imageUrls)
-                .user(user)
-                .createdAt(LocalDateTime.now())
-                .status(postStatus.APPROVED)
                 .neighborhood(neighborhood).build();
     }
 

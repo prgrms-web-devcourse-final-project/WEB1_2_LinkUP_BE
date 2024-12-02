@@ -74,11 +74,15 @@ public class MypageService {
     //커뮤니티에 작성한 글 수정하는 메소드
     public void modifyPost(WriteModifyPostDto writeModifyPostDto, Long communityPostId) {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+        //현재 사용자 정보 가져오기(글 작성자)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(authentication.getName()).orElse(null);
+        //현재 사용자 동네 정보 가져오기
+        Neighborhood neighborhood = user.getNeighborhood();
         //카테고리 설정
         CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
-        //DTO -> entity로 변환
-//        communityPost.updateFields(writeModifyPostDto);
 
+        communityPost.updateFields(writeModifyPostDto, user, neighborhood, communityCategory);
         //DB 저장
         communityPostRepository.save(communityPost);
     }
