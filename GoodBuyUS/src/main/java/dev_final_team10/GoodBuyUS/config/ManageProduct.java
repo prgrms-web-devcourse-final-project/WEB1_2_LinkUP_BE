@@ -4,11 +4,8 @@ import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.RefundDTO;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
-import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.OrderRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
-import dev_final_team10.GoodBuyUS.repository.ProductRepository;
-import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import dev_final_team10.GoodBuyUS.service.PayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +34,7 @@ public class ManageProduct {
              * 주문한 개수가 최소 수량보다 적다면 구매한 인원들 전부 환불
              */
             if(!productPost.getProduct_period().isAfter(LocalDateTime.now())){
+                log.info("동작여부 확인");
                 List<Order> orders = orderRepository.findAllByProductPostAndStatus(productPost, OrderStatus.COMPLETE);
                 //주문한 수량 계산하기
                 int amount = 0;
