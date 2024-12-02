@@ -49,8 +49,6 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    private String refreshToken;   //리프레쉬 토큰
-
     @Column(name = "warnings", nullable = false, columnDefinition = "int default 0")
     private int warnings; // 경고 횟수 (기본값 0)
 
