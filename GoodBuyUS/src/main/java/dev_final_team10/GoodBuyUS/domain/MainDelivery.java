@@ -1,3 +1,4 @@
+/*
 package dev_final_team10.GoodBuyUS.domain;
 
 import jakarta.persistence.*;
@@ -23,3 +24,4 @@ public class MainDelivery {
 
     private String specialRequest; // 요청 사항
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package dev_final_team10.GoodBuyUS.dto;
 
 import lombok.AllArgsConstructor;
@@ -15,3 +16,4 @@ public class MainDeliveryResponseDto {
     private String detail;         // 상세 주소
     private String specialRequest; // 요청 사항
 }
+*/

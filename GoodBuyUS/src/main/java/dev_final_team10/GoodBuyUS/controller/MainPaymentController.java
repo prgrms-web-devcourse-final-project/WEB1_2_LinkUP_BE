@@ -14,30 +14,25 @@ public class MainPaymentController {
 
     private final MainPaymentService paymentService;
 
-    /**
-     * 주문 및 결제 요청 처리
-     */
     @PostMapping
     public ResponseEntity<MainPaymentResponseDto> createAndRequestPayment(@RequestBody MainPaymentRequestDto requestDto) {
         MainPaymentResponseDto responseDto = paymentService.createAndRequestPayment(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
-    /**
-     * 결제 성공 처리
-     */
     @PostMapping("/success")
-    public ResponseEntity<String> handlePaymentSuccess(@RequestParam String paymentKey, @RequestParam String orderId, @RequestParam int amount) {
-        // 성공 처리 로직
-        return ResponseEntity.ok("결제 성공적으로 처리되었습니다.");
+    public ResponseEntity<String> handlePaymentSuccess(
+            @RequestParam String paymentKey,
+            @RequestParam String orderId,
+            @RequestParam int amount) {
+        paymentService.handlePaymentSuccess(paymentKey, orderId, amount);
+        return ResponseEntity.ok("결제가 성공적으로 완료되었습니다.");
     }
 
-    /**
-     * 결제 실패 처리
-     */
     @PostMapping("/fail")
-    public ResponseEntity<String> handlePaymentFail(@RequestParam String orderId, @RequestParam String message) {
-        // 실패 처리 로직
+    public ResponseEntity<String> handlePaymentFail(
+            @RequestParam String orderId,
+            @RequestParam String message) {
         return ResponseEntity.badRequest().body("결제가 실패했습니다: " + message);
     }
 }

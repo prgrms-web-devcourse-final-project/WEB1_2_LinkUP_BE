@@ -34,8 +34,4 @@ public class MainPayment {
     private LocalDateTime createdAt; // 주문 생성 시간
 
     private LocalDateTime updatedAt; // 주문 업데이트 시간
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "delivery_id", referencedColumnName = "id")
-    private MainDelivery mainDelivery; // 배송 정보
 }
