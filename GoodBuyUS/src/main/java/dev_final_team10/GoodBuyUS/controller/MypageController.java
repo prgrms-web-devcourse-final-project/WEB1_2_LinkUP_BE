@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.controller;
 
+import dev_final_team10.GoodBuyUS.domain.community.dto.WritePostDto;
 import dev_final_team10.GoodBuyUS.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +45,7 @@ public class MypageController {
     public ResponseEntity<?> changeNeighbor(@RequestBody Map<String, String> request){
         return mypageService.chageNeighbor(request.get("newAddress"));
     }
+
+
 
 }

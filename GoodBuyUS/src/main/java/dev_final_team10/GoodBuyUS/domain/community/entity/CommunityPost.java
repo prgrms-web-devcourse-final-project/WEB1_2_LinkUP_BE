@@ -27,7 +27,6 @@ public class CommunityPost {
     private CommunityCategory category;    //상품 카테고리       //추후 추가 예정
     private Long availableNumber;   //참여 가능 수량
     private LocalDateTime createdAt;   //글 작성 시간 - 승인이 완료된 시점(작성 시에는 null로 비워두기)
-    private LocalDateTime modifiedAt;  //글 수정 시간 - 승인이 완료된 시점(작성 시에는 null로 비워두기)
     private LocalDateTime period;     //모집 기간 = 글 승인 시간 + 글작성할 때 입력하는 일수
     private Long  unitAmount;   //한 개당 가격
 

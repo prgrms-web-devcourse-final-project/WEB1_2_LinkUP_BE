@@ -39,8 +39,7 @@ public class WritePostDto {
                 .imageUrls(imageUrls)
                 .user(user)
                 .createdAt(LocalDateTime.now())
-                .modifiedAt(LocalDateTime.now())
-                .status(postStatus)
+                .status(postStatus.NOT_APPROVED)
                 .neighborhood(neighborhood).build();
     }
 }
