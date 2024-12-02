@@ -219,7 +219,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.GoodBuyUsApplication.executor": "Run",
-    "git-widget-placeholder": "Merging develop",
+    "git-widget-placeholder": "develop",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/dev/workspace/filmpass",
     "node.js.detected.package.eslint": "true",
@@ -353,7 +353,8 @@
     <MESSAGE value="결제 요청 완료 (결제창 오류)" />
     <MESSAGE value="결제창 오류 해결" />
     <MESSAGE value="develop" />
-    <option name="LAST_COMMIT_MESSAGE" value="develop" />
+    <MESSAGE value="remove : 환경 설정 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove : 환경 설정 수정" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
