@@ -1,10 +1,10 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev_final_team10.GoodBuyUS.domain.MainPayment;
-import dev_final_team10.GoodBuyUS.domain.PaymentStatus;
-import dev_final_team10.GoodBuyUS.dto.MainPaymentRequestDto;
-import dev_final_team10.GoodBuyUS.dto.MainPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.repository.MainPaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

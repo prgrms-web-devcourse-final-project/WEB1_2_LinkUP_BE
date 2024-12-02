@@ -1,7 +1,7 @@
 package dev_final_team10.GoodBuyUS.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import dev_final_team10.GoodBuyUS.domain.CommunityPayment;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.CommunityPayment;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

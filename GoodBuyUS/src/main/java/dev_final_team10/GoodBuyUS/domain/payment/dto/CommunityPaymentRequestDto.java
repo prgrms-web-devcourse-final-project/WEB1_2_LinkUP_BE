@@ -1,6 +1,6 @@
-package dev_final_team10.GoodBuyUS.dto;
+package dev_final_team10.GoodBuyUS.domain.payment.dto;
 
-import dev_final_team10.GoodBuyUS.domain.PayType;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.PayType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

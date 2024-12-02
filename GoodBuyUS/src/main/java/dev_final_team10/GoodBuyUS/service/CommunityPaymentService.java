@@ -1,10 +1,9 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev_final_team10.GoodBuyUS.domain.CommunityPayment;
-import dev_final_team10.GoodBuyUS.domain.PayType;
-import dev_final_team10.GoodBuyUS.dto.CommunityPaymentRequestDto;
-import dev_final_team10.GoodBuyUS.dto.CommunityPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.CommunityPayment;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.repository.CommunityPaymentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

@@ -1,8 +1,8 @@
 package dev_final_team10.GoodBuyUS.controller;
 
-import dev_final_team10.GoodBuyUS.domain.PayType;
-import dev_final_team10.GoodBuyUS.dto.CommunityPaymentRequestDto;
-import dev_final_team10.GoodBuyUS.dto.CommunityPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.PayType;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.service.CommunityPaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package dev_final_team10.GoodBuyUS.controller;
 
-import dev_final_team10.GoodBuyUS.dto.MainPaymentRequestDto;
-import dev_final_team10.GoodBuyUS.dto.MainPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.service.MainPaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

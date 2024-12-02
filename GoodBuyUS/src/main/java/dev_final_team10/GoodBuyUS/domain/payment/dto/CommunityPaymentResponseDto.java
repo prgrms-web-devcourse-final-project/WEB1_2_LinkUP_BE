@@ -1,8 +1,8 @@
-package dev_final_team10.GoodBuyUS.dto;
+package dev_final_team10.GoodBuyUS.domain.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev_final_team10.GoodBuyUS.domain.PayType;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.PayType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
