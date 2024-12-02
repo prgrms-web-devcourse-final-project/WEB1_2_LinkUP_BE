@@ -12,8 +12,4 @@ public class UserSignUpDto {
     private String password;
     private String name;
     private String phone;
-    private String nickname;
-
-    //주소
-    private String address;
 }

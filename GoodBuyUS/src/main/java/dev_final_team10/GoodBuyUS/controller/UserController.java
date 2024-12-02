@@ -20,13 +20,19 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
-    //자체 회원가입 기능
-    @PostMapping
-    public ResponseEntity<?> signUp( @RequestPart("user") UserSignUpDto userSignUpDto,  // 나머지 데이터는 DTO(JSON)로 받기
-                                          @RequestPart("profile") MultipartFile profile) throws Exception {  // 프로필 이미지는 파일로 받기
-
-        return userService.signUp(userSignUpDto, profile);
+    //자체 회원가입 기능 - 이름, 이메일, 비밀번호, 전화번호
+    @PostMapping("/checkemail")
+    public ResponseEntity<?> signUpCheckEmail( @RequestBody UserSignUpDto userSignUpDto)
+            throws Exception {
+        return userService.signUpCheckEmail(userSignUpDto);
     }
+
+//    //자체 회원가입 기능 - 이름, 이메일, 비밀번호, 전화번호
+//    @PostMapping("/checkaddress")
+//    public ResponseEntity<?> signUp(Map<String, String> request)
+//            throws Exception {
+//        return userService.signUpCheckAddress(request.get("address"));
+//    }
 
     //비밀번호 찾기 기능
     @PostMapping("/find")
