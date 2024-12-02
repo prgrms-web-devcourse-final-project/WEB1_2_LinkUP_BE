@@ -77,18 +77,5 @@ public class User {
         this.warnings++;
     }
 
-    // 경고 횟수 초기화 메소드
-    public void resetWarnings() {
-        this.warnings = 0;
-    }
 
-    // 유저 자동 탈퇴 여부 확인 메소드
-    public boolean shouldBeBanned() {
-        return this.warnings >= 3; // 경고 3회 초과 시 탈퇴
-    }
-
-    // 소셜 로그인 사용자 체크 메소드
-    public boolean isSocialUser() {
-        return this.snsType != null && this.snsId != null;
-    }
 }
