@@ -35,7 +35,7 @@ public class ChatRoomService {
         chatRoomRepository.delete(chatRoom);
     }
 
-    //채팅방 목록 조회
+    //내 채팅방 목록 조회
     public List<ChatRoomDTO> getListChatRoom(Long userId) {
         List<ChatRoom> chatRoom = chatMemberRepository.findChatRoomByUserId(userId);
 
@@ -43,4 +43,14 @@ public class ChatRoomService {
                 .map(room -> new ChatRoomDTO(room.getId(), room.getCapacity(), room.getRoomName()))
                 .collect(Collectors.toList());
     }
+
+    //채팅방 전체 조회 - 관리자
+    public List<ChatRoomDTO> getListAllChatRoom() {
+        List<ChatRoom> chatRoom = chatRoomRepository.findAll();
+
+        return chatRoom.stream()
+                .map(room -> new ChatRoomDTO(room.getId(), room.getCapacity(), room.getRoomName()))
+                .collect(Collectors.toList());
+    }
+
 }

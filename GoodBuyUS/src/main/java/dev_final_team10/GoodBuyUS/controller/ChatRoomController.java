@@ -31,7 +31,7 @@ public class ChatRoomController {
         chatRoomService.removeChatRoom(chatRoomId);
     }
 
-    //채팅방 목록
+    //내 채팅방 목록
     @GetMapping("/mypage/chatlist")
     public List<ChatRoomDTO> chatRoomList(HttpServletRequest request) {
         String accessToken = jwtService.extractAccessToken(request).orElseThrow(()->new RuntimeException("액세스 토큰이 잘못되었습니다"));
@@ -39,5 +39,11 @@ public class ChatRoomController {
         Long userId = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("사용자를 찾을 수 없습니다")).getId();
 
         return chatRoomService.getListChatRoom(userId);
+    }
+
+    //채팅방 전체 조회 - 관리자
+    @GetMapping("/admin/chatlist")
+    public List<ChatRoomDTO> chatRoomListAll() {
+        return chatRoomService.getListAllChatRoom();
     }
 }
