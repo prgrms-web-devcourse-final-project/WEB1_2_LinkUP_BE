@@ -1,6 +1,7 @@
 package dev_final_team10.GoodBuyUS.domain.community.dto;
 
 
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
@@ -25,10 +26,10 @@ public class WritePostDto {
     private List<String> imageUrls;
     private String imageUrl;
 
-    public CommunityPost toEntity(User user, Neighborhood neighborhood){
+    public CommunityPost toEntity(User user, Neighborhood neighborhood, CommunityCategory communityCategory, postStatus postStatus){
         return CommunityPost.builder()
                 .title(title)
-                .category(category)
+                .category(communityCategory)
                 .availableNumber(availableNumber)
                 .period(LocalDateTime.now().plusDays(period))   //글 작성시간(현재시간) + 사용자가 입력한 모집일수 = 모집기간
                 .totalAmount(totalAmount)
@@ -39,7 +40,7 @@ public class WritePostDto {
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
-                .status(postStatus.NOT_APPROVED)
+                .status(postStatus)
                 .neighborhood(neighborhood).build();
     }
 }
