@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface MainPaymentRepository extends JpaRepository<MainPayment, Long> {
 
     Optional<MainPayment> findByOrderId(String orderId);
+
+    Optional<MainPayment> findByPaymentKey(String paymentKey);
 }

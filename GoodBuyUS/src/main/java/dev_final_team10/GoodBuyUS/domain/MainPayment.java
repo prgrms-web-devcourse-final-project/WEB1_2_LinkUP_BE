@@ -27,11 +27,17 @@ public class MainPayment {
     private int totalPrice; // 총 결제 금액
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus; // 결제 상태
+    private PaymentStatus paymentStatus;
 
-    private String paymentKey; // Toss Payments에서 반환된 결제 키
+    private String paymentKey;
 
-    private LocalDateTime createdAt; // 주문 생성 시간
+    private String cancelReason;
 
-    private LocalDateTime updatedAt; // 주문 업데이트 시간
+    private int refundedAmount;
+
+    private int balanceAmount; // 잔액 (환불 가능 금액)
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

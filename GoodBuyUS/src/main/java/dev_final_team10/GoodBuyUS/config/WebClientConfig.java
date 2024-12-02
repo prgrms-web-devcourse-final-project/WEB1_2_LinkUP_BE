@@ -1,3 +1,4 @@
+
 package dev_final_team10.GoodBuyUS.config;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -17,3 +18,4 @@ public class WebClientConfig {
                 .defaultHeaders(headers -> headers.setBasicAuth(tossSecretKey, "")); // 시크릿 키 설정
     }
 }
+

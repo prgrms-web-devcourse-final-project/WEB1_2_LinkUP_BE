@@ -28,7 +28,6 @@ public class CommunityPaymentController {
         requestDto.setSuccessUrl("http://localhost:8080/api/v1/virtual/success");
         requestDto.setFailUrl("http://localhost:8080/api/v1/virtual/fail");
 
-        // PayType 추가로 로직 확장
         if (requestDto.getPayType() == PayType.VIRTUAL_ACCOUNT) {
             System.out.println("결제 방식: 가상계좌");
         } else if (requestDto.getPayType() == PayType.CARD) {
@@ -44,7 +43,7 @@ public class CommunityPaymentController {
     public ResponseEntity<String> handlePaymentSuccess(@RequestParam String paymentKey, @RequestParam String orderId, @RequestParam int amount) {
         try {
             //paymentService.handlePaymentSuccess(paymentKey, orderId, amount);
-            return ResponseEntity.ok("결제가 성공적으로 완료 y.");
+            return ResponseEntity.ok("결제 요청이 성공적으로 완료");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("결제 처리 중 오류가 발생했습니다: " + e.getMessage());
@@ -88,7 +87,5 @@ public class CommunityPaymentController {
                     .body("결제 상태 업데이트 중 오류 발생: " + e.getMessage());
         }
     }
-
-
 
 }
