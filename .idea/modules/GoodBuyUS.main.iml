@@ -5,16 +5,4 @@
       <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/build/generated/sources/annotationProcessor/java/main" isTestSource="false" generated="true" />
     </content>
   </component>
-  <component name="FacetManager">
-    <facet external-system-id="GRADLE" type="web" name="Web">
-      <configuration>
-        <webroots />
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/../../GoodBuyUS/build/generated/sources/annotationProcessor/java/main" />
-          <root url="file://$MODULE_DIR$/../../GoodBuyUS/src/main/java" />
-          <root url="file://$MODULE_DIR$/../../GoodBuyUS/src/main/resources" />
-        </sourceRoots>
-      </configuration>
-    </facet>
-  </component>
 </module>

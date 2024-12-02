@@ -5,15 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-<<<<<<< HEAD
 import org.springframework.scheduling.annotation.EnableScheduling;
-=======
 import org.springframework.boot.autoconfigure.domain.EntityScan;
->>>>>>> feature/main_payment
 
 @EnableScheduling
 @SpringBootApplication
-<<<<<<< HEAD
+@EntityScan(basePackages = "dev_final_team10.GoodBuyUS.domain") // feature/main_payment의 EntityScan 추가
 public class GoodBuyUsApplication implements CommandLineRunner {
 
 	@Autowired
@@ -23,17 +20,9 @@ public class GoodBuyUsApplication implements CommandLineRunner {
 		SpringApplication.run(GoodBuyUsApplication.class, args);
 	}
 
-	//애플리케이션 실행 시 자동 실행 되도록
+	// 애플리케이션 실행 시 자동 실행되도록 설정
 	@Override
 	public void run(String... args) throws Exception {
 		excelService.readExcelFileAndSaveToDatabase("code.xlsx");
 	}
-=======
-@EntityScan(basePackages = "dev_final_team10.GoodBuyUS.domain")
-public class GoodBuyUsApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(GoodBuyUsApplication.class, args);
-	}
->>>>>>> feature/main_payment
 }
-
