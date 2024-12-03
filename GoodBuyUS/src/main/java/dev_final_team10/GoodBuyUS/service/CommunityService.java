@@ -51,7 +51,9 @@ public class CommunityService {
 
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
         for (CommunityPost communityPost : communityPosts) {
-            postResponseDtos.add(PostResponseDto.of(communityPost));
+            if(communityPost.getStatus() == postStatus.APPROVED) {
+                postResponseDtos.add(PostResponseDto.of(communityPost));
+            }
         }
         return postResponseDtos;
     }
