@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -89,5 +91,21 @@ public class MypageService {
 
         return PostResponseDto.of(communityPost);
 
+    }
+
+    //내가 쓴 글 목록 보기
+    public List<PostResponseDto> myPostList() {
+        //현재 사용자 정보 가져오기
+        User user = userRepository.findByEmail(getCurrentUserEmail()).orElse(null);
+
+        //현재 사용자 글 목록 가져오기
+        List<CommunityPost> communityPosts = communityPostRepository.findAllByUserId(user.getId());
+
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (CommunityPost communityPost : communityPosts) {
+            postResponseDtos.add(PostResponseDto.of(communityPost));
+        }
+            return postResponseDtos;
     }
 }

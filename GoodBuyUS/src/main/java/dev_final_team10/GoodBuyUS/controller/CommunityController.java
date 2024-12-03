@@ -20,7 +20,6 @@ public class CommunityController {
     public ResponseEntity<?> writePost(@RequestBody WriteModifyPostDto writeModifyPostDto){
         communityService.writePost(writeModifyPostDto);
         return ResponseEntity.ok(Map.of("message","글 작성이 완료되었습니다."));
-
     }
 
 }

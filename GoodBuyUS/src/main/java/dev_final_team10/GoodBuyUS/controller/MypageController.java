@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -62,5 +63,11 @@ public class MypageController {
         PostResponseDto postResponseDto = mypageService.modifyPost(writeModifyPostDto, communityPostId);
         return ResponseEntity.ok(Map.of("message", "글이 수정되었습니다.",
                 "updatedPost", postResponseDto));
+    }
+
+    //내가 작성한 글 목록 보기
+    @GetMapping("/post")
+    public List<PostResponseDto> myPostList(){
+         return mypageService.myPostList();
     }
 }
