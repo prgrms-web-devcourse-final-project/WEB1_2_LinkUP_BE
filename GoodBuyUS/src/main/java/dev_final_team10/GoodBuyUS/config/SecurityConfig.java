@@ -51,6 +51,10 @@ public class SecurityConfig {
                 .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage","/users/find","/users/reset").permitAll()
                 .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
                 .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
+                .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/fail").permitAll()
+                        
                 .requestMatchers("/users/**").permitAll() // 회원가입 접근 가능
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 );
@@ -123,3 +127,5 @@ public class SecurityConfig {
         return jwtAuthenticationFilter;
     }
 }
+
+

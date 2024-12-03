@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="fix: 결제 요청 승인 환불 기능 구현 완료(주문 데이터 저장 수정 중)">
+      <change beforePath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.test.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/dto/PaymentDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/dto/RefundDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/dto/RefundResponseDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/entity/Payment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/GoodBuyUS">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/GoodBuyUS">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="GoodBuyUS" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="GoodBuyUS" type="f1a62948:ProjectNode" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="origin/feature/community_payment" />
+                <branch-info repo="$PROJECT_DIR$" source="origin/feature/main_payment" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/main_payment" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;sumin2eee&quot;
+  }
+}</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/community_payment" />
+                    <option name="lastUsedInstant" value="1733107126" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/main_payment" />
+                    <option name="lastUsedInstant" value="1732971556" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/payment/community" />
+                    <option name="lastUsedInstant" value="1732159252" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1732156283" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="develop" />
+                    <option name="lastUsedInstant" value="1732153032" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/prgrms-web-devcourse-final-project/WEB1_2_LinkUP_BE.git&quot;,
+    &quot;accountId&quot;: &quot;8de283f1-5acb-4ce0-ba36-760b34ab5e26&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2p8g4RnSde3pZFYJHk4XXJWI8Rl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Gradle.Build GoodBuyUS.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.GoodBuyUsApplicationTests.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.GoodBuyUsApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/payment-1&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/dev/workspace/filmpass&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.runner&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RunManager" selected="Spring Boot.GoodBuyUsApplication">
+    <configuration name="GoodBuyUsApplicationTests" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/GoodBuyUS" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;dev_final_team10.GoodBuyUS.GoodBuyUsApplicationTests&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="GoodBuyUsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="mail.username" value="noreply.webus@gmail.com" />
+        <env name="mail.password" value="xvcjprowvkrlptdz" />
+      </envs>
+      <module name="GoodBuyUS.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="dev_final_team10.GoodBuyUS.GoodBuyUsApplication" />
+      <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="dev_final_team10.GoodBuyUS.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.GoodBuyUsApplicationTests" />
+      <item itemvalue="Spring Boot.GoodBuyUsApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.GoodBuyUsApplication" />
+        <item itemvalue="Gradle.GoodBuyUsApplicationTests" />
+        <item itemvalue="Spring Boot.GoodBuyUsApplication" />
+        <item itemvalue="Gradle.GoodBuyUsApplicationTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="" />
+      <created>1732152925278</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1732152925278</updated>
+      <workItem from="1732152926463" duration="8511000" />
+      <workItem from="1732197196766" duration="31000000" />
+      <workItem from="1732466859947" duration="12889000" />
+      <workItem from="1732511114805" duration="13243000" />
+      <workItem from="1732539111557" duration="2819000" />
+      <workItem from="1732545398615" duration="12181000" />
+      <workItem from="1732582206852" duration="14141000" />
+      <workItem from="1732631800806" duration="93737000" />
+      <workItem from="1732950862720" duration="8040000" />
+      <workItem from="1732971506434" duration="4243000" />
+      <workItem from="1733098542881" duration="9259000" />
+      <workItem from="1733185044189" duration="1951000" />
+    </task>
+    <task id="LOCAL-00001" summary="develop">
+      <option name="closed" value="true" />
+      <created>1733120281801</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1733120281801</updated>
+    </task>
+    <task id="LOCAL-00002" summary="remove: 환경설정 수정">
+      <option name="closed" value="true" />
+      <created>1733169715717</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1733169715717</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix: SecurityConfig develop코드로 변경">
+      <option name="closed" value="true" />
+      <created>1733172246958</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1733172246958</updated>
+    </task>
+    <task id="LOCAL-00004" summary="rename: 결제 관련 파일 정렬">
+      <option name="closed" value="true" />
+      <created>1733175029903</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1733175029903</updated>
+    </task>
+    <task id="LOCAL-00005" summary="rename: 결제 관련 파일 정렬">
+      <option name="closed" value="true" />
+      <created>1733175040672</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1733175040672</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="5f39afd3-994d-42b3-a142-c5fd0bc9eb0c" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="5f39afd3-994d-42b3-a142-c5fd0bc9eb0c">
+          <value>
+            <State />
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="feature/community_payment" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="상단 물품 api 연결 중" />
+    <MESSAGE value="결제 요청 완료 (결제창 오류)" />
+    <MESSAGE value="결제창 오류 해결" />
+    <MESSAGE value="develop" />
+    <MESSAGE value="remove: 환경설정 수정" />
+    <MESSAGE value="fix: SecurityConfig develop코드로 변경" />
+    <MESSAGE value="rename: 결제 관련 파일 정렬" />
+    <MESSAGE value="fix: 결제 요청 승인 환불 기능 구현 완료(주문 데이터 저장 수정 중)" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 결제 요청 승인 환불 기능 구현 완료(주문 데이터 저장 수정 중)" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

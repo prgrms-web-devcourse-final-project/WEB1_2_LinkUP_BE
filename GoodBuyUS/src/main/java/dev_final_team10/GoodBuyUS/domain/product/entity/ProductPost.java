@@ -84,4 +84,5 @@ public class ProductPost extends BaseEntity {
     public void canSelling(){
         this.available = true;
     }
+
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>결제하기</title>
+    <meta charset="utf-8">
+    <script src="https://js.tosspayments.com/v1"></script> <!-- Toss Payments SDK -->
+</head>
+<body>
+<section>
+    <h1>결제 페이지</h1>
+    <span>총 주문금액: <b>3000 원</b></span>
+    <button id="payment-button">3000원 가상계좌 결제하기</button>
+</section>
+<script>
+    const clientKey = 'test_ck_ma60RZblrqz9ob1aZ5Yb8wzYWBn1'; // 이거 아니야!
+    const tossPayments = TossPayments(clientKey);
+
+    const button = document.getElementById('payment-button');
+    button.addEventListener('click', function () {
+        tossPayments.requestPayment('VIRTUAL_ACCOUNT', {
+            amount: 3000,
+            orderId: 'a9CWyCY5m89PNh2xwhn7-XQKDH2SQWXADKS3L1K2',
+            orderName: '테스트 상품',
+            customerName: '홍길동',
+            customerEmail: 'hong@test.com',
+            method: '가상계좌',
+            successUrl: 'http://localhost:8080/api/v1/virtual/success',
+            failUrl: 'http://localhost:8080/api/v1/virtual/fail',
+            validHours: 12
+        }).catch(function (error) {
+            console.error(error);
+            alert('결제 요청 중 오류가 발생했습니다: ' + error.message);
+        });
+    });
+</script>
+</body>
+</html>
