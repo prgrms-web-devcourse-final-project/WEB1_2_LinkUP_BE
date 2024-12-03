@@ -187,6 +187,7 @@ public class MainPaymentService {
 
             payment.setRefundedAmount(payment.getRefundedAmount() + effectiveCancelAmount);
             payment.setCancelReason(cancelReason);
+
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
 
