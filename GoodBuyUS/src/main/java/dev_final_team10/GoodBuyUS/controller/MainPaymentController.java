@@ -24,9 +24,11 @@ public class MainPaymentController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<MainPaymentResponseDto> createAndRequestPayment(@RequestBody OrderRequestDTO orderRequestDTO,
-                                                                          @RequestHeader("Authorization") String token,
-                                                                          @RequestParam Long postId) {
+    public ResponseEntity<MainPaymentResponseDto> createAndRequestPayment(
+            @RequestBody OrderRequestDTO orderRequestDTO,
+            @RequestHeader("Authorization") String token,
+            @RequestParam Long postId) {
+
         String userEmail = extractEmailFromToken(token);
         Order order = orderService.createOrder(orderRequestDTO,userEmail,postId);
         MainPaymentResponseDto responseDto = paymentService.createAndRequestPayment(order);

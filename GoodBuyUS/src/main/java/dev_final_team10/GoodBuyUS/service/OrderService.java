@@ -54,6 +54,7 @@ public class OrderService {
         Order order = Order.createOrder(productPost, user, orderRequestDTO.getQuantity(),
                 orderRequestDTO.getDeliveryRequestDTO().getAddress(),
                 orderRequestDTO.getPrice(), orderRequestDTO.getDeliveryRequestDTO().getNeeded());
+        log.info("생성된 Order 객체: {}", order);
         order.registUser(user);
         orderRepository.save(order);
         return order;

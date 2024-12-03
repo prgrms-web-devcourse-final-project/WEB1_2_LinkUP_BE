@@ -34,71 +34,9 @@ public class MainPaymentService {
     private final MainPaymentRepository paymentRepository;
     private final ObjectMapper objectMapper;
     private final OrderRepository orderRepository;
-//    private final OrderService orderService;
 
-    //결제 요청
-//    @Transactional
-//    public MainPaymentResponseDto createAndRequestPayment(MainPaymentRequestDto requestDto) {
-//        WebClient webClient = webClientBuilder
-//                .baseUrl("https://api.tosspayments.com/v1/payments")
-//                .build();
-//
-//        String orderId = requestDto.getOrderId();
-//
-//        // 주문을 만드는 단계
-//        MainPayment payment = MainPayment.builder()
-//                .orderId(orderId)
-//                .productName(requestDto.getProductName())
-//                .quantity(requestDto.getQuantity())
-//                .price(requestDto.getPrice())
-//                .totalPrice(requestDto.getTotalPrice())
-//                .paymentStatus(PaymentStatus.PENDING)
-//                .createdAt(LocalDateTime.now())
-//                .updatedAt(LocalDateTime.now())
-//                .build();
-//        paymentRepository.save(payment);
-//
-//        // 토스에 실제적으로 들어가는 것
-//        try {
-//            String rawResponse = webClient.post()
-//                    .bodyValue(Map.of(
-//                            "orderId", orderId,
-//                            "amount", payment.getTotalPrice(),
-//                            "orderName", payment.getProductName(),
-//                            "successUrl", requestDto.getSuccessUrl(),
-//                            "failUrl", requestDto.getFailUrl(),
-//                            "method", "CARD" // 카드 결제 방식 추가
-//                    ))
-//                    .retrieve()
-//                    .bodyToMono(String.class)
-//                    .block();
-//
-//            log.info("Toss API 응답: {}", rawResponse);
-//
-//            Map<String, Object> responseMap = objectMapper.readValue(rawResponse, Map.class);
-//            String paymentPageUrl = (String) responseMap.get("checkoutPageUrl");
-//
-//            return MainPaymentResponseDto.builder()
-//                    .orderId(orderId)
-//                    .productName(payment.getProductName())
-//                    .quantity(payment.getQuantity())
-//                    .price(payment.getPrice())
-//                    .totalPrice(payment.getTotalPrice())
-//                    .paymentStatus(payment.getPaymentStatus().name())
-//                    .createdAt(payment.getCreatedAt())
-//                    .updatedAt(payment.getUpdatedAt())
-//                    .paymentPageUrl(paymentPageUrl)
-//                    .build();
-//
-//        } catch (Exception e) {
-//            log.error("결제 요청 중 오류 발생: {}", e.getMessage(), e);
-//            throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
-//        }
-//    }
 
-    /**
-     * 공진
-     */
+
     @Transactional
     public MainPaymentResponseDto createAndRequestPayment(Order order) {
         WebClient webClient = webClientBuilder
