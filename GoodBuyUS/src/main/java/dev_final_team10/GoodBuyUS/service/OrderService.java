@@ -41,7 +41,7 @@ public class OrderService {
         return DetailProductDTo.createDTO(productPost, orderRequestDTO.getAmount());
     }
 
-    public TossRequestDTO createOrder(OrderRequestDTO orderRequestDTO, String userEmail, Long postId) {
+    public Order createOrder(OrderRequestDTO orderRequestDTO, String userEmail, Long postId) {
         ProductPost productPost = productPostRepository.findById(postId)
                 .orElseThrow(() -> new NoSuchElementException("잘못된 게시글입니다 - 주문"));
         User user = userRepository.findByEmail(userEmail)
@@ -56,17 +56,15 @@ public class OrderService {
                 orderRequestDTO.getPrice(), orderRequestDTO.getDeliveryRequestDTO().getNeeded());
         order.registUser(user);
         orderRepository.save(order);
-
-        return new TossRequestDTO(order.getOrderId(), user.getId(), productPost.getPostId(),
-                orderRequestDTO.getPrice(), orderRequestDTO.getQuantity());
+        return order;
     }
 
-    public String refund(String paymentKey, String cancelReason, Integer refundAmount) {
-        try {
-            mainPaymentService.cancelPayment(paymentKey, cancelReason, refundAmount);
-            return "환불 처리가 완료되었습니다.";
-        } catch (Exception e) {
-            return "환불 처리 중 오류가 발생했습니다: " + e.getMessage();
-        }
-    }
+//    public String refund(String paymentKey, String cancelReason, Integer refundAmount) {
+//        try {
+//            mainPaymentService.cancelPayment(paymentKey, cancelReason, refundAmount);
+//            return "환불 처리가 완료되었습니다.";
+//        } catch (Exception e) {
+//            return "환불 처리 중 오류가 발생했습니다: " + e.getMessage();
+//        }
+//    }
 }

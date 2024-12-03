@@ -1,11 +1,16 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev_final_team10.GoodBuyUS.domain.order.dto.OrderRequestDTO;
+import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.MainPaymentRepository;
+import dev_final_team10.GoodBuyUS.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,45 +19,109 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MainPaymentService {
 
+    /**
+     *
+     */
     private final WebClient.Builder webClientBuilder;
     private final MainPaymentRepository paymentRepository;
     private final ObjectMapper objectMapper;
+    private final OrderRepository orderRepository;
+//    private final OrderService orderService;
 
     //결제 요청
+//    @Transactional
+//    public MainPaymentResponseDto createAndRequestPayment(MainPaymentRequestDto requestDto) {
+//        WebClient webClient = webClientBuilder
+//                .baseUrl("https://api.tosspayments.com/v1/payments")
+//                .build();
+//
+//        String orderId = requestDto.getOrderId();
+//
+//        // 주문을 만드는 단계
+//        MainPayment payment = MainPayment.builder()
+//                .orderId(orderId)
+//                .productName(requestDto.getProductName())
+//                .quantity(requestDto.getQuantity())
+//                .price(requestDto.getPrice())
+//                .totalPrice(requestDto.getTotalPrice())
+//                .paymentStatus(PaymentStatus.PENDING)
+//                .createdAt(LocalDateTime.now())
+//                .updatedAt(LocalDateTime.now())
+//                .build();
+//        paymentRepository.save(payment);
+//
+//        // 토스에 실제적으로 들어가는 것
+//        try {
+//            String rawResponse = webClient.post()
+//                    .bodyValue(Map.of(
+//                            "orderId", orderId,
+//                            "amount", payment.getTotalPrice(),
+//                            "orderName", payment.getProductName(),
+//                            "successUrl", requestDto.getSuccessUrl(),
+//                            "failUrl", requestDto.getFailUrl(),
+//                            "method", "CARD" // 카드 결제 방식 추가
+//                    ))
+//                    .retrieve()
+//                    .bodyToMono(String.class)
+//                    .block();
+//
+//            log.info("Toss API 응답: {}", rawResponse);
+//
+//            Map<String, Object> responseMap = objectMapper.readValue(rawResponse, Map.class);
+//            String paymentPageUrl = (String) responseMap.get("checkoutPageUrl");
+//
+//            return MainPaymentResponseDto.builder()
+//                    .orderId(orderId)
+//                    .productName(payment.getProductName())
+//                    .quantity(payment.getQuantity())
+//                    .price(payment.getPrice())
+//                    .totalPrice(payment.getTotalPrice())
+//                    .paymentStatus(payment.getPaymentStatus().name())
+//                    .createdAt(payment.getCreatedAt())
+//                    .updatedAt(payment.getUpdatedAt())
+//                    .paymentPageUrl(paymentPageUrl)
+//                    .build();
+//
+//        } catch (Exception e) {
+//            log.error("결제 요청 중 오류 발생: {}", e.getMessage(), e);
+//            throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
+//        }
+//    }
+
+    /**
+     * 공진
+     */
     @Transactional
-    public MainPaymentResponseDto createAndRequestPayment(MainPaymentRequestDto requestDto) {
+    public MainPaymentResponseDto createAndRequestPayment(Order order) {
         WebClient webClient = webClientBuilder
                 .baseUrl("https://api.tosspayments.com/v1/payments")
                 .build();
-
-        String orderId = requestDto.getOrderId();
-
+        // 주문을 만드는 단계
         MainPayment payment = MainPayment.builder()
-                .orderId(orderId)
-                .productName(requestDto.getProductName())
-                .quantity(requestDto.getQuantity())
-                .price(requestDto.getPrice())
-                .totalPrice(requestDto.getTotalPrice())
+                .order(order)
                 .paymentStatus(PaymentStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
         paymentRepository.save(payment);
 
+        // 토스에 실제적으로 들어가는 것
         try {
             String rawResponse = webClient.post()
                     .bodyValue(Map.of(
-                            "orderId", orderId,
-                            "amount", payment.getTotalPrice(),
-                            "orderName", payment.getProductName(),
-                            "successUrl", requestDto.getSuccessUrl(),
-                            "failUrl", requestDto.getFailUrl(),
+                            "orderId", order.getOrderId(),
+                            "amount", order.getPrice(),
+                            "orderName", order.getOrderName(),
+                            "successUrl", "http://localhost:8080/api/v1/main-payments/success",
+                            "failUrl", "http://localhost:8080/api/v1/main-payments/fail",
                             "method", "CARD" // 카드 결제 방식 추가
                     ))
                     .retrieve()
@@ -65,11 +134,11 @@ public class MainPaymentService {
             String paymentPageUrl = (String) responseMap.get("checkoutPageUrl");
 
             return MainPaymentResponseDto.builder()
-                    .orderId(orderId)
-                    .productName(payment.getProductName())
-                    .quantity(payment.getQuantity())
-                    .price(payment.getPrice())
-                    .totalPrice(payment.getTotalPrice())
+                    .orderId(order.getOrderId())
+                    .productName(order.getOrderName())
+                    .quantity(order.getQuantity())
+                    .price(order.getProductPost().getOriginalPrice())
+                    .totalPrice(order.getPrice())
                     .paymentStatus(payment.getPaymentStatus().name())
                     .createdAt(payment.getCreatedAt())
                     .updatedAt(payment.getUpdatedAt())
@@ -81,15 +150,16 @@ public class MainPaymentService {
             throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
+
     //결제 요청 성공
     @Transactional
-    public void handlePaymentSuccess(String paymentKey, String orderId, int amount) {
+    public void handlePaymentSuccess(String paymentKey, UUID orderId, int amount) {
         log.info("결제 성공 요청: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
+        Order order = orderRepository.findById(orderId).orElseThrow(()-> new NoSuchElementException("없는 오더입니다."));
 
-        MainPayment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
+        MainPayment payment = paymentRepository.findByOrder(order).orElseThrow(()-> new NoSuchElementException("없는 주문"));
 
-        if (payment.getTotalPrice() != amount) {
+        if (payment.getOrder().getPrice() != amount) {
             throw new RuntimeException("결제 금액이 일치하지 않습니다.");
         }
 
@@ -104,8 +174,8 @@ public class MainPaymentService {
     @Transactional
     public void approvePayment(String paymentKey, String orderId, int amount) {
         log.info("결제 승인 요청: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
-
-        MainPayment payment = paymentRepository.findByOrderId(orderId)
+        Order order = orderRepository.findById(UUID.fromString(orderId)).orElseThrow(()->new NoSuchElementException("없는 오더"));
+        MainPayment payment = paymentRepository.findByOrder(order)
                 .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
 
         if (!payment.getPaymentStatus().equals(PaymentStatus.AUTH_COMPLETED)) {
@@ -151,8 +221,8 @@ public class MainPaymentService {
             throw new RuntimeException("취소할 수 없는 상태입니다.");
         }
 
-        int effectiveCancelAmount = cancelAmount != null ? cancelAmount : payment.getTotalPrice();
-        if (payment.getRefundedAmount() + effectiveCancelAmount > payment.getTotalPrice()) {
+        int effectiveCancelAmount = cancelAmount != null ? cancelAmount : payment.getOrder().getPrice();
+        if (payment.getRefundedAmount() + effectiveCancelAmount > payment.getOrder().getPrice()) {
             throw new RuntimeException("취소 금액이 총 결제 금액을 초과할 수 없습니다.");
         }
 

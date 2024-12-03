@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class MainPaymentResponseDto {
-    private String orderId;
+    private UUID orderId;
     private String productName;
     private int quantity;
     private int price;

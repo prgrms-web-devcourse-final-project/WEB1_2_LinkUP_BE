@@ -17,21 +17,21 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")  // 외래 키 관리
-    private Order order;
-
-    private int price;
-    public Payment(PaymentStatus paymentStatus, Order order, int price) {
-        this.paymentStatus = paymentStatus;
-        this.order = order;
-        this.price = price;
-    }
-
-    public Payment(PaymentStatus paymentStatus, Order order) {
-        this.paymentStatus = paymentStatus;
-        this.order = order;
-    }
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "order_id")  // 외래 키 관리
+//    private Order order;
+//
+//    private int price;
+//    public Payment(PaymentStatus paymentStatus, Order order, int price) {
+//        this.paymentStatus = paymentStatus;
+//        this.order = order;
+//        this.price = price;
+//    }
+//
+//    public Payment(PaymentStatus paymentStatus, Order order) {
+//        this.paymentStatus = paymentStatus;
+//        this.order = order;
+//    }
 
     public void changeStatus(PaymentStatus paymentStatus){
         this.paymentStatus = paymentStatus;

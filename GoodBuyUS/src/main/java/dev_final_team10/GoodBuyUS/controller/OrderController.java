@@ -21,38 +21,30 @@ public class OrderController {
         return orderService.readyToOrder(countRequestDTO, postId);
     }
 
-    // 성공 실패 URl 추가 예정
-    @PostMapping("/orders/payment/{postId}")
-    public PaymentDTO payment(@RequestBody OrderRequestDTO orderRequestDTO,
-                              @RequestHeader("Authorization") String token,
-                              @PathVariable Long postId){
-        String userEmail = extractEmailFromToken(token);
-        TossRequestDTO tossRequestDTO = orderService.createOrder(orderRequestDTO, userEmail, postId);
-        PaymentDTO paymentDTO =  orderService.payment(tossRequestDTO);
-        if(paymentDTO.getStatus() == PaymentStatus.FAIL){
-            paymentDTO.setRedirectURL("실패 url");
-        }
-        else paymentDTO.setRedirectURL("성공 url");
-        return paymentDTO;
-    }
-
-    @GetMapping("/mypage/orders")
-    public List<OrdersDTO> findOrder(@RequestHeader("Authorization") String token){
-        String email = extractEmailFromToken(token);
-        return orderService.findUsersOrderList(email);
-    }
+//    // 성공 실패 URl 추가 예정
+//    @PostMapping("/orders/payment/{postId}")
+//    public PaymentDTO payment(@RequestBody OrderRequestDTO orderRequestDTO,
+//                              @RequestHeader("Authorization") String token,
+//                              @PathVariable Long postId){
+//        String userEmail = extractEmailFromToken(token);
+//        TossRequestDTO tossRequestDTO = orderService.createOrder(orderRequestDTO, userEmail, postId);
+//        PaymentDTO paymentDTO =  orderService.payment(tossRequestDTO);
+//        if(paymentDTO.getStatus() == PaymentStatus.FAIL){
+//            paymentDTO.setRedirectURL("실패 url");
+//        }
+//        else paymentDTO.setRedirectURL("성공 url");
+//        return paymentDTO;
+//    }
+//
+//    @GetMapping("/mypage/orders")
+//    public List<OrdersDTO> findOrder(@RequestHeader("Authorization") String token){
+//        String email = extractEmailFromToken(token);
+//        return orderService.findUsersOrderList(email);
+//    }
 
     // 내 주문 내역에서 환불을 선택했다고 가정
-    @PutMapping("/mypage/orders/refund/{payId}")
-    public String refundOrder(@PathVariable Long payId){
-        return orderService.refund(payId);
-    }
-
-    private String extractEmailFromToken(String token) {
-        // 토큰에서 userId를 디코딩하는 로직
-        String tokenValue = token.replace("Bearer ", "");
-        return JWT.decode(tokenValue).getClaim("email").asString();
-    }
-
-
+//    @PutMapping("/mypage/orders/refund/{payId}")
+//    public String refundOrder(@PathVariable Long payId){
+//        return orderService.refund(payId);
+//    }
 }
