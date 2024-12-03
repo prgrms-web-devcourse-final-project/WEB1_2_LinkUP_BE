@@ -18,6 +18,7 @@ public class OrderController {
     private final OrderService orderService;
     @GetMapping("/orders")
     public DetailProductDTo readyToOrder(@RequestBody CountRequestDTO countRequestDTO, @RequestParam Long postId) {
+        System.out.println("Controller: readyToOrder 호출됨!"); // 간단한 출력
         return orderService.readyToOrder(countRequestDTO, postId);
     }
 
