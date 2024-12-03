@@ -78,7 +78,7 @@ public class NaverOAuthController {
         if (naverOAuthService.verifyNaverAccessToken(accessToken)) {
             Map<String, Object> userInfo = naverOAuthService.getUserInfoFromAccessToken(accessToken);
             String email = (String) userInfo.get("email");
-            return ResponseEntity.ok("인증 성공: " + (email != null ? email : "Unknown"));
+            return ResponseEntity.ok("인증 성공: " + (email != null ? email : "Unknown") +" " + accessToken);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("인증 실패");
     }
