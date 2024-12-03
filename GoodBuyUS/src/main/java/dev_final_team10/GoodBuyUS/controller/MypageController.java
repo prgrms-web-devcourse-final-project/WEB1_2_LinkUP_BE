@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.controller;
 
+import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
@@ -58,7 +59,8 @@ public class MypageController {
         if(communityPost.getStatus() != postStatus.NOT_APPROVED){
             return ResponseEntity.badRequest().body(Map.of("error","글을 수정할 수 없는 상태입니다."));
         }
-        mypageService.modifyPost(writeModifyPostDto, communityPostId);
-        return ResponseEntity.ok(Map.of("message", "글이 수정되었습니다."));
+        PostResponseDto postResponseDto = mypageService.modifyPost(writeModifyPostDto, communityPostId);
+        return ResponseEntity.ok(Map.of("message", "글이 수정되었습니다.",
+                "updatedPost", postResponseDto));
     }
 }
