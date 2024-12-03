@@ -10,6 +10,17 @@
   <component name="NewModuleRootManager">
     <output-test url="file://$MODULE_DIR$/../../GoodBuyUS/build/classes/java/test" />
     <exclude-output />
+    <output-test url="file://$MODULE_DIR$/../../GoodBuyUS/build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
+    </content>
     <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
     </content>

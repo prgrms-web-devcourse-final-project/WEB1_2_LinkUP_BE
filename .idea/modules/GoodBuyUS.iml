@@ -11,6 +11,12 @@
       <excludeFolder url="file://$MODULE_DIR$/../../GoodBuyUS/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../GoodBuyUS/build" />
     </content>
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS">
+      <excludeFolder url="file://$MODULE_DIR$/../../GoodBuyUS/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../GoodBuyUS/build" />
+    </content>
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS" />
+    <content url="file://$MODULE_DIR$/../../GoodBuyUS" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

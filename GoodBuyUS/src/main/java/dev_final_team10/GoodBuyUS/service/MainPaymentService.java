@@ -27,9 +27,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MainPaymentService {
 
-    /**
-     *
-     */
     private final WebClient.Builder webClientBuilder;
     private final MainPaymentRepository paymentRepository;
     private final ObjectMapper objectMapper;
@@ -45,10 +42,14 @@ public class MainPaymentService {
         // 주문을 만드는 단계
         MainPayment payment = MainPayment.builder()
                 .order(order)
+                .price(order.getPrice())
+                .quantity(order.getQuantity())
+                .totalPrice(order.getPrice() * order.getQuantity())
                 .paymentStatus(PaymentStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+
         paymentRepository.save(payment);
 
         // 토스에 실제적으로 들어가는 것
