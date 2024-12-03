@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
+import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
@@ -14,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @Transactional
@@ -39,4 +43,16 @@ public class CommunityService {
         communityPostRepository.save(communityPost);
     }
 
+    //내 동네 사람들이 올린 커뮤니티 전체글 보는 메소드
+    public List<PostResponseDto> communityPostList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(authentication.getName()).orElse(null);
+        List<CommunityPost> communityPosts = communityPostRepository.findByNeighborhood(user.getNeighborhood());
+
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for (CommunityPost communityPost : communityPosts) {
+            postResponseDtos.add(PostResponseDto.of(communityPost));
+        }
+        return postResponseDtos;
+    }
 }
