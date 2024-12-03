@@ -2,6 +2,7 @@ package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.user.entity.Role;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class NaverOAuthService {
 
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String clientId;
@@ -31,46 +33,20 @@ public class NaverOAuthService {
     @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
     private String redirectUri;
 
-    @Value("${jwt.access.header}")
-    private String accessHeader;
-
-    @Value("${jwt.refresh.header}")
-    private String refreshHeader;
-     /* 네이버 Access Token 유효성 검증
-     */
-    public boolean verifyNaverAccessToken(String accessToken) {
-        String validationUrl = "https://openapi.naver.com/v1/nid/me";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        try {
-            ResponseEntity<Map> response = restTemplate.exchange(validationUrl, HttpMethod.GET, entity, Map.class);
-            return response.getStatusCode().is2xxSuccessful();
-        } catch (Exception e) {
-            log.error("네이버 Access Token 검증 실패: {}", e.getMessage());
-            return false; // 유효하지 않은 경우
-        }
-    }
-
     /**
-     * 네이버 OAuth 콜백 처리: Access Token 및 Refresh Token 발급 후 사용자 저장/업데이트
+     * 네이버 로그인 프로세스
      */
-    public Map<String, String> processNaverCallback(String code, String state) {
+    public void processNaverLogin(String code, String state, HttpServletResponse response) {
         // Step 1: 네이버 Access Token 요청
         Map<String, Object> tokenResponse = requestNaverAccessToken(code, state);
         String accessToken = (String) tokenResponse.get("access_token");
-        String refreshToken = (String) tokenResponse.get("refresh_token");
 
         // Step 2: 네이버 사용자 정보 요청
         Map<String, Object> userInfo = getUserInfoFromAccessToken(accessToken);
 
-        // Step 3: 사용자 저장 또는 업데이트
-        saveOrUpdateUser(userInfo, refreshToken);
-
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
+        // Step 3: 사용자 저장/업데이트 및 JWT 발급
+        User user = saveOrUpdateUser(userInfo);
+        issueJwtTokens(user, response);
     }
 
     /**
@@ -98,7 +74,7 @@ public class NaverOAuthService {
     /**
      * 네이버 사용자 정보 요청
      */
-    public Map<String, Object> getUserInfoFromAccessToken(String accessToken) {
+    private Map<String, Object> getUserInfoFromAccessToken(String accessToken) {
         String userInfoUri = "https://openapi.naver.com/v1/nid/me";
 
         HttpHeaders headers = new HttpHeaders();
@@ -115,52 +91,43 @@ public class NaverOAuthService {
     }
 
     /**
-     * 네이버 사용자 정보 저장 또는 업데이트
+     * 사용자 저장 또는 업데이트
      */
-    private void saveOrUpdateUser(Map<String, Object> userInfo, String refreshToken) {
-        String email = (String) userInfo.get("email");
+    private User saveOrUpdateUser(Map<String, Object> userInfo) {
         String snsId = (String) userInfo.get("id");
+        String email = (String) userInfo.get("email");
         String name = (String) userInfo.get("name");
-        String nickname = (String) userInfo.get("nickname");
-        String profile = (String) userInfo.get("profile_image");
-        String phone = (String) userInfo.get("mobile");
+        String phone = (String) userInfo.get("mobile"); // 네이버에서 제공하는 핸드폰 번호
+        String profileImage = (String) userInfo.get("profile_image");
 
-        User user = userRepository.findBySnsTypeAndSnsId("NAVER", snsId)
-                .orElseGet(() -> User.builder()
-                        .email(email)
-                        .name(name)
-                        .nickname(nickname != null ? nickname : name)
-                        .phone(phone)
-                        .profile(profile)
-                        .snsType("NAVER")
-                        .snsId(snsId)
-                        .role(Role.USER)
-                        .warnings(0) // 경고 횟수를 명시적으로 0으로 설정
-                        .build());
+        return userRepository.findBySnsTypeAndSnsId("NAVER", snsId)
+                .orElseGet(() -> {
+                    User newUser = User.builder()
+                            .email(email)
+                            .name(name)
+                            .phone(phone)
+                            .profile(profileImage)
+                            .snsType("NAVER")
+                            .snsId(snsId)
+                            .role(Role.USER)
+                            .build();
+                    return userRepository.save(newUser);
+                });
+    }
 
+    /**
+     * 자체 JWT 발급
+     */
+    private void issueJwtTokens(User user, HttpServletResponse response) {
+        String accessToken = jwtService.createAccessToken(user.getEmail());
+        String refreshToken = jwtService.createRefreshToken();
+
+        // Refresh Token 저장
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
-    }
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader(accessHeader, "Bearer " + accessToken);
-        response.setHeader(refreshHeader, "Bearer " + refreshToken);
-        log.info("네이버 Access Token과 Refresh Token 헤더 설정 완료: {}, {}", accessToken, refreshToken);
-    }
-    public Map<String, Object> refreshNaverAccessToken(String refreshToken) {
-        String tokenUri = "https://nid.naver.com/oauth2.0/token";
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(tokenUri)
-                .queryParam("grant_type", "refresh_token")
-                .queryParam("refresh_token", refreshToken)
-                .queryParam("client_id", clientId)
-                .queryParam("client_secret", clientSecret);
 
-        ResponseEntity<Map> response = restTemplate.getForEntity(uriBuilder.toUriString(), Map.class);
-
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-            throw new RuntimeException("네이버 Refresh Token 요청 실패");
-        }
-        return response.getBody();
+        // JWT 전송
+        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        log.info("JWT 발급 완료 - AccessToken: {}, RefreshToken: {}", accessToken, refreshToken);
     }
-
 }
