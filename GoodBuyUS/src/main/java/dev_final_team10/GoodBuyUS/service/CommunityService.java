@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
+import dev_final_team10.GoodBuyUS.controller.CommunityController;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.*;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ public class CommunityService {
     private final UserRepository userRepository;
     private final CommunityPostRepository communityPostRepository;
     private final ParticipationsRepository participationsRepository;
+
 
     //글 작성 메소드
     public void writePost(WriteModifyPostDto writeModifyPostDto) {
@@ -62,7 +65,7 @@ public class CommunityService {
     }
 
     //커뮤니티 글에 참여하는 메소드
-    public ResponseEntity<?> joinCommunityPost(CommunityPost communityPost, User user, Long number) {
+    public ResponseEntity<?> joinCommunityPost(CommunityPost communityPost, User user, Long number) throws IOException {
         //참여함과 동시에 참여자 테이블에 추가
         Participations participations = new Participations();
         participations.setCommunityPost(communityPost);
@@ -79,4 +82,15 @@ public class CommunityService {
         participationsRepository.save(participations);
         return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
     }
+
+    //참여자 수 세는 메서드
+    public Long getParticipantCount(Long communityPostId) {
+        List<Participations> joinParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPostId, participationStatus.JOIN);
+        Long count = 0L;
+        for(Participations participation : joinParticipations){
+            count += participation.getQuantity();
+        }
+        return count;
+    }
+
 }
