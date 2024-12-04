@@ -29,6 +29,6 @@ public class ChatMember {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private boolean isPaid;
+    private String isPaid;
 
 }

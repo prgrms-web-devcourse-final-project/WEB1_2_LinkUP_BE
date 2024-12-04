@@ -1,11 +1,8 @@
 package dev_final_team10.GoodBuyUS.domain.user.entity;
 
-<<<<<<< HEAD
-=======
-import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
+
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductReview;
->>>>>>> 4b33e72e9dff2444fc150ba18dd6a79438e01b84
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;

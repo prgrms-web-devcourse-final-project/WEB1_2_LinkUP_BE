@@ -60,8 +60,8 @@
       <list>
         <option value="HTML File" />
         <option value="Enum" />
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -156,7 +156,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.GoodBuyUsApplication.executor": "Run",
-    "git-widget-placeholder": "Merging feature/chatroom",
+    "git-widget-placeholder": "feature/chatroom",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/dev/workspace/WEB1_2_LinkUP_BE",
     "node.js.detected.package.eslint": "true",
@@ -166,6 +166,13 @@
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "GitStage.ChangesTree.GroupingKeys": [
+      "directory",
+      "module",
+      "repository"
+    ]
   }
 }]]></component>
   <component name="ReactorSettings">
@@ -195,6 +202,19 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>true</RunAsTest>
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="GoodBuyUS.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="GoodBuyUS.main" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="GoodBuyUsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <envs>
@@ -296,7 +316,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733175040672</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="merge">
+      <option name="closed" value="true" />
+      <created>1733274095386</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1733274095386</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -344,7 +372,8 @@
     <MESSAGE value="fix: SecurityConfig develop코드로 변경" />
     <MESSAGE value="rename: 결제 관련 파일 정렬" />
     <MESSAGE value="fix: 결제 요청 승인 환불 기능 구현 완료(주문 데이터 저장 수정 중)" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 결제 요청 승인 환불 기능 구현 완료(주문 데이터 저장 수정 중)" />
+    <MESSAGE value="merge" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
