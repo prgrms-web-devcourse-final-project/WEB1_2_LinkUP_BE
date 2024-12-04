@@ -46,12 +46,13 @@ public class SecurityConfig {
 
                 //== URL별 권한 관리 옵션 ==
                 .authorizeRequests(authz -> authz
-                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/homepage", "/users/**", "/success").permitAll() // 공용 URL
-                        .requestMatchers("/naver/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")// 네이버 OAuth 경로 허용
-                        .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // 주문 관련 요청 제한
-                        .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated()// 나머지 요청은 인증 필요
-                // 아이콘, css, js 관련
+                                // 아이콘, css, js 관련
+                .requestMatchers("/api/**").permitAll() // 회원가입 접근 가능, 임시 커밋
+                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/homepage", "/users/**", "/success").permitAll() // 공용 URL
+                .requestMatchers("/naver/**").permitAll()// 네이버 OAuth 경로 허용
+                .requestMatchers("/admin/**").hasRole("ADMIN")//admin설정
+                .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // 주문 관련 요청 제한
+                .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated()// 나머지 요청은 인증 필요
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
                 .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
                 .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
@@ -62,6 +63,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/virtual/success").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/virtual/fail").permitAll()
                 .requestMatchers( HttpMethod.GET,"goodbuyUs/**").permitAll()
+                .requestMatchers( HttpMethod.GET,"/goodbuyUs/**").permitAll()
 
                 .requestMatchers("/users/**").permitAll() // 회원가입 접근 가능
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능

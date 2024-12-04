@@ -7,13 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSignUpDto {
+public class UserSignUpEmailDto {
     private String email;
     private String password;
     private String name;
     private String phone;
-    private String nickname;
-
-    //주소
-    private String address;
 }
