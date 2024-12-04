@@ -18,7 +18,10 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
+application.properties
+GoodBuyUS/upload/
+
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -35,3 +38,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Upload Folder ###
+GoodBuyUS/upload/*
