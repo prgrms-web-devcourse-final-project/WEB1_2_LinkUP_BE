@@ -8,6 +8,7 @@ import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,12 +46,12 @@ public class SecurityConfig {
 
                 //== URL별 권한 관리 옵션 ==
                 .authorizeRequests(authz -> authz
-                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/homepage", "/users/**", "/success").permitAll() // 공용 URL
-                        .requestMatchers("/naver/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")// 네이버 OAuth 경로 허용
+                                // 아이콘, css, js 관련
+                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/homepage", "/users/**", "/success").permitAll() // 공용 URL
+                        .requestMatchers("/naver/**").permitAll()// 네이버 OAuth 경로 허용
+                        .requestMatchers("/admin/**").hasRole("ADMIN")//admin설정
                         .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // 주문 관련 요청 제한
                         .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated()// 나머지 요청은 인증 필요
-                // 아이콘, css, js 관련
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
                 .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
                 .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한

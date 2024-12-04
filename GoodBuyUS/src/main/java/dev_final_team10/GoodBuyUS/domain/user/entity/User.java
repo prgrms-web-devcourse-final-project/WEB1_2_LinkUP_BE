@@ -1,6 +1,5 @@
 package dev_final_team10.GoodBuyUS.domain.user.entity;
 
-import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductReview;
 import jakarta.persistence.*;
