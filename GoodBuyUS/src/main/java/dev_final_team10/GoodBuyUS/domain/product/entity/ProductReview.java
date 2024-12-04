@@ -65,4 +65,12 @@ public class ProductReview extends BaseEntity {
         productReview.user = user;
         return productReview;
     }
+
+    public void changeContent(String content){
+        this.content = content;
+    }
+    public void changeRating(int rating){
+        this.rating = rating;
+    }
+
 }
