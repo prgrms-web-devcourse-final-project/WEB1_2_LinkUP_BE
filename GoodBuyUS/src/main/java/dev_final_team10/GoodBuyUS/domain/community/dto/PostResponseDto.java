@@ -32,6 +32,8 @@ public class PostResponseDto {
     private Long unitAmount;   //한 개당 가격
     private List<String> imageUrls = new ArrayList<>();    //이미지 Url
     private postStatus status; //글의 상태(승인대기, 승인완료 등등)
+    private Long userId;
+    private String nickname;
 
     //엔티티 -> DTO변환
     public static PostResponseDto of(CommunityPost communityPost) {
@@ -49,6 +51,8 @@ public class PostResponseDto {
         dto.setUnitAmount(communityPost.getUnitAmount());
         dto.setImageUrls(communityPost.getImageUrls());
         dto.setStatus(communityPost.getStatus());
+        dto.setUserId(communityPost.getUser().getId());
+        dto.setNickname(communityPost.getUser().getNickname());
 
         return dto;
     }
