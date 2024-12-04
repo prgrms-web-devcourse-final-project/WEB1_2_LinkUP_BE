@@ -5,6 +5,7 @@ import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpEmailDto;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,11 +60,15 @@ public class UserController {
 
     //비밀번호 재설정 가능한지 확인 - 이메일 링크 눌렀을 때 (토큰 유효성 확인)
     @GetMapping("/reset")
-    public ResponseEntity<?> resetPassword(@RequestParam String token){
-        if(!jwtService.isTokenValid(token)){
-            return ResponseEntity.badRequest().body(Map.of("error","유효하지 않거나 만료된 토큰입니다."));
+    public ResponseEntity<?> resetPassword(@RequestParam String token, HttpServletResponse response){
+        boolean isValid = jwtService.isTokenValid(token);
+
+        if(isValid){
+            response.setHeader("Location", "http://15.164.5.135/resetpassword?token=" + token);
+            return ResponseEntity.status(HttpStatus.FOUND).build();
         }
-        return ResponseEntity.ok(Map.of("message","비밀번호 재설정이 가능합니다."));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
     }
 
     //비밀번호 찾기 후 최종 재설정 - 링크가 올바른지 확인 됐을 때
