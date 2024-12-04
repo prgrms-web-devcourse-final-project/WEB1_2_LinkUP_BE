@@ -18,6 +18,9 @@ public class CommunityPaymentResponseDto {
     private String status;
     private Integer totalAmount;
 
+    @JsonProperty("secret")
+    private String secret; // 요청 검증용 Secret 웹훅에서 필요해요
+
     @JsonProperty("virtualAccount")
     private VirtualAccount virtualAccount;
     //private Integer totalAmount;

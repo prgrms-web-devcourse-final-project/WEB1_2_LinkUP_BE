@@ -2,6 +2,7 @@ package dev_final_team10.GoodBuyUS.controller;
 
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
 import dev_final_team10.GoodBuyUS.service.CommunityPaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,14 +72,25 @@ public class CommunityPaymentController {
     @GetMapping("/update-payment/{paymentKey}")
     public ResponseEntity<?> updatePaymentStatus(@PathVariable String paymentKey) {
         try {
-            // Toss API 응답값 가져오기
             CommunityPaymentResponseDto responseDto = communityPaymentService.updatePaymentStatus(paymentKey);
 
-            // Toss API 응답값 반환
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "결제 상태 조회 중 오류 발생", "message", e.getMessage()));
         }
     }
+
+    @PostMapping("/webhook")
+    public ResponseEntity<?> handleWebhook(@RequestBody TossWebhookDto webhookDto) {
+        try {
+            communityPaymentService.processWebhook(webhookDto);
+            return ResponseEntity.ok("Webhook processed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
 }
+
+

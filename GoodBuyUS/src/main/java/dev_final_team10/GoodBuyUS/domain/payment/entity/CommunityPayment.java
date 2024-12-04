@@ -24,6 +24,9 @@ public class CommunityPayment {
     private String communityPaymentKey;
 
     @Column(nullable = true)
+    private String secret;
+
+    @Column(nullable = true)
     private String bankId;
 
     @Column(nullable = true)

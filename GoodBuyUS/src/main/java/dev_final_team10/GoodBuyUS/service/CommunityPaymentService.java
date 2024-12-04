@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.CommunityPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
 import dev_final_team10.GoodBuyUS.repository.CommunityPaymentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -50,6 +52,7 @@ public class CommunityPaymentService {
                     .amount(requestDto.getAmount())
                     .paymentStatus("WAITING_FOR_APPROVAL")
                     .communityPaymentKey(responseDto.getPaymentKey())
+                    .secret(responseDto.getSecret())
                     //.payType(requestDto.getPayType())
                     .communityCreatedAt(LocalDateTime.now())
                     .build();
@@ -107,10 +110,10 @@ public class CommunityPaymentService {
                     .bodyToMono(String.class)
                     .block();
 
-            // JSON 응답을 DTO로 변환
+            // 응답 DTO로 변환
             CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
 
-            // 데이터베이스 업데이트
+
             CommunityPayment payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
                     .orElseThrow(() -> new IllegalArgumentException("해당 결제를 찾을 수 없습니다: " + paymentKey));
 
@@ -127,6 +130,73 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 상태 조회 중 오류 발생: " + e.getMessage(), e);
         }
     }
+    @Transactional
+    public void processWebhook(TossWebhookDto webhookDto) {
+        String status;
+        String paymentKey;
+        String orderId;
+        String secret;
 
+        // 긴 형식 (data 객체가 있는 경우)
+        if (webhookDto.getData() != null) {
+            TossWebhookDto.Data data = webhookDto.getData();
+            status = data.getStatus();
+            paymentKey = data.getPaymentKey();
+            orderId = data.getOrderId();
+            secret = data.getSecret();
+        }
+        // 짧은 형식 (data 객체가 없는 경우)
+        else {
+            status = webhookDto.getStatus();
+            paymentKey = webhookDto.getPaymentKey();
+            orderId = webhookDto.getOrderId();
+            secret = webhookDto.getSecret();
+        }
+
+        CommunityPayment payment;
+
+        // 결제 정보 조회: paymentKey 조회 없으면 orderId로 조회 총 2개 형태로 요청이 가는데 주문 id가 없는 경우가 있습니다.
+        if (paymentKey != null) {
+            payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
+                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + paymentKey));
+        } else {
+            payment = paymentRepository.findByParticipationsOrderId(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + orderId));
+        }
+
+        //  secret 검증
+        if (!secret.equals(payment.getSecret())) {
+            throw new SecurityException("Invalid webhook secret");
+        }
+
+        // 상태별 처리) 차이 확인하려고 done이랑 completed로 했어요
+        switch (status) {
+            case "DONE":
+                payment = payment.toBuilder()
+                        .paymentStatus("COMPLETED")
+                        .communityApprovedAt(LocalDateTime.now())
+                        .build();
+                break;
+
+            case "CANCELED":
+                payment = payment.toBuilder()
+                        .paymentStatus("CANCELED")
+                        .build();
+                break;
+
+            case "WAITING_FOR_DEPOSIT":
+                payment = payment.toBuilder()
+                        .paymentStatus("WAITING_FOR_DEPOSIT")
+                        .build();
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown status: " + status);
+        }
+
+        paymentRepository.save(payment);
+    }
 
 }
+
+
