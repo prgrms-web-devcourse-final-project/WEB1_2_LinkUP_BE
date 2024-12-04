@@ -1,10 +1,16 @@
 package dev_final_team10.GoodBuyUS.controller;
 
+import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
+import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -13,6 +19,7 @@ import java.util.Map;
 public class MypageController {
 
     private final MypageService mypageService;
+    private final CommunityPostRepository communityPostRepository;
 
     //현재 비밀번호 일치하는지 확인 - 비밀번호 변경 전에
     @PostMapping("/verify")
@@ -45,4 +52,22 @@ public class MypageController {
         return mypageService.chageNeighbor(request.get("newAddress"));
     }
 
+    //작성한 글이 승인대기 상태일 때 수정가능 하도록
+    @PutMapping("/post/{community_post_id}")
+    public ResponseEntity<?> modifyPost(@PathVariable("community_post_id") Long communityPostId, @RequestBody WriteModifyPostDto writeModifyPostDto){
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+        //현재 글의 상태가 승인대기가 아니라면 글을 수정하지 못하도록
+        if(communityPost.getStatus() != postStatus.NOT_APPROVED){
+            return ResponseEntity.badRequest().body(Map.of("error","글을 수정할 수 없는 상태입니다."));
+        }
+        PostResponseDto postResponseDto = mypageService.modifyPost(writeModifyPostDto, communityPostId);
+        return ResponseEntity.ok(Map.of("message", "글이 수정되었습니다.",
+                "updatedPost", postResponseDto));
+    }
+
+    //내가 작성한 글 목록 보기
+    @GetMapping("/post")
+    public List<PostResponseDto> myPostList(){
+         return mypageService.myPostList();
+    }
 }

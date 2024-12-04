@@ -1,7 +1,12 @@
 package dev_final_team10.GoodBuyUS.service;
 
-import dev_final_team10.GoodBuyUS.domain.neighborhood.entity.Neighborhood;
+import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
+import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,6 +31,7 @@ public class MypageService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final NeighborhoodRepository neighborhoodRepository;
+    private final CommunityPostRepository communityPostRepository;
 
     //현재 로그인한 사용자의 이메일을 가져오는 메소드
     public String getCurrentUserEmail() {
@@ -64,5 +72,40 @@ public class MypageService {
         userRepository.save(user);
 
         return ResponseEntity.ok(Map.of("message","주소가 성공적으로 변경되었습니다."));
+    }
+
+    //커뮤니티에 작성한 글 수정하는 메소드
+    public PostResponseDto modifyPost(WriteModifyPostDto writeModifyPostDto, Long communityPostId) {
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+        //현재 사용자 정보 가져오기(글 작성자)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(authentication.getName()).orElse(null);
+        //현재 사용자 동네 정보 가져오기
+        Neighborhood neighborhood = user.getNeighborhood();
+        //카테고리 설정
+        CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
+
+        communityPost.updateFields(writeModifyPostDto, user, neighborhood, communityCategory);
+        //DB 저장
+        communityPostRepository.save(communityPost);
+
+        return PostResponseDto.of(communityPost);
+
+    }
+
+    //내가 쓴 글 목록 보기
+    public List<PostResponseDto> myPostList() {
+        //현재 사용자 정보 가져오기
+        User user = userRepository.findByEmail(getCurrentUserEmail()).orElse(null);
+
+        //현재 사용자 글 목록 가져오기
+        List<CommunityPost> communityPosts = communityPostRepository.findAllByUserId(user.getId());
+
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (CommunityPost communityPost : communityPosts) {
+            postResponseDtos.add(PostResponseDto.of(communityPost));
+        }
+            return postResponseDtos;
     }
 }
