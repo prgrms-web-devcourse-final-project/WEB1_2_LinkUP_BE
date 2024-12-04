@@ -5,20 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-<<<<<<< HEAD
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-=======
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
->>>>>>> 4b33e72e9dff2444fc150ba18dd6a79438e01b84
 
 @EnableScheduling
 @SpringBootApplication
-<<<<<<< HEAD
 @EnableJpaAuditing
-=======
 @EntityScan(basePackages = "dev_final_team10.GoodBuyUS.domain") // feature/main_payment의 EntityScan 추가
->>>>>>> 4b33e72e9dff2444fc150ba18dd6a79438e01b84
 public class GoodBuyUsApplication implements CommandLineRunner {
 
 	@Autowired

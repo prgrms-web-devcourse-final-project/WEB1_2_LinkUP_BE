@@ -39,11 +39,6 @@ out/
 ### VS Code ###
 .vscode/
 
-<<<<<<< HEAD
-application.properties
-application-dev.properties
-application-test.properties
-=======
+
 ### Upload Folder ###
 GoodBuyUS/upload/*
->>>>>>> 4b33e72e9dff2444fc150ba18dd6a79438e01b84
