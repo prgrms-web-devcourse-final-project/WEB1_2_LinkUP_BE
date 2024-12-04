@@ -4,11 +4,12 @@ import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
+import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
+import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
+import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
-import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
-import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
-import dev_final_team10.GoodBuyUS.repository.UserRepository;
+import dev_final_team10.GoodBuyUS.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -32,6 +34,8 @@ public class MypageService {
     private final UserService userService;
     private final NeighborhoodRepository neighborhoodRepository;
     private final CommunityPostRepository communityPostRepository;
+    private final MainPaymentRepository mainPaymentRepository;
+    private final OrderRepository orderRepository;
 
     //현재 로그인한 사용자의 이메일을 가져오는 메소드
     public String getCurrentUserEmail() {
@@ -107,5 +111,17 @@ public class MypageService {
             postResponseDtos.add(PostResponseDto.of(communityPost));
         }
             return postResponseDtos;
+    }
+
+    // 주문 내역 확인하기
+    public List<OrdersDTO> orderlist(String userEmail){
+        List<Order> orders = orderRepository.findOrderByUser(userRepository.findByEmail(userEmail).orElseThrow(()->new NoSuchElementException("없는 유저")));
+        List<OrdersDTO> ordersDTOS = new ArrayList<>();
+        for (Order order : orders) {
+            MainPayment payment = mainPaymentRepository.findByOrder(order).orElseThrow(null);
+            OrdersDTO ordersDTO = OrdersDTO.of(order.getOrderName(),order.getPrice(), order.getCreatedAt(),payment.getPaymentStatus(),payment.getPaymentKey(),order.getQuantity(), order.getDelivery());
+            ordersDTOS.add(ordersDTO);
+        }
+        return ordersDTOS;
     }
 }
