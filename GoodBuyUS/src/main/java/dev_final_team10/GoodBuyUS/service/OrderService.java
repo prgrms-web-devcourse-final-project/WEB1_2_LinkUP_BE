@@ -1,14 +1,10 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.order.dto.*;
-import dev_final_team10.GoodBuyUS.domain.order.entity.Delivery;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
-import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
 import dev_final_team10.GoodBuyUS.domain.product.dto.DetailProductDTo;
-import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
-import dev_final_team10.GoodBuyUS.repository.MainPaymentRepository;
 import dev_final_team10.GoodBuyUS.repository.OrderRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
@@ -16,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -29,8 +22,6 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductPostRepository productPostRepository;
     private final UserRepository userRepository;
-    private final MainPaymentService mainPaymentService;
-    private final MainPaymentRepository mainPaymentRepository;
 
     public DetailProductDTo readyToOrder(CountRequestDTO orderRequestDTO, Long postId) {
         ProductPost productPost = productPostRepository.findById(postId)
@@ -59,13 +50,4 @@ public class OrderService {
         orderRepository.save(order);
         return order;
     }
-
-//    public String refund(String paymentKey, String cancelReason, Integer refundAmount) {
-//        try {
-//            mainPaymentService.cancelPayment(paymentKey, cancelReason, refundAmount);
-//            return "환불 처리가 완료되었습니다.";
-//        } catch (Exception e) {
-//            return "환불 처리 중 오류가 발생했습니다: " + e.getMessage();
-//        }
-//    }
 }
