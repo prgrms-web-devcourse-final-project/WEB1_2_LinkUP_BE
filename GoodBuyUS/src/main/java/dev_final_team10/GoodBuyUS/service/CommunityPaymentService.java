@@ -50,7 +50,7 @@ public class CommunityPaymentService {
                     .amount(requestDto.getAmount())
                     .paymentStatus("WAITING_FOR_APPROVAL")
                     .communityPaymentKey(responseDto.getPaymentKey())
-                    .payType(requestDto.getPayType())
+                    //.payType(requestDto.getPayType())
                     .communityCreatedAt(LocalDateTime.now())
                     .build();
 
@@ -58,13 +58,14 @@ public class CommunityPaymentService {
 
             return responseDto;
 
+
         } catch (Exception e) {
             throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
 
-    public CommunityPaymentResponseDto confirmAndSavePayment(String paymentKey, String orderId, int amount) {
+    public CommunityPaymentResponseDto confirmPayment(String paymentKey, String orderId, int amount) {
         try {
             String rawResponse = webClient.post()
                     .uri("/" + paymentKey)
@@ -97,27 +98,33 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 승인 처리 중 오류 발생: " + e.getMessage(), e);
         }
     }
-    public void updatePaymentStatus(String paymentKey) {
+    public CommunityPaymentResponseDto updatePaymentStatus(String paymentKey) {
         try {
+            // Toss API 호출
             String rawResponse = webClient.get()
                     .uri("/" + paymentKey)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
+            // JSON 응답을 DTO로 변환
             CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
 
+            // 데이터베이스 업데이트
             CommunityPayment payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
                     .orElseThrow(() -> new IllegalArgumentException("해당 결제를 찾을 수 없습니다: " + paymentKey));
 
             payment = payment.toBuilder()
-                    .paymentStatus(responseDto.getStatus())
+                    .paymentStatus(responseDto.getStatus()) // Toss에서 받은 status로 업데이트
                     .communityApprovedAt(LocalDateTime.now())
                     .build();
 
             paymentRepository.save(payment);
+
+            // Toss API 응답 DTO 반환
+            return responseDto;
         } catch (Exception e) {
-            throw new RuntimeException("결제 상태 업데이트 중 오류 발생: " + e.getMessage(), e);
+            throw new RuntimeException("결제 상태 조회 중 오류 발생: " + e.getMessage(), e);
         }
     }
 

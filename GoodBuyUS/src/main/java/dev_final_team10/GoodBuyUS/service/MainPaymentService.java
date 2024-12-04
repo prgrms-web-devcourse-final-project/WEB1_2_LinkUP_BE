@@ -69,20 +69,19 @@ public class MainPaymentService {
 
             log.info("Toss API 응답: {}", rawResponse);
 
-            Map<String, Object> responseMap = objectMapper.readValue(rawResponse, Map.class);
-            String paymentPageUrl = (String) responseMap.get("checkoutPageUrl");
+            MainPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, MainPaymentResponseDto.class);
 
-            return MainPaymentResponseDto.builder()
-                    .orderId(order.getOrderId())
-                    .productName(order.getOrderName())
-                    .quantity(order.getQuantity())
-                    .price(order.getProductPost().getOriginalPrice())
-                    .totalPrice(order.getPrice())
-                    .paymentStatus(payment.getPaymentStatus().name())
-                    .createdAt(payment.getCreatedAt())
-                    .updatedAt(payment.getUpdatedAt())
-                    .paymentPageUrl(paymentPageUrl)
-                    .build();
+
+            responseDto.setOrderId(order.getOrderId());
+            responseDto.setProductName(order.getOrderName());
+            responseDto.setQuantity(order.getQuantity());
+            responseDto.setPrice(order.getProductPost().getOriginalPrice());
+            responseDto.setTotalPrice(order.getPrice());
+            responseDto.setPaymentStatus(payment.getPaymentStatus().name());
+            responseDto.setCreatedAt(payment.getCreatedAt());
+            responseDto.setUpdatedAt(payment.getUpdatedAt());
+
+            return responseDto;
 
         } catch (Exception e) {
             log.error("결제 요청 중 오류 발생: {}", e.getMessage(), e);

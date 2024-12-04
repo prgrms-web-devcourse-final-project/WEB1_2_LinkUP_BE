@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MainPaymentController {
 
-    private final MainPaymentService paymentService;
+    private final MainPaymentService mainPaymentService;
     private final OrderService orderService;
 
     @PostMapping
@@ -31,7 +31,7 @@ public class MainPaymentController {
 
         String userEmail = extractEmailFromToken(token);
         Order order = orderService.createOrder(orderRequestDTO,userEmail,postId);
-        MainPaymentResponseDto responseDto = paymentService.createAndRequestPayment(order);
+        MainPaymentResponseDto responseDto = mainPaymentService.createAndRequestPayment(order);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -40,7 +40,7 @@ public class MainPaymentController {
             @RequestParam String paymentKey,
             @RequestParam UUID orderId,
             @RequestParam int amount) {
-        paymentService.handlePaymentSuccess(paymentKey, orderId, amount);
+        mainPaymentService.handlePaymentSuccess(paymentKey, orderId, amount);
         return ResponseEntity.ok("결제 요청이 성공적으로 완료되었습니다.");
     }
 
@@ -58,7 +58,7 @@ public class MainPaymentController {
         String orderId = (String) requestBody.get("orderId");
         int amount = (int) requestBody.get("amount");
 
-        paymentService.approvePayment(paymentKey, orderId, amount);
+        mainPaymentService.approvePayment(paymentKey, orderId, amount);
         return ResponseEntity.ok("결제가 성공적으로 승인되었습니다.");
     }
 
@@ -66,10 +66,10 @@ public class MainPaymentController {
     public ResponseEntity<String> cancelPayment(@RequestBody Map<String, Object> requestBody) {
         String paymentKey = (String) requestBody.get("paymentKey");
         String cancelReason = (String) requestBody.get("cancelReason");
-        Integer cancelAmount = (Integer) requestBody.get("cancelAmount"); // null 가능
+        Integer cancelAmount = (Integer) requestBody.get("cancelAmount");
 
         try {
-            paymentService.cancelPayment(paymentKey, cancelReason, cancelAmount);
+            mainPaymentService.cancelPayment(paymentKey, cancelReason, cancelAmount);
             return ResponseEntity.ok("결제가 성공적으로 취소되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

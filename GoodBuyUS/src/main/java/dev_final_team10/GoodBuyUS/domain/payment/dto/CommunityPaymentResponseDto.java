@@ -2,7 +2,6 @@ package dev_final_team10.GoodBuyUS.domain.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dev_final_team10.GoodBuyUS.domain.payment.entity.PayType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,12 +16,11 @@ public class CommunityPaymentResponseDto {
     private String paymentKey;
     private String orderId;
     private String status;
-    private PayType payType;
+    private Integer totalAmount;
 
     @JsonProperty("virtualAccount")
     private VirtualAccount virtualAccount;
-
-    private Integer totalAmount;
+    //private Integer totalAmount;
 
     @Getter
     @Builder
@@ -32,21 +30,22 @@ public class CommunityPaymentResponseDto {
         private String accountNumber;
         private String bankCode;
         private String customerName;
-      //  private String dueDate;
+    }
+
+
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Checkout checkout;
+
+    public String getCheckoutPageUrl() {
+        return this.checkout != null ? this.checkout.getUrl() : null;
     }
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Receipt {
-        private String url;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Checkout {
         private String url;
     }

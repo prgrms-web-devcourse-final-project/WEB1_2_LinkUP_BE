@@ -47,9 +47,6 @@ public class CommunityPayment {
     @Column(nullable = true)
     private LocalDateTime communityApprovedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PayType payType;
 
     @Column(nullable = true)
     private String qrCode;
