@@ -73,6 +73,7 @@ public class MainPaymentService {
 
             Map<String, Object> responseMap = objectMapper.readValue(rawResponse, Map.class);
             String paymentPageUrl = (String) responseMap.get("checkoutPageUrl");
+            order.defineDelivery(Delivery.WAITING);
 
             return MainPaymentResponseDto.builder()
                     .orderId(order.getOrderId())
