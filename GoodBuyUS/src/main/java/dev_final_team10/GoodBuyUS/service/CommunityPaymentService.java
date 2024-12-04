@@ -103,14 +103,14 @@ public class CommunityPaymentService {
     }
     public CommunityPaymentResponseDto updatePaymentStatus(String paymentKey) {
         try {
-            // Toss API 호출
+
             String rawResponse = webClient.get()
                     .uri("/" + paymentKey)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
-            // 응답 DTO로 변환
+
             CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
 
 
@@ -124,12 +124,48 @@ public class CommunityPaymentService {
 
             paymentRepository.save(payment);
 
-            // Toss API 응답 DTO 반환
+
             return responseDto;
         } catch (Exception e) {
             throw new RuntimeException("결제 상태 조회 중 오류 발생: " + e.getMessage(), e);
         }
     }
+    public CommunityPaymentResponseDto cancelPayment(String paymentKey, int cancelAmount, String cancelReason) {
+        try {
+
+            String rawResponse = webClient.post()
+                    .uri("/" + paymentKey + "/cancel")
+                    .bodyValue(Map.of(
+                            "cancelAmount", cancelAmount,
+                            "cancelReason", cancelReason
+                    ))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+
+            CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
+
+
+            CommunityPayment payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
+                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + paymentKey));
+
+            payment = payment.toBuilder()
+                    .paymentStatus("CANCELED")
+                    .refundedAmount((payment.getRefundedAmount() != null ? payment.getRefundedAmount() : 0) + cancelAmount)
+                    .refundAvailableAmount(payment.getAmount() - ((payment.getRefundedAmount() != null ? payment.getRefundedAmount() : 0) + cancelAmount))
+                    .canceledAt(LocalDateTime.now())
+                    .cancelReason(cancelReason)
+                    .build();
+
+            paymentRepository.save(payment);
+
+            return responseDto;
+        } catch (Exception e) {
+            throw new RuntimeException("결제 취소 중 오류 발생: " + e.getMessage(), e);
+        }
+    }
+
     @Transactional
     public void processWebhook(TossWebhookDto webhookDto) {
         String status;

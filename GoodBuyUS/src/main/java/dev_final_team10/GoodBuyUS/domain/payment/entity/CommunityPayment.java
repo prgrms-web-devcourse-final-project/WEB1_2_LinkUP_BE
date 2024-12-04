@@ -50,6 +50,17 @@ public class CommunityPayment {
     @Column(nullable = true)
     private LocalDateTime communityApprovedAt;
 
+    @Column(nullable = true)
+    private Integer refundedAmount;
+
+    @Column(nullable = true)
+    private Integer refundAvailableAmount;
+
+    @Column(nullable = true)
+    private LocalDateTime canceledAt;
+
+    @Column(nullable = true)
+    private String cancelReason;
 
     @Column(nullable = true)
     private String qrCode;

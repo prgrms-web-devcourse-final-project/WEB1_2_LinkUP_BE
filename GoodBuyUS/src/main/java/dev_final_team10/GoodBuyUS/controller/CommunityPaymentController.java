@@ -68,6 +68,22 @@ public class CommunityPaymentController {
                     .body(Map.of("error", "결제 승인 중 오류 발생", "message", e.getMessage()));
         }
     }
+    @PostMapping("/cancel-payment/{paymentKey}")
+    public ResponseEntity<?> cancelPayment(
+            @PathVariable String paymentKey,
+            @RequestBody Map<String, Object> requestBody) {
+        try {
+            int cancelAmount = (int) requestBody.get("cancelAmount");
+            String cancelReason = (String) requestBody.get("cancelReason");
+
+            CommunityPaymentResponseDto responseDto = communityPaymentService.cancelPayment(paymentKey, cancelAmount, cancelReason);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "결제 취소 중 오류 발생", "message", e.getMessage()));
+        }
+    }
+
 
     @GetMapping("/update-payment/{paymentKey}")
     public ResponseEntity<?> updatePaymentStatus(@PathVariable String paymentKey) {

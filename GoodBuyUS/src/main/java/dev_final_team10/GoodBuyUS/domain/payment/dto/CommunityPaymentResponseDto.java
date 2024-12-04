@@ -23,7 +23,25 @@ public class CommunityPaymentResponseDto {
 
     @JsonProperty("virtualAccount")
     private VirtualAccount virtualAccount;
-    //private Integer totalAmount;
+
+
+
+    @JsonProperty("cancelAmount")
+    private Integer cancelAmount;
+
+    @JsonProperty("cancelReason")
+    private String cancelReason;
+
+    @JsonProperty("refundStatus")
+    private String refundStatus;
+
+    @JsonProperty("refundAvailableAmount")
+    private Integer refundAvailableAmount;
+
+    @JsonProperty("canceledAt")
+    private String canceledAt;
+
+
 
     @Getter
     @Builder
@@ -34,8 +52,6 @@ public class CommunityPaymentResponseDto {
         private String bankCode;
         private String customerName;
     }
-
-
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Checkout checkout;
