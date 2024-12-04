@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class AdminCommunityService {
     public PostResponseDto ApprovedPost(Long communityPostId) {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         communityPost.setStatus(postStatus.APPROVED);
+        communityPost.setCreatedAt(LocalDateTime.now());
+        communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
         return PostResponseDto.of(communityPost);
     }
 }

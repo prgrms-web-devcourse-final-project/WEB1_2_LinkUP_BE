@@ -37,6 +37,8 @@ public class WriteModifyPostDto {
                 .productUrl(productUrl)
                 .imageUrls(imageUrls)
                 .user(user)
+                .period(period)
+                .createdAt(LocalDateTime.now())
                 //글 상태 - 승인대기
                 .status(postStatus.NOT_APPROVED)
                 .neighborhood(neighborhood).build();
