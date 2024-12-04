@@ -8,6 +8,7 @@ import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,9 +48,20 @@ public class SecurityConfig {
                 .authorizeRequests(authz -> authz
                 // 아이콘, css, js 관련
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
+<<<<<<< HEAD
                 .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage").permitAll()
                 .requestMatchers("/users","/admin/*","/chat/**","/websocket/**","/chat-list.html","/chat-room.html","/login.html").permitAll() // 회원가입 접근 가능
 
+=======
+                .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage","/users/find","/users/reset").permitAll()
+                .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
+                .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
+                .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/fail").permitAll()
+                        
+                .requestMatchers("/users/**").permitAll() // 회원가입 접근 가능
+>>>>>>> 4b33e72e9dff2444fc150ba18dd6a79438e01b84
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 );
 
@@ -121,3 +133,5 @@ public class SecurityConfig {
         return jwtAuthenticationFilter;
     }
 }
+
+
