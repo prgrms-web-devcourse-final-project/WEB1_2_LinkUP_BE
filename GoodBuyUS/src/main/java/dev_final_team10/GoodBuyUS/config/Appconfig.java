@@ -1,4 +1,8 @@
+package dev_final_team10.GoodBuyUS.config;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -12,6 +16,7 @@ public class Appconfig implements WebMvcConfigurer {
                 .allowedHeaders("*") // 모든 헤더 허용
                 .allowCredentials(true); // 인증 정보 허용
     }
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
