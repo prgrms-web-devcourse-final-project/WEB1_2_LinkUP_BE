@@ -61,4 +61,8 @@ public class CommunityPost {
         this.neighborhood = neighborhood;
         this.imageUrls = writeModifyPostDto.getImageUrls();
     }
+
+    public void setStatus(postStatus status) {
+        this.status = status;
+    }
 }

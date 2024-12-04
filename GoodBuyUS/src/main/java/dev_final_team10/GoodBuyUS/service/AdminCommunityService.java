@@ -31,4 +31,11 @@ public class AdminCommunityService {
         }
         return postResponseDtos;
     }
+
+    //승인 완료하기
+    public PostResponseDto ApprovedPost(Long communityPostId) {
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+        communityPost.setStatus(postStatus.APPROVED);
+        return PostResponseDto.of(communityPost);
+    }
 }

@@ -4,9 +4,7 @@ package dev_final_team10.GoodBuyUS.controller;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.service.AdminCommunityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +19,11 @@ public class AdminController {
     @GetMapping("/post")
     public List<PostResponseDto> notApprovedList(){
         return adminCommunityService.notApprovedList();
+    }
+
+    //승인대기 중인 글 승인 완료 하기
+    @PatchMapping("/post/approve/{community_post_id}")
+    public PostResponseDto approvedPost(@PathVariable Long community_post_id){
+        return adminCommunityService.ApprovedPost(community_post_id);
     }
 }
