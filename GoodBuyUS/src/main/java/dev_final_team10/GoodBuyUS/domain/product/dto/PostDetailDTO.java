@@ -25,9 +25,11 @@ public class PostDetailDTO {
     private LocalDateTime deadline;
     private int currentStock;
     private boolean available;
+//    private int now; 글 생성 시 currentStock을 프론트 저장공간에 뒀다가 currentstock을 빼서 주면 안되나요? 이거 팔린 개수를 짜는 로직이 너무 깁니다
 
     @Data
     public static class ReviewDTO{
+        private Long reviewId;
         private String content;
         private int rating;
     }
