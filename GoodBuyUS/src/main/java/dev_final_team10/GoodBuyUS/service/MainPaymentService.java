@@ -2,7 +2,9 @@ package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrderRequestDTO;
+import dev_final_team10.GoodBuyUS.domain.order.entity.Delivery;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
+import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
@@ -193,6 +195,8 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
             payment.setPaymentStatus(PaymentStatus.DONE);
             payment.setUpdatedAt(LocalDateTime.now());
+            order.defineDelivery(Delivery.COMPLETE);
+            order.changeOrderStatus(OrderStatus.COMPLETE);
             paymentRepository.save(payment);
 
             log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
@@ -209,7 +213,7 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
         MainPayment payment = paymentRepository.findByPaymentKey(paymentKey)
                 .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
-
+        Order order = payment.getOrder();
         if (!payment.getPaymentStatus().equals(PaymentStatus.DONE) &&
                 !payment.getPaymentStatus().equals(PaymentStatus.PARTIAL_CANCELED)) {
             throw new RuntimeException("취소할 수 없는 상태입니다.");
@@ -240,8 +244,10 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
             String apiResponseStatus = (String) responseMap.get("status");
             if ("CANCELED".equals(apiResponseStatus)) {
                 payment.setPaymentStatus(PaymentStatus.CANCELED);
+                order.changeOrderStatus(OrderStatus.CANCEL);
             } else if ("PARTIAL_CANCELED".equals(apiResponseStatus)) {
                 payment.setPaymentStatus(PaymentStatus.PARTIAL_CANCELED);
+                order.changeOrderStatus(OrderStatus.CANCEL);
             }
 
             Integer updatedBalanceAmount = (Integer) responseMap.get("balanceAmount");
