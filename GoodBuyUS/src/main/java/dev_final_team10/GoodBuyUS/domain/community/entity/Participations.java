@@ -2,8 +2,12 @@ package dev_final_team10.GoodBuyUS.domain.community.entity;
 
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "participations")
 public class Participations {
 
@@ -19,4 +23,9 @@ public class Participations {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_post_id")
     private CommunityPost communityPost;
+
+    @Enumerated(EnumType.STRING)
+    private participationStatus status;
+
+    private boolean isWriter;
 }

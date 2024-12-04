@@ -2,15 +2,16 @@ package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
-import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.domain.community.entity.*;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
+import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.xddf.usermodel.chart.LegendPosition;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Transactional
@@ -26,6 +28,7 @@ import java.util.List;
 public class CommunityService {
     private final UserRepository userRepository;
     private final CommunityPostRepository communityPostRepository;
+    private final ParticipationsRepository participationsRepository;
 
     //글 작성 메소드
     public void writePost(WriteModifyPostDto writeModifyPostDto) {
@@ -56,5 +59,24 @@ public class CommunityService {
             }
         }
         return postResponseDtos;
+    }
+
+    //커뮤니티 글에 참여하는 메소드
+    public ResponseEntity<?> joinCommunityPost(CommunityPost communityPost, User user, Long number) {
+        //참여함과 동시에 참여자 테이블에 추가
+        Participations participations = new Participations();
+        participations.setCommunityPost(communityPost);
+        participations.setQuantity(number);
+        participations.setUser(user);
+        //참여 상태를 JOIN으로
+        participations.setStatus(participationStatus.JOIN);
+        //공구 참여자와 작성자를 구분
+        if(user == communityPost.getUser()){
+            participations.setWriter(true);
+        }else {
+            participations.setWriter(false);
+        }
+        participationsRepository.save(participations);
+        return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
     }
 }
