@@ -61,7 +61,7 @@ public class MainPaymentService {
                             "orderName", order.getOrderName(),
                             "successUrl", "http://localhost:8080/api/v1/main-payments/success",
                             "failUrl", "http://localhost:8080/api/v1/main-payments/fail",
-                            "method", "CARD" // 카드 결제 방식 추가
+                            "method", "CARD" // 카드 결제 방식 고정
                     ))
                     .retrieve()
                     .bodyToMono(String.class)
@@ -77,7 +77,7 @@ public class MainPaymentService {
             responseDto.setQuantity(order.getQuantity());
             responseDto.setPrice(order.getProductPost().getOriginalPrice());
             responseDto.setTotalPrice(order.getPrice());
-            responseDto.setPaymentStatus(payment.getPaymentStatus().name());
+            responseDto.setStatus(payment.getPaymentStatus().name());
             responseDto.setCreatedAt(payment.getCreatedAt());
             responseDto.setUpdatedAt(payment.getUpdatedAt());
 
@@ -205,6 +205,27 @@ public class MainPaymentService {
             log.error("결제 취소 요청 중 오류 발생: {}", e.getMessage(), e);
             throw new RuntimeException("결제 취소 요청 중 오류 발생: " + e.getMessage(), e);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public MainPaymentResponseDto getPaymentDetails(String paymentKey) {
+        MainPayment payment = paymentRepository.findByPaymentKey(paymentKey)
+                .orElseThrow(() -> new NoSuchElementException("결제 정보를 찾을 수 없습니다."));
+
+        return MainPaymentResponseDto.builder()
+                .orderId(payment.getOrder().getOrderId())
+                .productName(payment.getOrder().getOrderName())
+                .quantity(payment.getQuantity())
+                .price(payment.getPrice())
+                .totalPrice(payment.getTotalPrice())
+                .status(payment.getPaymentStatus().name())
+                .paymentKey(payment.getPaymentKey())
+                .cancelReason(payment.getCancelReason())
+                .refundedAmount(payment.getRefundedAmount())
+                .balanceAmount(payment.getBalanceAmount())
+                .createdAt(payment.getCreatedAt())
+                .updatedAt(payment.getUpdatedAt())
+                .build();
     }
 
 }

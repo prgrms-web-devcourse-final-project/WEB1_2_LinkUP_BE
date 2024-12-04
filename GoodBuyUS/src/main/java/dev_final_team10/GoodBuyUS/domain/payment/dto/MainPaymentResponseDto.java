@@ -21,7 +21,7 @@ public class MainPaymentResponseDto {
     private int quantity;
     private int price;
     private int totalPrice;
-    private String paymentStatus;
+    private String status;
     private String paymentKey;
     private String cancelReason;
     private int refundedAmount;
