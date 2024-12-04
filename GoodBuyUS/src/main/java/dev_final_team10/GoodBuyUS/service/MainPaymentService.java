@@ -244,10 +244,8 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
             String apiResponseStatus = (String) responseMap.get("status");
             if ("CANCELED".equals(apiResponseStatus)) {
                 payment.setPaymentStatus(PaymentStatus.CANCELED);
-                order.changeOrderStatus(OrderStatus.CANCEL);
             } else if ("PARTIAL_CANCELED".equals(apiResponseStatus)) {
                 payment.setPaymentStatus(PaymentStatus.PARTIAL_CANCELED);
-                order.changeOrderStatus(OrderStatus.CANCEL);
             }
 
             Integer updatedBalanceAmount = (Integer) responseMap.get("balanceAmount");
@@ -255,6 +253,7 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
                 payment.setBalanceAmount(updatedBalanceAmount);
             }
 
+            order.changeOrderStatus(OrderStatus.CANCEL);
             payment.setRefundedAmount(payment.getRefundedAmount() + effectiveCancelAmount);
             payment.setCancelReason(cancelReason);
 
