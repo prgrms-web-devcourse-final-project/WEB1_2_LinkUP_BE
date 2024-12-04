@@ -17,12 +17,11 @@ public class CommunityPaymentResponseDto {
     private String paymentKey;
     private String orderId;
     private String status;
-    private PayType payType;
+    private Integer totalAmount;
 
     @JsonProperty("virtualAccount")
     private VirtualAccount virtualAccount;
-
-    private Integer totalAmount;
+    //private Integer totalAmount;
 
     @Getter
     @Builder
@@ -32,21 +31,22 @@ public class CommunityPaymentResponseDto {
         private String accountNumber;
         private String bankCode;
         private String customerName;
-      //  private String dueDate;
+    }
+
+
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Checkout checkout;
+
+    public String getCheckoutPageUrl() {
+        return this.checkout != null ? this.checkout.getUrl() : null;
     }
 
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Receipt {
-        private String url;
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Checkout {
         private String url;
     }

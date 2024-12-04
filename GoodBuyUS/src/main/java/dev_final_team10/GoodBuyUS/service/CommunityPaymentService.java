@@ -50,7 +50,7 @@ public class CommunityPaymentService {
                     .amount(requestDto.getAmount())
                     .paymentStatus("WAITING_FOR_APPROVAL")
                     .communityPaymentKey(responseDto.getPaymentKey())
-                    .payType(requestDto.getPayType())
+                    //.payType(requestDto.getPayType())
                     .communityCreatedAt(LocalDateTime.now())
                     .build();
 
@@ -58,13 +58,14 @@ public class CommunityPaymentService {
 
             return responseDto;
 
+
         } catch (Exception e) {
             throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
 
-    public CommunityPaymentResponseDto confirmAndSavePayment(String paymentKey, String orderId, int amount) {
+    public CommunityPaymentResponseDto confirmPayment(String paymentKey, String orderId, int amount) {
         try {
             String rawResponse = webClient.post()
                     .uri("/" + paymentKey)
