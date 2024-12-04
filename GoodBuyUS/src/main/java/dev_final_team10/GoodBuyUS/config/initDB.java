@@ -29,6 +29,13 @@ public class initDB {
      * 식료품, 생활용품, 패션/의류
      */
     @PostConstruct
+    public void init() {
+        if (productRepository.count() == 0) {  // 이미 데이터가 없다면
+            createProduct();
+            createProPost();
+        }
+    }
+
     public void createProduct(){
         Product fruit1 = Product.createProduct("싱싱한 사과", 5000, "imageUrl1", ProductCategory.FOOD, SubCategory.FRESH_FOOD, DetailCategory.FRESH_FOOD_FRUITS,3);
         Product fruit2 = Product.createProduct("달콤한 바나나", 4000, "imageUrl2", ProductCategory.FOOD, SubCategory.FRESH_FOOD, DetailCategory.FRESH_FOOD_FRUITS,100);
@@ -185,7 +192,6 @@ public class initDB {
 
     }
 
-    @PostConstruct
     public void createProPost(){
         List<Product> products = productRepository.findAll();
         Random random = new Random();
