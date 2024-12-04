@@ -89,7 +89,7 @@ public class MainPaymentService {
         }
     }
 
-    //결제 요청 성공
+/*    //결제 요청 성공
     @Transactional
     public void handlePaymentSuccess(String paymentKey, UUID orderId, int amount) {
         log.info("결제 성공 요청: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
@@ -107,7 +107,63 @@ public class MainPaymentService {
         paymentRepository.save(payment);
 
         log.info("결제 성공 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
+    }*/
+@Transactional
+public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID orderId, int amount) {
+    log.info("결제 성공 요청: paymentKey={}, orderId={}, amount={}", paymentKey, orderId, amount);
+    Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new NoSuchElementException("없는 오더입니다."));
+
+    MainPayment payment = paymentRepository.findByOrder(order)
+            .orElseThrow(() -> new NoSuchElementException("없는 주문"));
+
+    try {
+        WebClient webClient = webClientBuilder.build();
+        String response = webClient.post()
+                .uri("https://api.tosspayments.com/v1/payments/confirm")
+                .bodyValue(Map.of(
+                        "paymentKey", paymentKey,
+                        "orderId", orderId.toString(),
+                        "amount", amount
+                ))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        log.info("결제 승인 응답: {}", response);
+
+        payment.setPaymentStatus(PaymentStatus.DONE);
+        payment.setPaymentKey(paymentKey);
+        payment.setUpdatedAt(LocalDateTime.now());
+        paymentRepository.save(payment);
+
+        log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
+
+        return MainPaymentResponseDto.builder()
+                .orderId(payment.getOrder().getOrderId())
+                .productName(payment.getOrder().getOrderName())
+                .quantity(payment.getQuantity())
+                .price(payment.getPrice())
+                .totalPrice(payment.getTotalPrice())
+                .status(payment.getPaymentStatus().name())
+                .paymentKey(payment.getPaymentKey())
+                .createdAt(payment.getCreatedAt())
+                .updatedAt(payment.getUpdatedAt())
+                .build();
+
+    } catch (Exception e) {
+        log.error("결제 승인 중 오류 발생: {}", e.getMessage(), e);
+        throw new RuntimeException("결제 승인 중 오류 발생: " + e.getMessage(), e);
     }
+}
+
+
+
+
+
+
+
+
     //결제 승인
     @Transactional
     public void approvePayment(String paymentKey, String orderId, int amount) {
