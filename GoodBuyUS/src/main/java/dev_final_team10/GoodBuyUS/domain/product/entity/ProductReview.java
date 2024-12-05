@@ -66,8 +66,6 @@ public class ProductReview extends BaseEntity {
         productReview.rating = rating;
         productReview.user = user;
         productReview.isused = true;
-        productReview.bindReview(product);
-        productReview.bindUser(user);
         return productReview;
     }
 

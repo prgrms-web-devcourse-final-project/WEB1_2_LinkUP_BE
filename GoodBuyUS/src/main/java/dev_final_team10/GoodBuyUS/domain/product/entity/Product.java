@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,6 +53,7 @@ public class Product {
         product.subCategory = subCategory;
         product.productPrice = productPrice;
         product.stock = stock;
+        product.averageRating = 0.0;
         return product;
     }
 
@@ -62,5 +64,4 @@ public class Product {
     public void increaseStock(int count){
         this.stock += count;
     }
-
 }
