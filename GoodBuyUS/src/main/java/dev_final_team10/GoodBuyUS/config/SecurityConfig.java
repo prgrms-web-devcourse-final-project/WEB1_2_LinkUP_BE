@@ -8,6 +8,7 @@ import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -40,39 +41,45 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.formLogin(login -> login.disable());
-        http.csrf(csrf -> csrf.disable());
-        http.httpBasic(httpBasic -> httpBasic.disable());
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.authorizeRequests(authz -> authz
-                // 아이콘, css, js 관련
-//                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/homepage", "/users/**", "/success").permitAll() // 공용 URL
-//                .requestMatchers("/naver/**").permitAll()// 네이버 OAuth 경로 허용
-//                .requestMatchers("/admin/**").hasRole("ADMIN")//admin설정
-//                .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // 주문 관련 요청 제한
-//                .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated()// 나머지 요청은 인증 필요
-//                // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
-//                .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
-//                .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
-//                .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/fail").permitAll()
-//                .requestMatchers(HttpMethod.GET, "goodbuyUs/**").permitAll()
-//
-//
-//                .requestMatchers("/users/**").permitAll() // 회원가입 접근 가능
-//                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 요청은 모두 허용
-                        .anyRequest().permitAll()
-//                .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+        http.formLogin(login -> login.disable()) // FormLogin 사용 X
+                .csrf(csrf -> csrf.disable()) // csrf 보안 사용 X
+                .httpBasic(httpBasic -> httpBasic.disable()) // httpBasic 사용 X
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정 연결
 
-        );// FormLogin 사용 X
-// csrf 보안 사용 X
-// httpBasic 사용 X
-// CORS 설정 연결
-// 세션 사용하지 않으므로 STATELESS로 설정
-// 세션 사용 안함 (Stateless 방식)
-//== URL별 권한 관리 옵션 ==
+
+                // 세션 사용하지 않으므로 STATELESS로 설정
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함 (Stateless 방식)
+
+                //== URL별 권한 관리 옵션 ==
+                .authorizeRequests(authz -> authz
+                        // 아이콘, css, js 관련
+//                        .requestMatchers("/api/**").permitAll() // 회원가입 접근 가능, 임시 커밋
+//                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/homepage", "/users/**", "/success").permitAll() // 공용 URL
+//                        .requestMatchers("/naver/**").permitAll()// 네이버 OAuth 경로 허용
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")//admin설정
+//                        .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").permitAll() // 주문 관련 요청 제한
+//                        .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").permitAll()// 나머지 요청은 인증 필요
+//                        // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
+//                        .requestMatchers("/users","/admin/*","/chat/**","/websocket/**","/chat-list.html","/chat-room.html","/login.html").permitAll() // 회원가입 접근 가능
+//                        .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage","/users/find","/users/reset").permitAll()
+//
+//                        .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
+//                        .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/fail").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/virtual/success").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/v1/virtual/success").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/v1/virtual/fail").permitAll()
+//                        .requestMatchers( HttpMethod.GET,"goodbuyUs/**").permitAll()
+//                        .requestMatchers( HttpMethod.GET,"/goodbuyUs/**").permitAll()
+//
+//                        .requestMatchers("/users/**").permitAll() // 회원가입 접근 가능
+//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 요청은 모두 허용
+//
+//                        .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
+                                .anyRequest().permitAll()
+                );
 
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
         // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
@@ -89,13 +96,13 @@ public class SecurityConfig {
         configuration.addAllowedMethod("*");  // 모든 HTTP 메소드 허용
         configuration.addAllowedHeader("*");  // 모든 헤더 허용
         configuration.setAllowCredentials(true);  // 자격 증명 허용
+        configuration.addExposedHeader(HttpHeaders.AUTHORIZATION);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);  // 모든 경로에 대해 CORS 설정
 
         return source;
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

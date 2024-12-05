@@ -1,6 +1,10 @@
 package dev_final_team10.GoodBuyUS.service;
 
+<<<<<<< HEAD
 import dev_final_team10.GoodBuyUS.controller.CommunityController;
+=======
+
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.*;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 @Log4j2
 @Transactional
@@ -45,9 +50,11 @@ public class CommunityService {
         //DTO -> entity로 변환
         CommunityPost communityPost = writeModifyPostDto.toEntityForCreate(user, neighborhood, communityCategory);
 
+
         //DB 저장
         communityPostRepository.save(communityPost);
     }
+
 
     //내 동네 사람들이 올린 커뮤니티 전체글 보는 메소드
     public List<PostResponseDto> communityPostList() {
@@ -64,6 +71,7 @@ public class CommunityService {
         return postResponseDtos;
     }
 
+<<<<<<< HEAD
     //커뮤니티 글에 참여하는 메소드
     public ResponseEntity<?> joinCommunityPost(CommunityPost communityPost, User user, Long number) throws IOException {
         //참여함과 동시에 참여자 테이블에 추가
@@ -108,4 +116,6 @@ public class CommunityService {
         participationsRepository.save(participations);
 
     }
+=======
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 }

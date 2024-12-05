@@ -24,6 +24,9 @@ public class CommunityPayment {
     private String communityPaymentKey;
 
     @Column(nullable = true)
+    private String secret;
+
+    @Column(nullable = true)
     private String bankId;
 
     @Column(nullable = true)
@@ -47,9 +50,14 @@ public class CommunityPayment {
     @Column(nullable = true)
     private LocalDateTime communityApprovedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PayType payType;
+    @Column(nullable = true)
+    private Integer refundedAmount;
+
+    @Column(nullable = true)
+    private LocalDateTime canceledAt;
+
+    @Column(nullable = true)
+    private String cancelReason;
 
     @Column(nullable = true)
     private String qrCode;

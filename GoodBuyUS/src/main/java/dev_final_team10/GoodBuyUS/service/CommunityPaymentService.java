@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.CommunityPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
 import dev_final_team10.GoodBuyUS.repository.CommunityPaymentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -50,7 +52,8 @@ public class CommunityPaymentService {
                     .amount(requestDto.getAmount())
                     .paymentStatus("WAITING_FOR_APPROVAL")
                     .communityPaymentKey(responseDto.getPaymentKey())
-                    .payType(requestDto.getPayType())
+                    .secret(responseDto.getSecret())
+                    //.payType(requestDto.getPayType())
                     .communityCreatedAt(LocalDateTime.now())
                     .build();
 
@@ -58,13 +61,13 @@ public class CommunityPaymentService {
 
             return responseDto;
 
+
         } catch (Exception e) {
             throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
-
-
-    public CommunityPaymentResponseDto confirmAndSavePayment(String paymentKey, String orderId, int amount) {
+//가상계좌 결제승인
+    public CommunityPaymentResponseDto confirmPayment(String paymentKey, String orderId, int amount) {
         try {
             String rawResponse = webClient.post()
                     .uri("/" + paymentKey)
@@ -97,29 +100,149 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 승인 처리 중 오류 발생: " + e.getMessage(), e);
         }
     }
-    public void updatePaymentStatus(String paymentKey) {
+//가상계좌 결제조회
+    public CommunityPaymentResponseDto updatePaymentStatus(String paymentKey) {
         try {
+
             String rawResponse = webClient.get()
                     .uri("/" + paymentKey)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
+
             CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
+
 
             CommunityPayment payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
                     .orElseThrow(() -> new IllegalArgumentException("해당 결제를 찾을 수 없습니다: " + paymentKey));
 
             payment = payment.toBuilder()
-                    .paymentStatus(responseDto.getStatus())
+                    .paymentStatus(responseDto.getStatus()) // Toss에서 받은 status로 업데이트
                     .communityApprovedAt(LocalDateTime.now())
                     .build();
 
             paymentRepository.save(payment);
+
+
+            return responseDto;
         } catch (Exception e) {
-            throw new RuntimeException("결제 상태 업데이트 중 오류 발생: " + e.getMessage(), e);
+            throw new RuntimeException("결제 상태 조회 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
+//가상계좌 결제 취소(상단이랑 다른점은 환불 계좌를 기입해야함)
+    @Transactional
+    public CommunityPaymentResponseDto cancelPayment(String paymentKey, String cancelReason, Map<String, String> refundAccount) {
+        try {
+
+            Map<String, Object> requestBody = Map.of(
+                    "cancelReason", cancelReason,
+                    "refundReceiveAccount", Map.of(
+                            "bank", refundAccount.get("bank"),
+                            "accountNumber", refundAccount.get("accountNumber"),
+                            "holderName", refundAccount.get("holderName")
+                    )
+            );
+
+            String rawResponse = webClient.post()
+                    .uri("/{paymentKey}/cancel", paymentKey)
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
+            CommunityPayment payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
+                    .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
+
+            if ("CANCELED".equals(responseDto.getStatus())) {
+                payment = payment.toBuilder()
+                        .paymentStatus("CANCELED")
+                        .canceledAt(LocalDateTime.now())
+                        .cancelReason(cancelReason)
+                        .build();
+
+                paymentRepository.save(payment);
+            } else {
+                throw new RuntimeException("결제 취소가 실패했습니다: " + responseDto.getStatus());
+            }
+            return responseDto;
+
+        } catch (Exception e) {
+            throw new RuntimeException("결제 취소 요청 중 오류 발생: " + e.getMessage(), e);
+        }
+    }
+// 아래는 웹훅관련 기능입니다. 이거 켜두면 계속 요청을 보내서 필요하신 분만 쓰라고 주석처리 했습니다.
+
+/*
+    @Transactional
+    public void processWebhook(TossWebhookDto webhookDto) {
+        String status;
+        String paymentKey;
+        String orderId;
+        String secret;
+
+        // 긴 형식 (data 객체가 있는 경우)
+        if (webhookDto.getData() != null) {
+            TossWebhookDto.Data data = webhookDto.getData();
+            status = data.getStatus();
+            paymentKey = data.getPaymentKey();
+            orderId = data.getOrderId();
+            secret = data.getSecret();
+        }
+        // 짧은 형식 (data 객체가 없는 경우)
+        else {
+            status = webhookDto.getStatus();
+            paymentKey = webhookDto.getPaymentKey();
+            orderId = webhookDto.getOrderId();
+            secret = webhookDto.getSecret();
+        }
+
+        CommunityPayment payment;
+
+        // 결제 정보 조회: paymentKey 조회 없으면 orderId로 조회 총 2개 형태로 요청이 가는데 주문 id가 없는 경우가 있습니다.
+        if (paymentKey != null) {
+            payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
+                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + paymentKey));
+        } else {
+            payment = paymentRepository.findByParticipationsOrderId(orderId)
+                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + orderId));
+        }
+
+        //  secret 검증
+        if (!secret.equals(payment.getSecret())) {
+            throw new SecurityException("Invalid webhook secret");
+        }
+
+        // 상태별 처리) 차이 확인하려고 done이랑 completed로 했어요
+        switch (status) {
+            case "DONE":
+                payment = payment.toBuilder()
+                        .paymentStatus("COMPLETED")
+                        .communityApprovedAt(LocalDateTime.now())
+                        .build();
+                break;
+
+            case "CANCELED":
+                payment = payment.toBuilder()
+                        .paymentStatus("CANCELED")
+                        .build();
+                break;
+
+            case "WAITING_FOR_DEPOSIT":
+                payment = payment.toBuilder()
+                        .paymentStatus("WAITING_FOR_DEPOSIT")
+                        .build();
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unknown status: " + status);
+        }
+
+        paymentRepository.save(payment);
+    }*/
 
 }
+
+

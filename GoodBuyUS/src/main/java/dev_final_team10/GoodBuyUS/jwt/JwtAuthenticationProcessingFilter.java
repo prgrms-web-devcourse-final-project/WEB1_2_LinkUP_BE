@@ -49,6 +49,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
         //OPTIONS 요청에 대해 필터를 처리하지 않음 (CORS 프리플라이트 요청)
         if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
             filterChain.doFilter(request, response);

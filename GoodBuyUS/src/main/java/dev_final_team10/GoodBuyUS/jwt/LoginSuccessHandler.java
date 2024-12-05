@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.GrantedAuthority;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -16,11 +18,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+=======
+import java.util.HashMap;
+import java.util.Map;
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 
 //로그인 성공 시
 @Log4j2
@@ -46,7 +53,10 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .findFirst()
                 .orElse("ROLE_USER"); // 만약 권한이 없으면 기본 ROLE_USER로 설정
         Map<String, Object> responseBody = new HashMap<>();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
         responseBody.put("roles", role);  // roles는 사용자의 권한 목록
         try {
             response.setContentType("application/json");
@@ -56,9 +66,12 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             log.error("응답 작성 중 오류 발생", e);
         }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken); // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
 
 

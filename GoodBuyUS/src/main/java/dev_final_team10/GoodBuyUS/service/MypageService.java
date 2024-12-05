@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
+
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;

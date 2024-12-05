@@ -1,11 +1,22 @@
 package dev_final_team10.GoodBuyUS.controller;
 
+import dev_final_team10.GoodBuyUS.service.CommunityService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
+<<<<<<< HEAD
 import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import dev_final_team10.GoodBuyUS.service.CommunityService;
@@ -15,14 +26,20 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+=======
+import lombok.extern.log4j.Log4j2;
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 import org.springframework.web.bind.annotation.*;
 import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+=======
+>>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 
 @Log4j2
 @RestController

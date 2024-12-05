@@ -80,6 +80,6 @@ public class UserController {
         return userService.updatePassword(token, request.get("newPassword"));
     }
 
-    
+
 
 }
