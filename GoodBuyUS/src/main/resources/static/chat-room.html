@@ -23,7 +23,7 @@
     const baseURL = 'http://localhost:8080'; // 백엔드 URL
     let stompClient = null;
     let isConnected = false;
-    let userName = ''; // 사용자 닉네임 저장 변수
+    let userName = ''; // 사용자 이메일 저장 변수
 
     // URL에서 roomId 가져오기
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,22 +34,22 @@
         throw new Error('roomId is required');
     }
 
-    // JWT에서 사용자 닉네임 추출
-    function fetchUserName() {
+    // JWT에서 사용자 이메일 추출
+    function fetchUserEmail() {
         const accessToken = localStorage.getItem('accessToken');
         if (!accessToken) {
             alert('로그인이 필요합니다.');
             throw new Error('Access token is missing');
         }
 
-        // JWT 토큰에서 사용자 정보 추출
+        // JWT 토큰에서 사용자 이메일 추출
         const payload = JSON.parse(atob(accessToken.split('.')[1]));
-        userName = payload.nickname || 'Anonymous'; // JWT payload에서 닉네임을 추출
+        userName = payload.email || 'Anonymous'; // JWT payload에서 이메일을 추출
     }
 
     // 페이지 로드 시 WebSocket 연결 및 기존 메시지 표시
     window.onload = async () => {
-        fetchUserName(); // 사용자 정보 가져오기
+        fetchUserEmail(); // 사용자 정보 가져오기
         displayStoredMessages(); // 로컬 저장소에서 기존 메시지 표시
         connectWebSocket(); // WebSocket 연결
     };
@@ -103,7 +103,7 @@
 
         const messageData = {
             roomId: roomId,
-            userName: userName, // 자동으로 가져온 닉네임 사용
+            userName: userName, // 자동으로 가져온 이메일 사용
             message: message,
             time: new Date().toISOString(),
         };
