@@ -21,7 +21,7 @@ bin/
 application.properties
 GoodBuyUS/upload/
 
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -38,3 +38,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Upload Folder ###
+GoodBuyUS/upload/*
