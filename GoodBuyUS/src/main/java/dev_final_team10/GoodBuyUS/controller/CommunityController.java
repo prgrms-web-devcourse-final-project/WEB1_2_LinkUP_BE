@@ -142,7 +142,7 @@ public class CommunityController {
                 break;
             }
         }
-        if (participationInfo.getStatus() == participationStatus.CANCLE) {
+        if (participationInfo.getStatus() == participationStatus.CANCEL) {
             return ResponseEntity.badRequest().body(Map.of("message", "이미 취소한 글입니다."));
         } else if (participationInfo.getStatus() == participationStatus.JOIN) {
             communityService.cancleCommunityPost(communityPost, user, participationInfo, participations);

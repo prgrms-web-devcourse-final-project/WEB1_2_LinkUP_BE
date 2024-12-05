@@ -107,16 +107,28 @@ public class CommunityService {
     //커뮤니티 글에 참여 후 취소하는 메소드
     public void cancleCommunityPost(CommunityPost communityPost, User user, Participations participations, List<Participations> participationsList) {
 
-        //작성자일 경우 글이 삭제상태로 바뀌면서 이 글에 참여했던 참여자들의 상태도 CANCLE로 바뀜
+        //작성자일 경우 글이 삭제상태로 바뀌면서 이 글에 참여했던 참여자들의 상태도 CANCEL로 바뀜
         if(participations.isWriter()){
             communityPost.setStatus(postStatus.DELETED);
             communityPostRepository.save(communityPost);
-            participationsList.forEach(participation -> participation.setStatus(participationStatus.CANCLE));
+            participationsList.forEach(participation -> participation.setStatus(participationStatus.CANCEL));
             participationsRepository.saveAll(participationsList);
         }
         //작성자 아닐경우 참여 정보 취소로 업데이트
-        participations.setStatus(participationStatus.CANCLE);
+        participations.setStatus(participationStatus.CANCEL);
         participationsRepository.save(participations);
+
+        if(communityPost.getStatus().equals(postStatus.PAYMENT_STANDBY)){
+            //결제 대기 상태인데 취소 (다 찼는데 취소할 경우) 할 경우 기간 남았으면 모집 상태로 기간 끝났으면 우선 DELETED로
+            if(communityPost.getCloseAt().isAfter(LocalDateTime.now())){
+                communityPost.setStatus(postStatus.APPROVED);
+                communityPost.setPaymentDeadline(null);
+                communityPostRepository.save(communityPost);
+            }
+            communityPost.setStatus(postStatus.DELETED);
+            communityPost.setPaymentDeadline(null);
+            communityPostRepository.save(communityPost);
+        }
 
     }
 }
