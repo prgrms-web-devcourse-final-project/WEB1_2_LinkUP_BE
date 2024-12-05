@@ -28,7 +28,7 @@ public class NaverOAuthController {
     @RequestMapping("/users/sociallogin")
     public void redirectToNaverLogin(HttpServletResponse response) throws IOException {
         String clientId = "WMviEjPZFWlKSGcKakso"; // 네이버 클라이언트 ID
-        String redirectUri = "http://localhost:8080/naver/callback"; // 네이버 인증 완료 후 리다이렉트될 URI
+        String redirectUri = "http://15.164.5.135:8080/naver/callback"; // 네이버 인증 완료 후 리다이렉트될 URI
         String state = "randomStateValue"; // 임의의 문자열 (CSRF 방지)
 
         // 네이버 인증 URL 생성
