@@ -34,6 +34,8 @@ public class ProductReview extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private boolean isused;
+
     /**
      * 연관관계 편의 메서드
      * @param product
@@ -63,6 +65,9 @@ public class ProductReview extends BaseEntity {
         productReview.content = content;
         productReview.rating = rating;
         productReview.user = user;
+        productReview.isused = true;
+        productReview.bindReview(product);
+        productReview.bindUser(user);
         return productReview;
     }
 
@@ -72,5 +77,7 @@ public class ProductReview extends BaseEntity {
     public void changeRating(int rating){
         this.rating = rating;
     }
-
+    public void removeReview(){
+        this.isused = false;
+    }
 }
