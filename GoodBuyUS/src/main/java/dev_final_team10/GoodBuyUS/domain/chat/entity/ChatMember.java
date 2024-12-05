@@ -4,6 +4,7 @@ import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "chat_room_member")
@@ -28,7 +29,5 @@ public class ChatMember {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    private String isPaid;
 
 }

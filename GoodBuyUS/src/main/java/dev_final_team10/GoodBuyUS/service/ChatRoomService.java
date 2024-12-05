@@ -30,10 +30,11 @@ public class ChatRoomService {
     public ChatRoom createChatRoom(ChatRoomDTO chatRoomDTO) {
         CommunityPost post = postRepository.findById(chatRoomDTO.getPostId()).orElseThrow(() -> new RuntimeException("Post not found"));
 
-        ChatRoom chatRoom = chatRoomDTO.toEntity(post);
-
         //채팅방 멤버 추가
         List<Participations> participations = participationsRepository.findByCommunityPost(post);
+        chatRoomDTO.setCapacity(participations.size());
+
+        ChatRoom chatRoom = chatRoomDTO.toEntity(post);
         for (Participations participation : participations) {
             User user = participation.getUser();
             ChatMember chatMember = ChatMemberDTO.toEntity(post, chatRoom, user);

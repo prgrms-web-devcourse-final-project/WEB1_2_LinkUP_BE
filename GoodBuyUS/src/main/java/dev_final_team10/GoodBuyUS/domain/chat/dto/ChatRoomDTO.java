@@ -20,7 +20,7 @@ public class ChatRoomDTO {
         return ChatRoom.builder()
                 .roomName(post.getTitle()+"의 채팅방")
                 .post(post)
-                .capacity(capacity)
+                .capacity(this.capacity)
                 .build();
     }
 }

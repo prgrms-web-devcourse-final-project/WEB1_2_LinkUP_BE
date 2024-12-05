@@ -4,6 +4,7 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+
 @Entity
 @Getter
 @Table(name = "participations")

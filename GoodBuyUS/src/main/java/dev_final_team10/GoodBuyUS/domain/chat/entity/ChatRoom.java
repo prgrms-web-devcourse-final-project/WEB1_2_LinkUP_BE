@@ -25,7 +25,7 @@ public class ChatRoom {
 
     private String roomName;
 
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<ChatMember> members = new ArrayList<>();
 
