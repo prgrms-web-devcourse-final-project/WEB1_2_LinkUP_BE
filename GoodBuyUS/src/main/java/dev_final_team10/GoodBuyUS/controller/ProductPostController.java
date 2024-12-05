@@ -34,7 +34,7 @@ public class ProductPostController {
     }
 
     // 리뷰 삭제 (햄버거로 삭제)
-    @DeleteMapping("/product/{review_id}")
+    @PutMapping("/product/remove/{review_id}")
     public HttpEntity<?> deleteReview(@RequestHeader("Authorization") String token, @PathVariable Long review_id){
         String userEmail = extractEmailFromToken(token);
         return productPostService.deleteReview(userEmail,review_id);
