@@ -106,8 +106,6 @@ public class MainPaymentService {
         payment.setPaymentStatus(PaymentStatus.AUTH_COMPLETED);
         payment.setPaymentKey(paymentKey);
         payment.setUpdatedAt(LocalDateTime.now());
-        paymentRepository.save(payment);
-
         log.info("결제 성공 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
     }*/
 @Transactional
@@ -157,15 +155,6 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
         log.error("결제 승인 중 오류 발생: {}", e.getMessage(), e);
         throw new RuntimeException("결제 승인 중 오류 발생: " + e.getMessage(), e);
     }
-}
-
-
-
-
-
-
-
-
     //결제 승인
     @Transactional
     public void approvePayment(String paymentKey, String orderId, int amount) {
@@ -193,12 +182,16 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
             log.info("결제 승인 응답: {}", response);
 
+
             payment.setPaymentStatus(PaymentStatus.DONE);
             payment.setUpdatedAt(LocalDateTime.now());
             order.defineDelivery(Delivery.COMPLETE);
             order.changeOrderStatus(OrderStatus.COMPLETE);
             paymentRepository.save(payment);
-
+            order.getProductPost().getProduct().decreaseStock(order.getQuantity());
+            if(order.getProductPost().getProduct().getStock()<=0){
+                order.getProductPost().unAvailable();
+            }
             log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
 
         } catch (Exception e) {
@@ -256,9 +249,15 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
             order.changeOrderStatus(OrderStatus.CANCEL);
             payment.setRefundedAmount(payment.getRefundedAmount() + effectiveCancelAmount);
             payment.setCancelReason(cancelReason);
-
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
+            order.getProductPost().getProduct().increaseStock(order.getQuantity());
+            if (LocalDateTime.now().isBefore(order.getProductPost().getProduct_period())) {
+                order.getProductPost().canSelling();
+            }
+            else {
+                order.getProductPost().unAvailable();
+            }
 
             log.info("결제 취소 처리 완료: PaymentKey = {}", paymentKey);
 
