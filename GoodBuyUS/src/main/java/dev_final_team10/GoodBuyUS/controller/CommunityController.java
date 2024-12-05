@@ -66,7 +66,7 @@ public class CommunityController {
         return PostResponseDto.of(communityPost);
     }
 
-    //SSE (실시간으로 보내주는 정보들)
+    //SSE (실시간으로 보내주는 정보들) - 참여현황, 결제현황, 포스트상태, 참여자의 결제여부
     @GetMapping("/post/{community_post_id}/participants")
     public SseEmitter streamParticipants(@PathVariable Long community_post_id) throws IOException {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
@@ -84,11 +84,13 @@ public class CommunityController {
 
     public void sendStreamingData(Long community_post_id) throws IOException {
         Long participantCount = communityService.getParticipantCount(community_post_id);
+        Long paymentCount = communityService.getPaymentCount(community_post_id);
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
         postStatus postStatus = communityPost.getStatus();
 
         Map<String, Object> data = new HashMap<>();
         data.put("participantCount", participantCount);
+        data.put("paymentCount", paymentCount);
         data.put("postStatus", postStatus);
         emitters.get(community_post_id).send(SseEmitter.event().name("update").data(data));
 

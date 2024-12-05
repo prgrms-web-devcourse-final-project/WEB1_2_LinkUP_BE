@@ -103,6 +103,15 @@ public class CommunityService {
         }
         return count;
     }
+    //결제 수량 세는 메서드
+    public Long getPaymentCount(Long communityPostId) {
+        List<Participations> paymentParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPostId, participationStatus.PAYMENT_COMPLETE);
+        Long count = 0L;
+        for(Participations participation : paymentParticipations){
+            count += participation.getQuantity();
+        }
+        return count;
+    }
 
     //커뮤니티 글에 참여 후 취소하는 메소드
     public void cancleCommunityPost(CommunityPost communityPost, User user, Participations participations, List<Participations> participationsList) {
@@ -131,4 +140,6 @@ public class CommunityService {
         }
 
     }
+
+
 }

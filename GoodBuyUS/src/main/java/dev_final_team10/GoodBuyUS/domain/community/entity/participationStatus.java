@@ -8,7 +8,7 @@ public enum participationStatus {
     CANCEL("참여취소"),
     PAYMENT_STANDBY("결제대기"),
     PAYMENT_CANCLE("결제취소"),
-    PAYMENT_COMPELETE("결제완료");
+    PAYMENT_COMPLETE("결제완료");
 
     private String statusName;
     participationStatus(String statusName) {
