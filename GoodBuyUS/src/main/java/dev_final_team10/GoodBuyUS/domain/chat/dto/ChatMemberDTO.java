@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatMemberDTO {
     private String orderId;
-    private String userId;
+    private Long userId;
     private String status;
 
     public static ChatMember toEntity(CommunityPost post, ChatRoom room, User user){

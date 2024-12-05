@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +17,7 @@ public class ChatRoomDTO {
     private Long postId;
     private int capacity;
     private String roomName;
+    private List<String> chatMembers;
 
     public ChatRoom toEntity(CommunityPost post){
         return ChatRoom.builder()
