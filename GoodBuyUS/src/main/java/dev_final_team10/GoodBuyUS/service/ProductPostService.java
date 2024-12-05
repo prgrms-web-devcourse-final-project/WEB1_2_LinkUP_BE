@@ -72,6 +72,7 @@ public class ProductPostService {
             create_reviewDTO.setReviewId(productReview.getProductReviewId());
             create_reviewDTO.setContent(productReview.getContent());
             create_reviewDTO.setRating(productReview.getRating());
+            create_reviewDTO.setUsing(productReview.isIsused());
             reviewDTOS.add(create_reviewDTO);
         }
         return PostDetailDTO.of(productPost,reviewDTOS);
@@ -92,6 +93,7 @@ public class ProductPostService {
                     productPost.getProduct(),
                     reviewRequestDTO.getContent(),
                     reviewRequestDTO.getRate(),user);
+            reviewRepository.save(productReview);
             log.info("리뷰 등록 완료 : userEmail : {}",user.getEmail());
             return new ResponseEntity<>("리뷰 등록 완료", HttpStatus.OK);
         } catch (Exception e){
@@ -121,11 +123,10 @@ public class ProductPostService {
     public ResponseEntity<?> deleteReview(String userEmail, Long reviewId) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
-
         ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
                 .orElseThrow(() -> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
         try {
-            reviewRepository.delete(productReview);
+            productReview.removeReview();
             return new ResponseEntity<>("리뷰 삭제 성공", HttpStatus.OK);
         } catch (Exception e) {
             // 예외 처리 (DB 오류, 트랜잭션 실패 등)
