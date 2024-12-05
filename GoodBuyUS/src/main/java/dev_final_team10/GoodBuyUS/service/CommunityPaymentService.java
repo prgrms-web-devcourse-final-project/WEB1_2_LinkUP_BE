@@ -19,10 +19,12 @@ public class CommunityPaymentService {
     private final WebClient webClient;
     private final CommunityPaymentRepository paymentRepository;
     private final ObjectMapper objectMapper;
+    private final SSEService sseService;
 
     public CommunityPaymentService(WebClient.Builder webClientBuilder,
-                                   CommunityPaymentRepository paymentRepository,
-                                   ObjectMapper objectMapper) {
+                                    CommunityPaymentRepository paymentRepository,
+                                    ObjectMapper objectMapper,
+                                    SSEService sseService) {
         this.webClient = webClientBuilder
                 .baseUrl("https://api.tosspayments.com/v1/payments")
                 .defaultHeaders(headers -> {
@@ -32,6 +34,7 @@ public class CommunityPaymentService {
                 .build();
         this.paymentRepository = paymentRepository;
         this.objectMapper = objectMapper;
+        this.sseService = sseService;
     }
 
     public CommunityPaymentResponseDto createAndRequestPayment(CommunityPaymentRequestDto requestDto) {
@@ -173,76 +176,6 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 취소 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
-// 아래는 웹훅관련 기능입니다. 이거 켜두면 계속 요청을 보내서 필요하신 분만 쓰라고 주석처리 했습니다.
-
-/*
-    @Transactional
-    public void processWebhook(TossWebhookDto webhookDto) {
-        String status;
-        String paymentKey;
-        String orderId;
-        String secret;
-
-        // 긴 형식 (data 객체가 있는 경우)
-        if (webhookDto.getData() != null) {
-            TossWebhookDto.Data data = webhookDto.getData();
-            status = data.getStatus();
-            paymentKey = data.getPaymentKey();
-            orderId = data.getOrderId();
-            secret = data.getSecret();
-        }
-        // 짧은 형식 (data 객체가 없는 경우)
-        else {
-            status = webhookDto.getStatus();
-            paymentKey = webhookDto.getPaymentKey();
-            orderId = webhookDto.getOrderId();
-            secret = webhookDto.getSecret();
-        }
-
-        CommunityPayment payment;
-
-        // 결제 정보 조회: paymentKey 조회 없으면 orderId로 조회 총 2개 형태로 요청이 가는데 주문 id가 없는 경우가 있습니다.
-        if (paymentKey != null) {
-            payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
-                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + paymentKey));
-        } else {
-            payment = paymentRepository.findByParticipationsOrderId(orderId)
-                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + orderId));
-        }
-
-        //  secret 검증
-        if (!secret.equals(payment.getSecret())) {
-            throw new SecurityException("Invalid webhook secret");
-        }
-
-        // 상태별 처리) 차이 확인하려고 done이랑 completed로 했어요
-        switch (status) {
-            case "DONE":
-                payment = payment.toBuilder()
-                        .paymentStatus("COMPLETED")
-                        .communityApprovedAt(LocalDateTime.now())
-                        .build();
-                break;
-
-            case "CANCELED":
-                payment = payment.toBuilder()
-                        .paymentStatus("CANCELED")
-                        .build();
-                break;
-
-            case "WAITING_FOR_DEPOSIT":
-                payment = payment.toBuilder()
-                        .paymentStatus("WAITING_FOR_DEPOSIT")
-                        .build();
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown status: " + status);
-        }
-
-        paymentRepository.save(payment);
-    }*/
-
 }
 
 

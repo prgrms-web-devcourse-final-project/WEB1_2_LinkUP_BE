@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: 웹훅 기능 구현(nqrok 사용해 로컬에서 가능하게 함)">
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: 가상계좌 결제취소 정보 저장 추가">
+      <change afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/SSEController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/CommunityWebhookService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/SSEService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/CommunityPaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/CommunityPaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/dto/CommunityPaymentResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/dto/CommunityPaymentResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/entity/CommunityPayment.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/domain/payment/entity/CommunityPayment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/CommunityPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/CommunityPaymentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,27 +46,28 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "sumin2eee"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;sumin2eee&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/prgrms-web-devcourse-final-project/WEB1_2_LinkUP_BE.git",
-    "accountId": "8de283f1-5acb-4ce0-ba36-760b34ab5e26"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/prgrms-web-devcourse-final-project/WEB1_2_LinkUP_BE.git&quot;,
+    &quot;accountId&quot;: &quot;8de283f1-5acb-4ce0-ba36-760b34ab5e26&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2pl0NLtWl3EKKVl3yNOIbEfb4x1" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -74,6 +76,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "Gradle.Build GoodBuyUS.executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
@@ -136,7 +139,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1733325314738</updated>
-      <workItem from="1733325316188" duration="13706000" />
+      <workItem from="1733325316188" duration="14080000" />
+      <workItem from="1733357500317" duration="19861000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 상단 물품 성공 페이지 이동 후 결제 승인 자동화">
       <option name="closed" value="true" />
@@ -154,7 +158,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733344887958</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="feat: 가상계좌 결제 취소 구현(웹훅이랑 연동되는지 확인)">
+      <option name="closed" value="true" />
+      <created>1733346723842</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1733346723842</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,6 +176,8 @@
     <MESSAGE value="chore: workspace xml 업데이트" />
     <MESSAGE value="feat: 상단 물품 성공 페이지 이동 후 결제 승인 자동화" />
     <MESSAGE value="feat: 웹훅 기능 구현(nqrok 사용해 로컬에서 가능하게 함)" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 웹훅 기능 구현(nqrok 사용해 로컬에서 가능하게 함)" />
+    <MESSAGE value="feat: 가상계좌 결제 취소 구현(웹훅이랑 연동되는지 확인)" />
+    <MESSAGE value="feat: 가상계좌 결제취소 정보 저장 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 가상계좌 결제취소 정보 저장 추가" />
   </component>
 </project>
