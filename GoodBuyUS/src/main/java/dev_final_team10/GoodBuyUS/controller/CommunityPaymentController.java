@@ -68,21 +68,32 @@ public class CommunityPaymentController {
                     .body(Map.of("error", "결제 승인 중 오류 발생", "message", e.getMessage()));
         }
     }
-    @PostMapping("/cancel-payment/{paymentKey}")
-    public ResponseEntity<?> cancelPayment(
-            @PathVariable String paymentKey,
-            @RequestBody Map<String, Object> requestBody) {
-        try {
-            int cancelAmount = (int) requestBody.get("cancelAmount");
-            String cancelReason = (String) requestBody.get("cancelReason");
 
-            CommunityPaymentResponseDto responseDto = communityPaymentService.cancelPayment(paymentKey, cancelAmount, cancelReason);
+    @PostMapping("/cancel-payment")
+    public ResponseEntity<?> cancelPayment(@RequestBody Map<String, Object> requestBody) {
+        try {
+            String paymentKey = (String) requestBody.get("paymentKey");
+            String cancelReason = (String) requestBody.get("cancelReason");
+            Map<String, String> refundAccount = (Map<String, String>) requestBody.get("refundReceiveAccount");
+
+            CommunityPaymentResponseDto responseDto = communityPaymentService.cancelPayment(paymentKey, cancelReason, refundAccount);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "결제 취소 중 오류 발생", "message", e.getMessage()));
         }
     }
+/* 아래는 포스트맨 요청 바디값 예시
+    {
+        "paymentKey": "tviva20241205103158yNcH3",
+            "cancelReason": "고객 변심으로 인한 취소",
+            "refundReceiveAccount": {
+        "bank": "88",
+                "accountNumber": "110123456789",
+                "holderName": "치토스"
+    }
+    }
+*/
 
 
     @GetMapping("/update-payment/{paymentKey}")
@@ -96,7 +107,7 @@ public class CommunityPaymentController {
                     .body(Map.of("error", "결제 상태 조회 중 오류 발생", "message", e.getMessage()));
         }
     }
-
+/* 웹훅 기능 사용시 커뮤니티 결제 서비스에서 웹훅 주석 푸시고 이것도 푸시면 됩니다.
     @PostMapping("/webhook")
     public ResponseEntity<?> handleWebhook(@RequestBody TossWebhookDto webhookDto) {
         try {
@@ -106,7 +117,7 @@ public class CommunityPaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
-    }
+    }*/
 }
 
 

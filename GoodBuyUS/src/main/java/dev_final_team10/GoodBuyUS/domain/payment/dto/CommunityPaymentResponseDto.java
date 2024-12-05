@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -23,24 +25,6 @@ public class CommunityPaymentResponseDto {
 
     @JsonProperty("virtualAccount")
     private VirtualAccount virtualAccount;
-
-
-
-    @JsonProperty("cancelAmount")
-    private Integer cancelAmount;
-
-    @JsonProperty("cancelReason")
-    private String cancelReason;
-
-    @JsonProperty("refundStatus")
-    private String refundStatus;
-
-    @JsonProperty("refundAvailableAmount")
-    private Integer refundAvailableAmount;
-
-    @JsonProperty("canceledAt")
-    private String canceledAt;
-
 
 
     @Getter
@@ -68,5 +52,23 @@ public class CommunityPaymentResponseDto {
     public static class Checkout {
         private String url;
     }
+
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class CancelInfo {
+        private String transactionKey;
+        private String cancelReason;
+        private String canceledAt;
+        private String cancelStatus;
+        private int cancelAmount;
+        private int refundableAmount;
+    }
+
 }
+
+
 

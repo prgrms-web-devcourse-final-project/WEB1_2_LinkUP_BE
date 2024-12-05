@@ -66,8 +66,7 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
-
-
+//가상계좌 결제승인
     public CommunityPaymentResponseDto confirmPayment(String paymentKey, String orderId, int amount) {
         try {
             String rawResponse = webClient.post()
@@ -101,6 +100,7 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 승인 처리 중 오류 발생: " + e.getMessage(), e);
         }
     }
+//가상계좌 결제조회
     public CommunityPaymentResponseDto updatePaymentStatus(String paymentKey) {
         try {
 
@@ -130,42 +130,52 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 상태 조회 중 오류 발생: " + e.getMessage(), e);
         }
     }
-    public CommunityPaymentResponseDto cancelPayment(String paymentKey, int cancelAmount, String cancelReason) {
+
+//가상계좌 결제 취소(상단이랑 다른점은 환불 계좌를 기입해야함)
+    @Transactional
+    public CommunityPaymentResponseDto cancelPayment(String paymentKey, String cancelReason, Map<String, String> refundAccount) {
         try {
 
+            Map<String, Object> requestBody = Map.of(
+                    "cancelReason", cancelReason,
+                    "refundReceiveAccount", Map.of(
+                            "bank", refundAccount.get("bank"),
+                            "accountNumber", refundAccount.get("accountNumber"),
+                            "holderName", refundAccount.get("holderName")
+                    )
+            );
+
             String rawResponse = webClient.post()
-                    .uri("/" + paymentKey + "/cancel")
-                    .bodyValue(Map.of(
-                            "cancelAmount", cancelAmount,
-                            "cancelReason", cancelReason
-                    ))
+                    .uri("/{paymentKey}/cancel", paymentKey)
+                    .bodyValue(requestBody)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
 
-
             CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
-
-
             CommunityPayment payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
-                    .orElseThrow(() -> new IllegalArgumentException("결제를 찾을 수 없습니다: " + paymentKey));
+                    .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
 
-            payment = payment.toBuilder()
-                    .paymentStatus("CANCELED")
-                    .refundedAmount((payment.getRefundedAmount() != null ? payment.getRefundedAmount() : 0) + cancelAmount)
-                    .refundAvailableAmount(payment.getAmount() - ((payment.getRefundedAmount() != null ? payment.getRefundedAmount() : 0) + cancelAmount))
-                    .canceledAt(LocalDateTime.now())
-                    .cancelReason(cancelReason)
-                    .build();
+            if ("CANCELED".equals(responseDto.getStatus())) {
+                payment = payment.toBuilder()
+                        .paymentStatus("CANCELED")
+                        .canceledAt(LocalDateTime.now())
+                        .cancelReason(cancelReason)
+                        .build();
 
-            paymentRepository.save(payment);
-
+                paymentRepository.save(payment);
+            } else {
+                throw new RuntimeException("결제 취소가 실패했습니다: " + responseDto.getStatus());
+            }
             return responseDto;
+
         } catch (Exception e) {
-            throw new RuntimeException("결제 취소 중 오류 발생: " + e.getMessage(), e);
+            throw new RuntimeException("결제 취소 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
+// 아래는 웹훅관련 기능입니다. 이거 켜두면 계속 요청을 보내서 필요하신 분만 쓰라고 주석처리 했습니다.
 
+/*
     @Transactional
     public void processWebhook(TossWebhookDto webhookDto) {
         String status;
@@ -231,7 +241,7 @@ public class CommunityPaymentService {
         }
 
         paymentRepository.save(payment);
-    }
+    }*/
 
 }
 

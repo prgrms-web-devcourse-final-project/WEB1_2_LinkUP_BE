@@ -54,9 +54,6 @@ public class CommunityPayment {
     private Integer refundedAmount;
 
     @Column(nullable = true)
-    private Integer refundAvailableAmount;
-
-    @Column(nullable = true)
     private LocalDateTime canceledAt;
 
     @Column(nullable = true)
