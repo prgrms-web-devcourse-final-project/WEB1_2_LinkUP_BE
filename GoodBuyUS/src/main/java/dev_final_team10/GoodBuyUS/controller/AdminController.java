@@ -24,6 +24,12 @@ public class AdminController {
     //승인대기 중인 글 승인 완료 하기
     @PatchMapping("/post/approve/{community_post_id}")
     public PostResponseDto approvedPost(@PathVariable Long community_post_id){
-        return adminCommunityService.ApprovedPost(community_post_id);
+        return adminCommunityService.approvedPost(community_post_id);
+    }
+    
+    //승인 거절
+    @PatchMapping("post/reject/{community_post_id}")
+    public PostResponseDto rejectedPost(@PathVariable Long community_post_id){
+        return adminCommunityService.rejectedPost(community_post_id);
     }
 }

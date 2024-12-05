@@ -10,15 +10,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.GrantedAuthority;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 
 //로그인 성공 시
 @Log4j2
@@ -44,6 +45,9 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .findFirst()
                 .orElse("ROLE_USER"); // 만약 권한이 없으면 기본 ROLE_USER로 설정
         Map<String, Object> responseBody = new HashMap<>();
+
+
+
         responseBody.put("roles", role);  // roles는 사용자의 권한 목록
         try {
             response.setContentType("application/json");
@@ -53,7 +57,11 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             log.error("응답 작성 중 오류 발생", e);
         }
 
+
+
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken); // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
+
+
 
         userRepository.findByEmail(email)
                 .ifPresent(user -> {
@@ -64,6 +72,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         log.info("로그인에 성공하였습니다. AccessToken : {}", accessToken);
         log.info("발급된 AccessToken 만료 기간 : {}", accessTokenExpiration);
     }
+
 
     private String extractUsername(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

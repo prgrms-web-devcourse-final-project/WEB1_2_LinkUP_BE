@@ -3,22 +3,24 @@ package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
-import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.domain.community.entity.*;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
+import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Log4j2
@@ -28,6 +30,8 @@ import java.util.List;
 public class CommunityService {
     private final UserRepository userRepository;
     private final CommunityPostRepository communityPostRepository;
+    private final ParticipationsRepository participationsRepository;
+
 
     //글 작성 메소드
     public void writePost(WriteModifyPostDto writeModifyPostDto) {
@@ -62,4 +66,48 @@ public class CommunityService {
         return postResponseDtos;
     }
 
+    //커뮤니티 글에 참여하는 메소드
+    public ResponseEntity<?> joinCommunityPost(CommunityPost communityPost, User user, Long number) throws IOException {
+        //참여함과 동시에 참여자 테이블에 추가
+        Participations participations = new Participations();
+        participations.setCommunityPost(communityPost);
+        participations.setQuantity(number);
+        participations.setUser(user);
+        //참여 상태를 JOIN으로
+        participations.setStatus(participationStatus.JOIN);
+        //공구 참여자와 작성자를 구분
+        if(user == communityPost.getUser()){
+            participations.setWriter(true);
+        }else {
+            participations.setWriter(false);
+        }
+        participationsRepository.save(participations);
+        return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
+    }
+
+    //참여자 수 세는 메서드
+    public Long getParticipantCount(Long communityPostId) {
+        List<Participations> joinParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPostId, participationStatus.JOIN);
+        Long count = 0L;
+        for(Participations participation : joinParticipations){
+            count += participation.getQuantity();
+        }
+        return count;
+    }
+
+    //커뮤니티 글에 참여 후 취소하는 메소드
+    public void cancleCommunityPost(CommunityPost communityPost, User user, Participations participations, List<Participations> participationsList) {
+
+        //작성자일 경우 글이 삭제상태로 바뀌면서 이 글에 참여했던 참여자들의 상태도 CANCLE로 바뀜
+        if(participations.isWriter()){
+            communityPost.setStatus(postStatus.DELETED);
+            communityPostRepository.save(communityPost);
+            participationsList.forEach(participation -> participation.setStatus(participationStatus.CANCLE));
+            participationsRepository.saveAll(participationsList);
+        }
+        //작성자 아닐경우 참여 정보 취소로 업데이트
+        participations.setStatus(participationStatus.CANCLE);
+        participationsRepository.save(participations);
+
+    }
 }

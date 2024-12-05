@@ -49,7 +49,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         //OPTIONS 요청에 대해 필터를 처리하지 않음 (CORS 프리플라이트 요청)
         if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
             filterChain.doFilter(request, response);
@@ -81,6 +80,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         if (refreshToken == null) {
             checkAccessTokenAndAuthentication(request, response, filterChain);
         }
+
+
+
+
     }
 
     //RefreshToken으로 유저 정보 찾기 & AccessToken/RefreshToken 재발급 메소드

@@ -9,7 +9,8 @@ public enum postStatus {
     APPROVED("승인완료"),           //승인이 완료되고 커뮤니티에서 모집 중인 상태 [참여하기] or [취소하기]
     PAYMENT_STANDBY("결제 대기"),   //모집이 완료되었고, 글 생성시간 = 글 수정시간일 경우 바로 결제대기 (12시간 카운트 다운) [결제하기][취소하기] or [환불하기]
     PAYMENT_COMPLETED("결제 완료"), //모두가 결제를 완료한 상태
-    REJECTED("승인 거절");
+    REJECTED("승인 거절"),          //관리자가 승인 거절
+    DELETED("글 삭제");
 
     private final String categoryName;
     postStatus(String categoryName) {

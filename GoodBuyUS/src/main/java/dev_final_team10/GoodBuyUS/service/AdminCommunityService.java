@@ -34,9 +34,17 @@ public class AdminCommunityService {
     }
 
     //승인 완료하기
-    public PostResponseDto ApprovedPost(Long communityPostId) {
+    public PostResponseDto approvedPost(Long communityPostId) {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         communityPost.setStatus(postStatus.APPROVED);
+        communityPost.setCreatedAt(LocalDateTime.now());
+        communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
+        return PostResponseDto.of(communityPost);
+    }
+
+    public PostResponseDto rejectedPost(Long communityPostId) {
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+        communityPost.setStatus(postStatus.REJECTED);
         communityPost.setCreatedAt(LocalDateTime.now());
         communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
         return PostResponseDto.of(communityPost);
