@@ -138,9 +138,15 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
         log.info("결제 승인 응답: {}", response);
 
         payment.setPaymentStatus(PaymentStatus.DONE);
+        order.defineDelivery(Delivery.COMPLETE);
+        order.changeOrderStatus(OrderStatus.COMPLETE);
         payment.setPaymentKey(paymentKey);
         payment.setUpdatedAt(LocalDateTime.now());
         paymentRepository.save(payment);
+        order.getProductPost().getProduct().decreaseStock(order.getQuantity());
+        if(order.getProductPost().getProduct().getStock()<=0){
+            order.getProductPost().unAvailable();
+        }
 
         log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
 
@@ -199,13 +205,7 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
             payment.setPaymentStatus(PaymentStatus.DONE);
             payment.setUpdatedAt(LocalDateTime.now());
-//            order.defineDelivery(Delivery.COMPLETE);
-//            order.changeOrderStatus(OrderStatus.COMPLETE);
             paymentRepository.save(payment);
-            order.getProductPost().getProduct().decreaseStock(order.getQuantity());
-            if(order.getProductPost().getProduct().getStock()<=0){
-                order.getProductPost().unAvailable();
-            }
             log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
 
         } catch (Exception e) {
@@ -262,9 +262,11 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
             payment.setRefundedAmount(payment.getRefundedAmount() + effectiveCancelAmount);
             payment.setCancelReason(cancelReason);
-
+            payment.getOrder().changeOrderStatus(OrderStatus.CANCEL);
+            payment.getOrder().defineDelivery(Delivery.REFUND);
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
+            payment.getOrder().getProductPost().getProduct().decreaseStock(payment.getQuantity());
 
             log.info("결제 취소 처리 완료: PaymentKey = {}", paymentKey);
 
