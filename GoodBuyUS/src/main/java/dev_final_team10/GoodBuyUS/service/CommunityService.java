@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,10 +83,18 @@ public class CommunityService {
             participations.setWriter(false);
         }
         participationsRepository.save(participations);
+
+        //마지막 참가자인 경우 글의 상태가 결제 대기로 바뀌게 + 결제 데드라인 생성
+        if(getParticipantCount(communityPost.getCommunityPostId()).equals(communityPost.getAvailableNumber())){
+            communityPost.setStatus(postStatus.PAYMENT_STANDBY);
+            communityPost.setPaymentDeadline(LocalDateTime.now().plusHours(12));
+        }
+
+
         return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
     }
 
-    //참여자 수 세는 메서드
+    //참여 수량 세는 메서드
     public Long getParticipantCount(Long communityPostId) {
         List<Participations> joinParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPostId, participationStatus.JOIN);
         Long count = 0L;

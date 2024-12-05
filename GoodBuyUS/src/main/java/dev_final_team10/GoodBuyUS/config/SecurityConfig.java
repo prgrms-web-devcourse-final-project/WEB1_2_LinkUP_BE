@@ -62,7 +62,7 @@ public class SecurityConfig {
 //                        // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
 //                        .requestMatchers("/users","/admin/*","/chat/**","/websocket/**","/chat-list.html","/chat-room.html","/login.html").permitAll() // 회원가입 접근 가능
 //                        .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage","/users/find","/users/reset").permitAll()
-//
+                        .requestMatchers("/users/**").permitAll()
 //                        .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
 //                        .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
 //                        .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
@@ -78,7 +78,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 요청은 모두 허용
 //
 //                        .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()
                 );
 
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작

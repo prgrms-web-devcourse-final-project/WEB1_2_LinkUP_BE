@@ -31,6 +31,7 @@ public class CommunityPost {
     private Long period;     //모집일
     private LocalDateTime closeAt;  //모집 기간 = 글 승인 시간 + 글작성할 때 입력하는 일수
     private Long unitAmount;   //한 개당 가격
+    private LocalDateTime paymentDeadline;  //결제 마감 기한 = 모집 다 된 시간 + 12시간
 
 
     @ElementCollection
@@ -62,6 +63,10 @@ public class CommunityPost {
         this.user = user;
         this.neighborhood = neighborhood;
         this.imageUrls = writeModifyPostDto.getImageUrls();
+    }
+
+    public void setPaymentDeadline(LocalDateTime paymentDeadline) {
+        this.paymentDeadline = paymentDeadline;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

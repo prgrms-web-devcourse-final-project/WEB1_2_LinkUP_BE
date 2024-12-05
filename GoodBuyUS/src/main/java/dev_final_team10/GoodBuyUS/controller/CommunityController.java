@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.controller;
 
+import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.service.CommunityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
@@ -64,14 +66,15 @@ public class CommunityController {
         return PostResponseDto.of(communityPost);
     }
 
-    //SSE (참여자 수 실시간 스트리밍)
+    //SSE (실시간으로 보내주는 정보들)
     @GetMapping("/post/{community_post_id}/participants")
     public SseEmitter streamParticipants(@PathVariable Long community_post_id) throws IOException {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         emitters.put(community_post_id, emitter);
 
+        User user = currentUser();
         // 초기 데이터 전송
-        sendParticipantUpdate(community_post_id);
+        sendStreamingData(community_post_id);
 
         emitter.onCompletion(() -> emitters.remove(community_post_id));
         emitter.onTimeout(() -> emitters.remove(community_post_id));
@@ -79,9 +82,16 @@ public class CommunityController {
         return emitter;
     }
 
-    public void sendParticipantUpdate(Long community_post_id) throws IOException {
+    public void sendStreamingData(Long community_post_id) throws IOException {
         Long participantCount = communityService.getParticipantCount(community_post_id);
-        emitters.get(community_post_id).send(SseEmitter.event().name("participantUpdate").data(participantCount));
+        CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
+        postStatus postStatus = communityPost.getStatus();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("participantCount", participantCount);
+        data.put("postStatus", postStatus);
+        emitters.get(community_post_id).send(SseEmitter.event().name("update").data(data));
+
     }
 
 
@@ -111,7 +121,7 @@ public class CommunityController {
 
     }
     communityService.joinCommunityPost(communityPost, user, request.get("number"));
-    sendParticipantUpdate(community_post_id);
+        sendStreamingData(community_post_id);
         return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
 
     }
@@ -136,7 +146,7 @@ public class CommunityController {
             return ResponseEntity.badRequest().body(Map.of("message", "이미 취소한 글입니다."));
         } else if (participationInfo.getStatus() == participationStatus.JOIN) {
             communityService.cancleCommunityPost(communityPost, user, participationInfo, participations);
-            sendParticipantUpdate(community_post_id);
+            sendStreamingData(community_post_id);
             return ResponseEntity.ok(Map.of("message", "취소가 완료되었습니다."));
         }
         return ResponseEntity.badRequest().body(Map.of("message","취소를 할 수 없는 상태입니다."));
