@@ -1,8 +1,8 @@
 package dev_final_team10.GoodBuyUS.controller;
 
-import dev_final_team10.GoodBuyUS.domain.payment.entity.PayType;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
 import dev_final_team10.GoodBuyUS.service.CommunityPaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,78 +14,110 @@ import java.util.Map;
 @RequestMapping("/api/v1/virtual")
 public class CommunityPaymentController {
 
-    private final CommunityPaymentService paymentService;
+    private final CommunityPaymentService communityPaymentService;
 
-    public CommunityPaymentController(CommunityPaymentService paymentService) {
-        this.paymentService = paymentService;
+    public CommunityPaymentController(CommunityPaymentService communityPaymentService) {
+        this.communityPaymentService = communityPaymentService;
     }
 
     @PostMapping
-    public ResponseEntity<CommunityPaymentResponseDto> createAndRequestPayment(@RequestBody CommunityPaymentRequestDto requestDto) {
-        System.out.println("createAndRequestPayment 호출됨: " + requestDto.getOrderId());
-        System.out.println("요청 데이터: " + requestDto);
-
-        requestDto.setSuccessUrl("http://localhost:8080/api/v1/virtual/success");
-        requestDto.setFailUrl("http://localhost:8080/api/v1/virtual/fail");
-
-        if (requestDto.getPayType() == PayType.VIRTUAL_ACCOUNT) {
-            System.out.println("결제 방식: 가상계좌");
-        } else if (requestDto.getPayType() == PayType.CARD) {
-            System.out.println("결제 방식: 카드");
-        }
-
-        CommunityPaymentResponseDto responseDto = paymentService.createAndRequestPayment(requestDto);
-        return ResponseEntity.ok(responseDto);
-    }
-
-
-    @GetMapping("/success")
-    public ResponseEntity<String> handlePaymentSuccess(@RequestParam String paymentKey, @RequestParam String orderId, @RequestParam int amount) {
+    public ResponseEntity<?> createAndRequestPayment(@RequestBody CommunityPaymentRequestDto requestDto) {
         try {
-            //paymentService.handlePaymentSuccess(paymentKey, orderId, amount);
-            return ResponseEntity.ok("결제 요청이 성공적으로 완료");
+            requestDto.setSuccessUrl("http://localhost:8080/api/v1/virtual/success");
+            requestDto.setFailUrl("http://localhost:8080/api/v1/virtual/fail");
+
+            CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);
+            return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("결제 처리 중 오류가 발생했습니다: " + e.getMessage());
+                    .body(Map.of("error", "결제 요청 중 오류 발생", "message", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/success")
+    public ResponseEntity<?> handlePaymentSuccess(
+            @RequestParam String paymentKey,
+            @RequestParam String orderId,
+            @RequestParam int amount) {
+        try {
+            CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "결제 승인 중 오류 발생", "message", e.getMessage()));
         }
     }
 
     @GetMapping("/fail")
-    public ResponseEntity<String> handlePaymentFail(@RequestParam String orderId, @RequestParam String message) {
-        try {
-            //paymentService.handlePaymentFail(orderId, message);
-            return ResponseEntity.badRequest().body("결제가 실패했습니다: " + message);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("결제 실패 처리 중 오류가 발생했습니다: " + e.getMessage());
-        }
+    public ResponseEntity<?> handlePaymentFail(@RequestParam String orderId, @RequestParam String message) {
+        return ResponseEntity.badRequest().body(Map.of("status", "fail", "orderId", orderId, "message", message));
     }
 
     @PostMapping("/confirm-payment/{paymentKey}")
-    public ResponseEntity<?> confirmPaymentAndSave(
+    public ResponseEntity<?> confirmPayment(
             @PathVariable String paymentKey,
             @RequestBody Map<String, Object> requestBody) {
         try {
             int amount = (int) requestBody.get("amount");
             String orderId = (String) requestBody.get("orderId");
 
-            CommunityPaymentResponseDto responseDto = paymentService.confirmAndSavePayment(paymentKey, orderId, amount);
+            CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "결제 승인 중 오류 발생", "message", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/cancel-payment")
+    public ResponseEntity<?> cancelPayment(@RequestBody Map<String, Object> requestBody) {
+        try {
+            String paymentKey = (String) requestBody.get("paymentKey");
+            String cancelReason = (String) requestBody.get("cancelReason");
+            Map<String, String> refundAccount = (Map<String, String>) requestBody.get("refundReceiveAccount");
+
+            CommunityPaymentResponseDto responseDto = communityPaymentService.cancelPayment(paymentKey, cancelReason, refundAccount);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "결제 취소 중 오류 발생", "message", e.getMessage()));
+        }
+    }
+/* 아래는 포스트맨 요청 바디값 예시
+    {
+        "paymentKey": "tviva20241205103158yNcH3",
+            "cancelReason": "고객 변심으로 인한 취소",
+            "refundReceiveAccount": {
+        "bank": "88",
+                "accountNumber": "110123456789",
+                "holderName": "치토스"
+    }
+    }
+*/
+
+
+    @GetMapping("/update-payment/{paymentKey}")
+    public ResponseEntity<?> updatePaymentStatus(@PathVariable String paymentKey) {
+        try {
+            CommunityPaymentResponseDto responseDto = communityPaymentService.updatePaymentStatus(paymentKey);
 
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("결제 승인 중 오류 발생: " + e.getMessage());
+                    .body(Map.of("error", "결제 상태 조회 중 오류 발생", "message", e.getMessage()));
         }
     }
-    @GetMapping("/update-payment/{paymentKey}")
-    public ResponseEntity<String> updatePaymentStatus(@PathVariable String paymentKey) {
+/* 웹훅 기능 사용시 커뮤니티 결제 서비스에서 웹훅 주석 푸시고 이것도 푸시면 됩니다.
+    @PostMapping("/webhook")
+    public ResponseEntity<?> handleWebhook(@RequestBody TossWebhookDto webhookDto) {
         try {
-            paymentService.updatePaymentStatus(paymentKey);
-            return ResponseEntity.ok("결제 상태가 업데이트되었습니다.");
+            communityPaymentService.processWebhook(webhookDto);
+            return ResponseEntity.ok("Webhook processed successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("결제 상태 업데이트 중 오류 발생: " + e.getMessage());
+                    .body(Map.of("error", e.getMessage()));
         }
-    }
-
+    }*/
 }
+
+

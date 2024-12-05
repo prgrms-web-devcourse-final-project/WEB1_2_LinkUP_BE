@@ -2,16 +2,23 @@ package dev_final_team10.GoodBuyUS.jwt;
 
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.GrantedAuthority;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 //로그인 성공 시
 @Log4j2
@@ -30,6 +37,21 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String email = extractUsername(authentication); // 인증 정보에서 Username(email) 추출
         String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken(); // JwtService의 createRefreshToken을 사용하여 RefreshToken 발급
+
+
+        String role = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority) // 권한을 문자열로 변환
+                .findFirst()
+                .orElse("ROLE_USER"); // 만약 권한이 없으면 기본 ROLE_USER로 설정
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("roles", role);  // roles는 사용자의 권한 목록
+        try {
+            response.setContentType("application/json");
+            response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+        } catch (
+                IOException e) {
+            log.error("응답 작성 중 오류 발생", e);
+        }
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken); // 응답 헤더에 AccessToken, RefreshToken 실어서 응답
 
