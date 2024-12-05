@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -48,6 +49,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        //OPTIONS 요청에 대해 필터를 처리하지 않음 (CORS 프리플라이트 요청)
+        if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
+            filterChain.doFilter(request, response);
+            return;  // OPTIONS 요청은 JWT 필터를 거치지 않도록 한다.
+        }
+
         //로그인 요청의 경우는 Filter 작동 X
         if (request.getRequestURI().equals("/users/login")) {
             filterChain.doFilter(request, response); // 로그인 요청이 들어오면, 다음 필터 호출
@@ -73,6 +80,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         if (refreshToken == null) {
             checkAccessTokenAndAuthentication(request, response, filterChain);
         }
+
+
+
+
     }
 
     //RefreshToken으로 유저 정보 찾기 & AccessToken/RefreshToken 재발급 메소드
