@@ -54,7 +54,6 @@ public class PostResponseDto {
         dto.setUserId(communityPost.getUser().getId());
         dto.setNickname(communityPost.getUser().getNickname());
         dto.setPaymentDeadline(communityPost.getPaymentDeadline());
-        dto.setParticipantStatus(communityPost);
         return dto;
     }
 }

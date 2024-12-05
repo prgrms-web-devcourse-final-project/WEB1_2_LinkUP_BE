@@ -61,9 +61,27 @@ public class CommunityController {
 
     //커뮤니티 특정 글 상세 보기
     @GetMapping("/post/{community_post_id}")
-    public PostResponseDto readCommunityPost(@PathVariable Long community_post_id){
+    public ResponseEntity<Map<String, Object>> readCommunityPost(@PathVariable Long community_post_id){
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
-        return PostResponseDto.of(communityPost);
+        User user = currentUser();
+         Participations participations = participationsRepository.findByCommunityPostAndUser(communityPost, user);
+        participationStatus participationStatus = null;
+        boolean isWriter = false;
+
+        if(user == communityPost.getUser()){
+            isWriter = true;
+
+        }
+         if(participations != null){
+             participationStatus = participations.getStatus();
+         }
+        Map<String, Object> response = new HashMap<>();
+        response.put("communityPost", PostResponseDto.of(communityPost));
+        response.put("participationStatus", participationStatus);
+        response.put("isWriter", isWriter);
+
+        return ResponseEntity.ok(response);
+
     }
 
     //SSE (실시간으로 보내주는 정보들) - 참여현황, 결제현황, 포스트상태, 참여자의 결제여부
