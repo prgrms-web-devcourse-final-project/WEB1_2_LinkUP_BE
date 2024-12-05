@@ -34,7 +34,7 @@ public class Product {
     @Column(nullable = false)
     private DetailCategory detailCategory;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<ProductReview> reviews = new ArrayList<>();
 
     private int reviewsCount;
@@ -51,19 +51,8 @@ public class Product {
         product.detailCategory = detailCategory;
         product.subCategory = subCategory;
         product.productPrice = productPrice;
-        product.averageRating = product.calculateAverageRating();
         product.stock = stock;
         return product;
-    }
-
-    public double calculateAverageRating() {
-        if (reviews.isEmpty()) {
-            return 0.0; // 리뷰가 없을 때 기본값
-        }
-        return reviews.stream()
-                .mapToDouble(ProductReview::getRating)
-                .average()
-                .orElse(0.0);
     }
 
     public void decreaseStock(int count){
@@ -73,4 +62,5 @@ public class Product {
     public void increaseStock(int count){
         this.stock += count;
     }
+
 }
