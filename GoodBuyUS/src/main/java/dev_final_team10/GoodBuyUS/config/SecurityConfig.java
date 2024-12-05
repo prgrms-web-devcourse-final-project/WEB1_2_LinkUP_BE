@@ -60,6 +60,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").permitAll() // 주문 관련 요청 제한
                 .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").permitAll()// 나머지 요청은 인증 필요
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
+                .requestMatchers("/users","/admin/*","/chat/**","/websocket/**","/chat-list.html","/chat-room.html","/login.html").permitAll() // 회원가입 접근 가능
+                .requestMatchers("/","/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**","/homepage","/users/find","/users/reset").permitAll()
+
+                .requestMatchers(HttpMethod.POST, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
+                .requestMatchers(HttpMethod.GET, "/goodbuyUs/order/**").authenticated() // POST 요청 제한
                 .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/fail").permitAll()

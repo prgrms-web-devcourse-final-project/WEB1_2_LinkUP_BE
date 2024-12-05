@@ -1,3 +1,5 @@
+package dev_final_team10.GoodBuyUS.service;
+
 import dev_final_team10.GoodBuyUS.service.AdminUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

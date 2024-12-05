@@ -1,5 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
+
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Log4j2
 @Transactional
@@ -39,9 +41,11 @@ public class CommunityService {
         //DTO -> entity로 변환
         CommunityPost communityPost = writeModifyPostDto.toEntityForCreate(user, neighborhood, communityCategory);
 
+
         //DB 저장
         communityPostRepository.save(communityPost);
     }
+
 
     //내 동네 사람들이 올린 커뮤니티 전체글 보는 메소드
     public List<PostResponseDto> communityPostList() {
@@ -57,4 +61,5 @@ public class CommunityService {
         }
         return postResponseDtos;
     }
+
 }

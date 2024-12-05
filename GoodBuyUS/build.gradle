@@ -40,6 +40,8 @@ dependencies {
 	//이메일 인증 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	//runtimeOnly 'com.h2database:h2'

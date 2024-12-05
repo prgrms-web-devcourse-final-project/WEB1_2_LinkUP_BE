@@ -2,7 +2,6 @@ package dev_final_team10.GoodBuyUS.controller;
 
 import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.order.dto.*;
-import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
 import dev_final_team10.GoodBuyUS.domain.product.dto.DetailProductDTo;
 import dev_final_team10.GoodBuyUS.service.OrderService;
 import lombok.RequiredArgsConstructor;
