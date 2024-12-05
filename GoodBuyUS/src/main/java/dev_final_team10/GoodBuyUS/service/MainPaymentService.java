@@ -9,12 +9,15 @@ import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.MainPaymentRepository;
 import dev_final_team10.GoodBuyUS.repository.OrderRepository;
+import dev_final_team10.GoodBuyUS.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.DProduct;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -33,7 +36,7 @@ public class MainPaymentService {
     private final MainPaymentRepository paymentRepository;
     private final ObjectMapper objectMapper;
     private final OrderRepository orderRepository;
-
+    private final ProductRepository productRepository;
 
 
     @Transactional
@@ -68,13 +71,11 @@ public class MainPaymentService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-
+            order.defineDelivery(Delivery.WAITING);
             log.info("Toss API 응답: {}", rawResponse);
 
             Map<String, Object> responseMap = objectMapper.readValue(rawResponse, Map.class);
             String paymentPageUrl = (String) responseMap.get("checkoutPageUrl");
-            order.defineDelivery(Delivery.WAITING);
-
             return MainPaymentResponseDto.builder()
                     .orderId(order.getOrderId())
                     .productName(order.getOrderName())
@@ -108,8 +109,6 @@ public class MainPaymentService {
         payment.setPaymentStatus(PaymentStatus.AUTH_COMPLETED);
         payment.setPaymentKey(paymentKey);
         payment.setUpdatedAt(LocalDateTime.now());
-        paymentRepository.save(payment);
-
         log.info("결제 성공 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
     }
     //결제 승인
@@ -119,7 +118,6 @@ public class MainPaymentService {
         Order order = orderRepository.findById(UUID.fromString(orderId)).orElseThrow(()->new NoSuchElementException("없는 오더"));
         MainPayment payment = paymentRepository.findByOrder(order)
                 .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
-
         if (!payment.getPaymentStatus().equals(PaymentStatus.AUTH_COMPLETED)) {
             throw new RuntimeException("이미 승인된 결제이거나 승인할 수 없는 상태입니다.");
         }
@@ -139,12 +137,16 @@ public class MainPaymentService {
 
             log.info("결제 승인 응답: {}", response);
 
+
             payment.setPaymentStatus(PaymentStatus.DONE);
             payment.setUpdatedAt(LocalDateTime.now());
             order.defineDelivery(Delivery.COMPLETE);
             order.changeOrderStatus(OrderStatus.COMPLETE);
             paymentRepository.save(payment);
-
+            order.getProductPost().getProduct().decreaseStock(order.getQuantity());
+            if(order.getProductPost().getProduct().getStock()<=0){
+                order.getProductPost().unAvailable();
+            }
             log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
 
         } catch (Exception e) {
@@ -202,9 +204,15 @@ public class MainPaymentService {
             order.changeOrderStatus(OrderStatus.CANCEL);
             payment.setRefundedAmount(payment.getRefundedAmount() + effectiveCancelAmount);
             payment.setCancelReason(cancelReason);
-
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
+            order.getProductPost().getProduct().increaseStock(order.getQuantity());
+            if (LocalDateTime.now().isBefore(order.getProductPost().getProduct_period())) {
+                order.getProductPost().canSelling();
+            }
+            else {
+                order.getProductPost().unAvailable();
+            }
 
             log.info("결제 취소 처리 완료: PaymentKey = {}", paymentKey);
 
