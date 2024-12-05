@@ -3,18 +3,12 @@ package dev_final_team10.GoodBuyUS.domain.community.entity;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
-<<<<<<< HEAD
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-=======
 
-
-@Entity
-@Getter
->>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 @Table(name = "participations")
 public class Participations {
 

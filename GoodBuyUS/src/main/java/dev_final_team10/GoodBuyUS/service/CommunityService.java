@@ -1,10 +1,6 @@
 package dev_final_team10.GoodBuyUS.service;
 
-<<<<<<< HEAD
-import dev_final_team10.GoodBuyUS.controller.CommunityController;
-=======
 
->>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.*;
@@ -15,7 +11,6 @@ import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.xddf.usermodel.chart.LegendPosition;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -71,7 +66,6 @@ public class CommunityService {
         return postResponseDtos;
     }
 
-<<<<<<< HEAD
     //커뮤니티 글에 참여하는 메소드
     public ResponseEntity<?> joinCommunityPost(CommunityPost communityPost, User user, Long number) throws IOException {
         //참여함과 동시에 참여자 테이블에 추가
@@ -116,6 +110,4 @@ public class CommunityService {
         participationsRepository.save(participations);
 
     }
-=======
->>>>>>> 35cc3a3fb06474bc92a2ba3bf806ed62c2182977
 }
