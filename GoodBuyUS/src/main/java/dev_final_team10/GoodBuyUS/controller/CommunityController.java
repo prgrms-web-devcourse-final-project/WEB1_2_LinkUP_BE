@@ -85,12 +85,11 @@ public class CommunityController {
         //이 글의 참여자 (참여했던 포함) 가져오기
         List<Participations> participations = participationsRepository.findAllByCommunityPost_CommunityPostId(community_post_id);
 
-        //현재 사용자 정보 가져오기(글 작성자)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(authentication.getName()).orElse(null);
+        //현재 사용자 정보 가져오기
+        User user = currentUser();
 
         for (Participations participation : participations) {
-            if (participation.getUser() == user) {
+            if (participation.getUser().equals(user)) {
                 return ResponseEntity.badRequest().body(Map.of("message", "이미 참여하거나 취소한 글입니다."));
             }
         }
@@ -108,6 +107,39 @@ public class CommunityController {
     sendParticipantUpdate(community_post_id);
         return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
 
+    }
+
+    //커뮤니티 게시글 취소하기 (참여하기 후 취소)
+    @PutMapping("/post/{community_post_id}/cancle")
+    public ResponseEntity<?> cancelCommunityPost(@PathVariable Long community_post_id) throws IOException {
+        CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
+        //이 글의 참여자 (참여했던 포함) 가져오기
+        List<Participations> participations = participationsRepository.findAllByCommunityPost_CommunityPostId(community_post_id);
+        User user = currentUser();
+
+        //현재 로그인한 사람의 참여 정보 가져오기(해당글의 참여정보)
+        Participations participationInfo = null; // 초기값 설정
+        for (Participations participation : participations) {
+            if (participation.getUser().equals(user)) {
+                participationInfo = participation;
+                break;
+            }
+        }
+        if (participationInfo.getStatus() == participationStatus.CANCLE) {
+            return ResponseEntity.badRequest().body(Map.of("message", "이미 취소한 글입니다."));
+        } else if (participationInfo.getStatus() == participationStatus.JOIN) {
+            communityService.cancleCommunityPost(communityPost, user, participationInfo, participations);
+            sendParticipantUpdate(community_post_id);
+            return ResponseEntity.ok(Map.of("message", "취소가 완료되었습니다."));
+        }
+        return ResponseEntity.badRequest().body(Map.of("message","취소를 할 수 없는 상태입니다."));
+    }
+
+    //현재 사용자 정보 가져오기
+    private User currentUser(){
+        //현재 사용자 정보 가져오기(글 작성자)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByEmail(authentication.getName()).orElse(null);
     }
 
 }

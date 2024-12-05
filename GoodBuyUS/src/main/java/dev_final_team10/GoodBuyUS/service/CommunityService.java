@@ -93,4 +93,19 @@ public class CommunityService {
         return count;
     }
 
+    //커뮤니티 글에 참여 후 취소하는 메소드
+    public void cancleCommunityPost(CommunityPost communityPost, User user, Participations participations, List<Participations> participationsList) {
+
+        //작성자일 경우 글이 삭제상태로 바뀌면서 이 글에 참여했던 참여자들의 상태도 CANCLE로 바뀜
+        if(participations.isWriter()){
+            communityPost.setStatus(postStatus.DELETED);
+            communityPostRepository.save(communityPost);
+            participationsList.forEach(participation -> participation.setStatus(participationStatus.CANCLE));
+            participationsRepository.saveAll(participationsList);
+        }
+        //작성자 아닐경우 참여 정보 취소로 업데이트
+        participations.setStatus(participationStatus.CANCLE);
+        participationsRepository.save(participations);
+
+    }
 }

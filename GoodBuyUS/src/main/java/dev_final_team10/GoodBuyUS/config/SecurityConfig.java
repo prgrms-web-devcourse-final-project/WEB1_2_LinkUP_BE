@@ -19,6 +19,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /*
  * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리
@@ -40,6 +43,7 @@ public class SecurityConfig {
         http.formLogin(login -> login.disable()) // FormLogin 사용 X
                 .csrf(csrf -> csrf.disable()) // csrf 보안 사용 X
                 .httpBasic(httpBasic -> httpBasic.disable()) // httpBasic 사용 X
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정 연결
 
                 // 세션 사용하지 않으므로 STATELESS로 설정
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함 (Stateless 방식)
@@ -71,6 +75,19 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:5173");  // 허용된 출처
+        configuration.addAllowedMethod("*");  // 모든 HTTP 메소드 허용
+        configuration.addAllowedHeader("*");  // 모든 헤더 허용
+        configuration.setAllowCredentials(true);  // 자격 증명 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);  // 모든 경로에 대해 CORS 설정
+
+        return source;
     }
 
     @Bean
