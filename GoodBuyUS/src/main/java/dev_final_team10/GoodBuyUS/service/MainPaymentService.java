@@ -9,12 +9,15 @@ import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.MainPaymentRepository;
 import dev_final_team10.GoodBuyUS.repository.OrderRepository;
+import dev_final_team10.GoodBuyUS.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.DProduct;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -106,6 +109,8 @@ public class MainPaymentService {
         payment.setPaymentStatus(PaymentStatus.AUTH_COMPLETED);
         payment.setPaymentKey(paymentKey);
         payment.setUpdatedAt(LocalDateTime.now());
+        paymentRepository.save(payment);
+
         log.info("결제 성공 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
     }*/
 @Transactional
@@ -155,6 +160,15 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
         log.error("결제 승인 중 오류 발생: {}", e.getMessage(), e);
         throw new RuntimeException("결제 승인 중 오류 발생: " + e.getMessage(), e);
     }
+}
+
+
+
+
+
+
+
+
     //결제 승인
     @Transactional
     public void approvePayment(String paymentKey, String orderId, int amount) {
@@ -185,8 +199,8 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
             payment.setPaymentStatus(PaymentStatus.DONE);
             payment.setUpdatedAt(LocalDateTime.now());
-            order.defineDelivery(Delivery.COMPLETE);
-            order.changeOrderStatus(OrderStatus.COMPLETE);
+//            order.defineDelivery(Delivery.COMPLETE);
+//            order.changeOrderStatus(OrderStatus.COMPLETE);
             paymentRepository.save(payment);
             order.getProductPost().getProduct().decreaseStock(order.getQuantity());
             if(order.getProductPost().getProduct().getStock()<=0){
@@ -206,7 +220,7 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
         MainPayment payment = paymentRepository.findByPaymentKey(paymentKey)
                 .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
-        Order order = payment.getOrder();
+
         if (!payment.getPaymentStatus().equals(PaymentStatus.DONE) &&
                 !payment.getPaymentStatus().equals(PaymentStatus.PARTIAL_CANCELED)) {
             throw new RuntimeException("취소할 수 없는 상태입니다.");
@@ -246,18 +260,11 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
                 payment.setBalanceAmount(updatedBalanceAmount);
             }
 
-            order.changeOrderStatus(OrderStatus.CANCEL);
             payment.setRefundedAmount(payment.getRefundedAmount() + effectiveCancelAmount);
             payment.setCancelReason(cancelReason);
+
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
-            order.getProductPost().getProduct().increaseStock(order.getQuantity());
-            if (LocalDateTime.now().isBefore(order.getProductPost().getProduct_period())) {
-                order.getProductPost().canSelling();
-            }
-            else {
-                order.getProductPost().unAvailable();
-            }
 
             log.info("결제 취소 처리 완료: PaymentKey = {}", paymentKey);
 
