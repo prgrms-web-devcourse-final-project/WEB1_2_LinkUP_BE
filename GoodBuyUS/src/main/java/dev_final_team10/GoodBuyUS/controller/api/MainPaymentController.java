@@ -7,6 +7,7 @@ import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.service.MainPaymentService;
 import dev_final_team10.GoodBuyUS.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
