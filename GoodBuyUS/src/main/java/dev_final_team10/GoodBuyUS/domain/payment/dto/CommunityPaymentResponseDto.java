@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -19,6 +19,10 @@ public class CommunityPaymentResponseDto {
     private String orderId;
     private String status;
     private Integer totalAmount;
+//배송정보
+    private String recipientName;
+    private String recipientAddress;
+    private String deliveryRequest;
 
     @JsonProperty("secret")
     private String secret; // 요청 검증용 Secret 웹훅에서 필요해요
