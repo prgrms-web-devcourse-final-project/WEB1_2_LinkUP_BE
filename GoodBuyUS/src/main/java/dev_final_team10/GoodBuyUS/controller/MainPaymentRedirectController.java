@@ -47,7 +47,7 @@ public class MainPaymentRedirectController {
             @RequestParam String orderId,
             @RequestParam String message) {
         try {
-            // 응답 반환
+            // 필요시 추가(프론트 분들 의견 듣고)
             return ResponseEntity.ok(Map.of(
                     "status", "fail",
                     "message", message,

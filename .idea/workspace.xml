@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: 상단물품 성공반환 주소 컨트롤러 생성">
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="refactor: 상단물품 결제 리팩토링">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/MainPaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/MainPaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/MainPaymentRedirectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/MainPaymentRedirectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +44,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/redirect_url" />
+        <entry key="$PROJECT_DIR$" value="feature/redirectUrl" />
       </map>
     </option>
   </component>
@@ -58,12 +57,12 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="feature/redirectUrl" />
-                    <option name="lastUsedInstant" value="1733499621" />
+                    <option name="branchName" value="feature/redirect_url" />
+                    <option name="lastUsedInstant" value="1733506284" />
                   </RecentBranch>
                   <RecentBranch>
-                    <option name="branchName" value="feature/redirect_url" />
-                    <option name="lastUsedInstant" value="1733499604" />
+                    <option name="branchName" value="feature/redirectUrl" />
+                    <option name="lastUsedInstant" value="1733499621" />
                   </RecentBranch>
                 </list>
               </option>
@@ -83,7 +82,7 @@
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;Spring Boot.GoodBuyUsApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/redirectUrl&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/redirect__url&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -96,9 +95,13 @@
 }</component>
   <component name="RunManager">
     <configuration name="GoodBuyUsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="mail.username" value="noreply.webus@gmail.com" />
+        <env name="mail.password" value="xvcjprowvkrlptdz" />
+      </envs>
       <module name="GoodBuyUS.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="dev_final_team10.GoodBuyUS.GoodBuyUsApplication" />
-      <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev " />
+      <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="dev_final_team10.GoodBuyUS.*" />
@@ -113,6 +116,7 @@
       <list>
         <item itemvalue="Spring Boot.GoodBuyUsApplication" />
         <item itemvalue="Spring Boot.GoodBuyUsApplication" />
+        <item itemvalue="Spring Boot.GoodBuyUsApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -125,11 +129,29 @@
       <option name="project" value="LOCAL" />
       <updated>1733499487028</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="refactor: 상단물품결제 리팩토링">
+      <option name="closed" value="true" />
+      <created>1733506243687</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1733506243687</updated>
+    </task>
+    <task id="LOCAL-00003" summary="refactor: 상단물품 결제 리팩토링">
+      <option name="closed" value="true" />
+      <created>1733506489532</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1733506489532</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: 상단물품 성공반환 주소 컨트롤러 생성" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 상단물품 성공반환 주소 컨트롤러 생성" />
+    <MESSAGE value="refactor: 상단물품결제 리팩토링" />
+    <MESSAGE value="refactor: 상단물품 결제 리팩토링" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 상단물품 결제 리팩토링" />
   </component>
 </project>
