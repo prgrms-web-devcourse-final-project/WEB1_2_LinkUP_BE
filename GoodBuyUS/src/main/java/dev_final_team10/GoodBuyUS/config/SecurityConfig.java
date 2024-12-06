@@ -79,6 +79,7 @@ public class SecurityConfig {
 //
 //                        .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                                 .anyRequest().permitAll()
+                                .requestMatchers("api/**").authenticated()
                 );
 
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작

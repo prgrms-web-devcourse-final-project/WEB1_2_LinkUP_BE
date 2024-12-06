@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.controller;
+package dev_final_team10.GoodBuyUS.controller.api;
 
 import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrderRequestDTO;
