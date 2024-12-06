@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: 결제 정보에 배송 정보도 추가" />
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: redirectUrl 성공 url 반환 시 확인 가능">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,6 +40,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/CommunityPaymentSSE" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -46,6 +53,31 @@
     &quot;assignee&quot;: &quot;sumin2eee&quot;
   }
 }</component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/communitydelivery" />
+                    <option name="lastUsedInstant" value="1733452500" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/CommunityPaymentSSE" />
+                    <option name="lastUsedInstant" value="1733452499" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/prgrms-web-devcourse-final-project/WEB1_2_LinkUP_BE.git&quot;,
@@ -71,7 +103,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.GoodBuyUsApplication.executor": "Run",
-    "git-widget-placeholder": "feature/CommunityPaymentSSE",
+    "git-widget-placeholder": "feature/communitydelivery",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -175,7 +207,23 @@
       <option name="project" value="LOCAL" />
       <updated>1733451814749</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="feat: 배송 관련 정보 추가">
+      <option name="closed" value="true" />
+      <created>1733452673831</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1733452673831</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: redirectUrl 성공 url 반환 시 확인 가능">
+      <option name="closed" value="true" />
+      <created>1733467911814</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1733467911814</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,6 +237,8 @@
     <MESSAGE value="fix: merge 충돌 해결" />
     <MESSAGE value="chore: 환결설정 업데이트" />
     <MESSAGE value="feat: 결제 정보에 배송 정보도 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 결제 정보에 배송 정보도 추가" />
+    <MESSAGE value="feat: 배송 관련 정보 추가" />
+    <MESSAGE value="feat: redirectUrl 성공 url 반환 시 확인 가능" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: redirectUrl 성공 url 반환 시 확인 가능" />
   </component>
 </project>
