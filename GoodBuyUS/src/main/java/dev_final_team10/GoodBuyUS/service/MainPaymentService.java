@@ -167,14 +167,6 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
         throw new RuntimeException("결제 승인 중 오류 발생: " + e.getMessage(), e);
     }
 }
-
-
-
-
-
-
-
-
     //결제 승인
     @Transactional
     public void approvePayment(String paymentKey, String orderId, int amount) {
@@ -213,6 +205,15 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
             throw new RuntimeException("결제 승인 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
+    @Transactional(readOnly = true)
+    public Long getProductIdFromOrder(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Order를 찾을 수 없습니다: " + orderId));
+
+        // Order -> ProductPost -> Product -> productId 반환
+        return order.getProductPost().getProduct().getProductId();
+    }
+
     //결제 취소 및 환불
     @Transactional
     public void cancelPayment(String paymentKey, String cancelReason, Integer cancelAmount) {

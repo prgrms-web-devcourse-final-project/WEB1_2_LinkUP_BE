@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/main-payments")
 @RequiredArgsConstructor
@@ -30,28 +29,59 @@ public class MainPaymentController {
             @RequestParam Long postId) {
 
         String userEmail = extractEmailFromToken(token);
-        Order order = orderService.createOrder(orderRequestDTO,userEmail,postId);
+        Order order = orderService.createOrder(orderRequestDTO, userEmail, postId);
         MainPaymentResponseDto responseDto = mainPaymentService.createAndRequestPayment(order);
         return ResponseEntity.ok(responseDto);
     }
 
     @RequestMapping(value = "/success", method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<MainPaymentResponseDto> handlePaymentSuccess(
+    public ResponseEntity<?> handlePaymentSuccess(
             @RequestParam String paymentKey,
             @RequestParam UUID orderId,
             @RequestParam int amount) {
 
-        MainPaymentResponseDto responseDto = mainPaymentService.handlePaymentSuccess(paymentKey, orderId, amount);
-        return ResponseEntity.ok(responseDto);
+        try {
+
+            MainPaymentResponseDto responseDto = mainPaymentService.handlePaymentSuccess(paymentKey, orderId, amount);
+
+            Long productId = mainPaymentService.getProductIdFromOrder(orderId);
+
+            String redirectUrl = "http://15.164.5.135:8080/products/payment-success/" + productId;
+
+            return ResponseEntity.ok(Map.of(
+                    "productName", responseDto.getProductName(),
+                    "quantity", responseDto.getQuantity(),
+                    "price", responseDto.getPrice(),
+                    "totalAmount", responseDto.getTotalPrice(),
+                    "status", responseDto.getStatus(),
+                    "redirectUrl", redirectUrl
+
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "결제 성공 처리 중 오류 발생", "message", e.getMessage()));
+        }
     }
 
-
-
     @PostMapping("/fail")
-    public ResponseEntity<String> handlePaymentFail(
+    public ResponseEntity<?> handlePaymentFail(
             @RequestParam String orderId,
             @RequestParam String message) {
-        return ResponseEntity.badRequest().body("결제가 실패했습니다: " + message);
+        try {
+            // Order ID를 기반으로 Product ID 가져오기
+            Long productId = mainPaymentService.getProductIdFromOrder(UUID.fromString(orderId));
+
+
+            String redirectUrl = "http://15.164.5.135:8080/products/payment-fail/" + productId;
+
+            return ResponseEntity.ok(Map.of(
+                    "status", "fail",
+                    "redirectUrl", redirectUrl
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "결제 실패 처리 중 오류 발생", "message", e.getMessage()));
+        }
     }
 
     @PostMapping("/approve")
@@ -83,9 +113,44 @@ public class MainPaymentController {
     }
 
     private String extractEmailFromToken(String token) {
-        // 토큰에서 userId를 디코딩하는 로직
         String tokenValue = token.replace("Bearer ", "");
         return JWT.decode(tokenValue).getClaim("email").asString();
     }
-
 }
+/*@RestController
+@RequestMapping("/api/v1/main-payments")
+@RequiredArgsConstructor
+public class MainPaymentController {
+
+    private final MainPaymentService mainPaymentService;
+    private final OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<MainPaymentResponseDto> createAndRequestPayment(
+            @RequestBody OrderRequestDTO orderRequestDTO,
+            @RequestHeader("Authorization") String token,
+            @RequestParam Long postId) {
+
+        String userEmail = extractEmailFromToken(token);
+        Order order = orderService.createOrder(orderRequestDTO,userEmail,postId);
+        MainPaymentResponseDto responseDto = mainPaymentService.createAndRequestPayment(order);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @RequestMapping(value = "/success", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<MainPaymentResponseDto> handlePaymentSuccess(
+            @RequestParam String paymentKey,
+            @RequestParam UUID orderId,
+            @RequestParam int amount) {
+
+        MainPaymentResponseDto responseDto = mainPaymentService.handlePaymentSuccess(paymentKey, orderId, amount);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PostMapping("/fail")
+    public ResponseEntity<String> handlePaymentFail(
+            @RequestParam String orderId,
+            @RequestParam String message) {
+        return ResponseEntity.badRequest().body("결제가 실패했습니다: " + message);
+    }
+    */
