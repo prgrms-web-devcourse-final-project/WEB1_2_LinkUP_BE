@@ -53,8 +53,8 @@ public class CommunityPaymentController {
             requestDto.setOrderName(community_post_id + "게시물에 대한 사용자" + user.getName() +"사용자의 결제");
             requestDto.setCustomerName(user.getName());
             requestDto.setCustomerEmail(user.getEmail());
-            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success");
-            requestDto.setFailUrl("http://15.164.5.135:8080/api/v1/virtual/fail");
+            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success/" + community_post_id);
+            requestDto.setFailUrl("http://15.164.5.135:8080/api/v1/virtual/fail"+ community_post_id);
             requestDto.setMethod("VIRTUAL_ACCOUNT");
 
             CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);
@@ -65,13 +65,19 @@ public class CommunityPaymentController {
         }
     }
 
-    @GetMapping("/success")
+    @GetMapping("/success/{community_post_id}")
     public ResponseEntity<?> handlePaymentSuccess(
             @RequestParam String paymentKey,
             @RequestParam String orderId,
-            @RequestParam int amount) {
+            @RequestParam int amount,
+            @PathVariable Long community_post_id) {
         try {
-            CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount);
+            User user = currentUser();
+            Participations participations = participationsInfo(community_post_id,user);
+
+
+
+            CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -84,15 +90,19 @@ public class CommunityPaymentController {
         return ResponseEntity.badRequest().body(Map.of("status", "fail", "orderId", orderId, "message", message));
     }
 
-    @PostMapping("/confirm-payment/{paymentKey}")
+    @PostMapping("/confirm-payment/{paymentKey}/{community_post_id}")
     public ResponseEntity<?> confirmPayment(
             @PathVariable String paymentKey,
-            @RequestBody Map<String, Object> requestBody) {
+            @RequestBody Map<String, Object> requestBody,
+            @PathVariable Long community_post_id) {
         try {
             int amount = (int) requestBody.get("amount");
             String orderId = (String) requestBody.get("orderId");
 
-            CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount);
+            User user = currentUser();
+            Participations participations = participationsInfo(community_post_id,user);
+
+            CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
