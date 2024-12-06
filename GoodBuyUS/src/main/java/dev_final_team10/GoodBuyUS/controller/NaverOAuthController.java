@@ -25,39 +25,26 @@ public class NaverOAuthController {
      * 네이버 로그인 페이지로 리다이렉트
      * 사용자가 "/users/sociallogin"을 호출하면 네이버 로그인 페이지로 이동합니다.
      */
-    @RequestMapping("/users/sociallogin")
-    public void redirectToNaverLogin(HttpServletResponse response) throws IOException {
-        String clientId = "WMviEjPZFWlKSGcKakso"; // 네이버 클라이언트 ID
-        String redirectUri = "http://15.164.5.135:8080/naver/callback"; // 네이버 인증 완료 후 리다이렉트될 URI
-        String state = "randomStateValue"; // 임의의 문자열 (CSRF 방지)
-
-        // 네이버 인증 URL 생성
-        String naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize"
-                + "?response_type=code"
-                + "&client_id=" + clientId
-                + "&redirect_uri=" + redirectUri
-                + "&state=" + state;
-
-        // 네이버 로그인 페이지로 리다이렉트
-        response.sendRedirect(naverLoginUrl);
+    @GetMapping("/users/sociallogin")
+    public ResponseEntity<String> redirectToNaverLogin(HttpServletResponse response) {
+        String naverLoginUrl = naverOAuthService.generateNaverLoginUrl();
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", naverLoginUrl).build();
     }
 
     /**
-     * 네이버 콜백 처리
-     * 네이버에서 인증이 완료되면 전달받은 code와 state를 사용해 JWT를 발급합니다.
+     * 네이버 로그인 콜백 처리
      */
     @GetMapping("/naver/callback")
-    public ResponseEntity<String> naverCallback(
+    public void naverCallback(
             @RequestParam String code,
             @RequestParam String state,
             HttpServletResponse response) {
-        try {
-            naverOAuthService.processNaverLogin(code, state, response);
-            return ResponseEntity.ok("네이버 로그인 성공! 헤더에서 토큰을 확인하세요.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("네이버 로그인 처리 중 오류가 발생했습니다.");
-        }
+        // 네이버 로그인 프로세스 실행
+        naverOAuthService.processNaverLogin(code, state, response);
+
+        // 로그인 성공 후 /homepage로 리다이렉션
+        response.setStatus(HttpServletResponse.SC_FOUND);
+        response.setHeader("Location", "/homepage");
     }
 
 
