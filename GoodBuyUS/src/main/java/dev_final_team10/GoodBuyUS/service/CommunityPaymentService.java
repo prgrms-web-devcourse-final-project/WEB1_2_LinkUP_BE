@@ -26,7 +26,7 @@ public class CommunityPaymentService {
         this.webClient = webClientBuilder
                 .baseUrl("https://api.tosspayments.com/v1/payments")
                 .defaultHeaders(headers -> {
-                    headers.setBasicAuth("test_sk_LlDJaYngrooZolGP9mERrezGdRpX", "");
+                    headers.setBasicAuth("test_sk_eqRGgYO1r56KZAwzggab8QnN2Eya", "");
                     headers.set("Content-Type", "application/json");
                 })
                 .build();

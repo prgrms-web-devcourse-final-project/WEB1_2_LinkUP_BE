@@ -86,7 +86,7 @@ public class MypageService {
         //카테고리 설정
         CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
 
-        communityPost.updateFields(writeModifyPostDto, user, neighborhood, communityCategory);
+//        communityPost.updateFields(writeModifyPostDto, user, neighborhood, communityCategory);
         //DB 저장
         communityPostRepository.save(communityPost);
 

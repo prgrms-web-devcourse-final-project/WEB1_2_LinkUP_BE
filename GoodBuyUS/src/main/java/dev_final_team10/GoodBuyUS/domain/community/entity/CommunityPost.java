@@ -52,7 +52,7 @@ public class CommunityPost {
     private Neighborhood neighborhood;  //글작성자의 동네코드
 
 
-    public void updateFields(WriteModifyPostDto writeModifyPostDto, User user, Neighborhood neighborhood, CommunityCategory communityCategory) {
+    public void updateFields(WriteModifyPostDto writeModifyPostDto, User user, Neighborhood neighborhood, CommunityCategory communityCategory,List<String> imageUrls) {
         this.title = writeModifyPostDto.getTitle();
         this.availableNumber = writeModifyPostDto.getAvailableNumber();
         this.category = communityCategory;
@@ -62,7 +62,7 @@ public class CommunityPost {
         this.unitAmount = writeModifyPostDto.getUnitAmount();
         this.user = user;
         this.neighborhood = neighborhood;
-        this.imageUrls = writeModifyPostDto.getImageUrls();
+//        this.imageUrls = writeModifyPostDto.getImageUrls();
     }
 
     public void setPaymentDeadline(LocalDateTime paymentDeadline) {

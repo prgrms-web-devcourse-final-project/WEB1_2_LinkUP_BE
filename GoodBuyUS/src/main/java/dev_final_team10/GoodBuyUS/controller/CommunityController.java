@@ -1,6 +1,7 @@
 package dev_final_team10.GoodBuyUS.controller;
 
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.service.CommunityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -48,8 +50,9 @@ public class CommunityController {
 
     //공구 모집글 작성
     @PostMapping("/post")
-    public ResponseEntity<?> writePost(@RequestBody WriteModifyPostDto writeModifyPostDto){
-        communityService.writePost(writeModifyPostDto);
+    public ResponseEntity<?> writePost(@RequestPart("content") WriteModifyPostDto content,  // 나머지 데이터는 DTO(JSON)로 받기
+                                       @RequestPart("images") List<MultipartFile> images) throws IOException {
+        communityService.writePost(content, images);
         return ResponseEntity.ok(Map.of("message","글 작성이 완료되었습니다."));
     }
 
