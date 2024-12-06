@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.controller;
+package dev_final_team10.GoodBuyUS.controller.api;
 
 import dev_final_team10.GoodBuyUS.domain.order.dto.*;
 import dev_final_team10.GoodBuyUS.domain.product.dto.DetailProductDTo;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/goodbuyUs")
+@RequestMapping("api/v1")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
