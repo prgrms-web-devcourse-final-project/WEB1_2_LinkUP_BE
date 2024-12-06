@@ -29,7 +29,7 @@ public class AdminController {
     }
     
     //승인 거절
-    @PatchMapping("post/reject/{community_post_id}")
+    @PatchMapping("/post/reject/{community_post_id}")
     public PostResponseDto rejectedPost(@PathVariable Long community_post_id) throws IOException {
         return adminCommunityService.rejectedPost(community_post_id);
     }

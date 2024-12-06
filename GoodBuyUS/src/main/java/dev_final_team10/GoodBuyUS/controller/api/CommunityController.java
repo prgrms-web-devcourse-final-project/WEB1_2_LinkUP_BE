@@ -90,15 +90,24 @@ public class CommunityController {
     //SSE (실시간으로 보내주는 정보들) - 참여현황, 결제현황, 포스트상태, 참여자의 결제여부
     @GetMapping("/post/{community_post_id}/participants")
     public SseEmitter streamParticipants(@PathVariable Long community_post_id) throws IOException {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        emitters.put(community_post_id, emitter);
+        // SseEmitter를 emitters에서 가져오거나, 없으면 새로 생성
+        SseEmitter emitter = emitters.get(community_post_id);
 
-        User user = currentUser();
-        // 초기 데이터 전송
+        if (emitter == null) {
+            // SseEmitter가 없으면 새로 생성하고 emitters에 추가
+            emitter = new SseEmitter(Long.MAX_VALUE);
+            emitters.put(community_post_id, emitter);
+        }
+
+// 항상 데이터를 전송하도록 변경
         sendStreamingData(community_post_id);
 
+        // 이벤트가 완료되었을 때 처리
         emitter.onCompletion(() -> emitters.remove(community_post_id));
         emitter.onTimeout(() -> emitters.remove(community_post_id));
+
+
+
 
         return emitter;
     }
