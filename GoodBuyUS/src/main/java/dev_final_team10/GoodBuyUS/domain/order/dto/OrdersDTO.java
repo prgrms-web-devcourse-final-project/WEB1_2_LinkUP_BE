@@ -11,10 +11,22 @@ import java.time.LocalDateTime;
 @Data @AllArgsConstructor @NoArgsConstructor
 public class OrdersDTO {
     private String productName;
-    private int pirce;
+    private int price;
     private LocalDateTime orderDate;
     private PaymentStatus paymentStatus;
-    private Long paymentId;
+    private String payment_key;
     private int quantity;
     private Delivery delivery;
+
+    public static OrdersDTO of(String productName, int price, LocalDateTime orderDate, PaymentStatus paymentStatus, String payment_key, int quantity, Delivery delivery){
+        OrdersDTO ordersDTO = new OrdersDTO();
+        ordersDTO.productName = productName;
+        ordersDTO.price = price;
+        ordersDTO.orderDate = orderDate;
+        ordersDTO.paymentStatus = paymentStatus;
+        ordersDTO.payment_key = payment_key;
+        ordersDTO.quantity = quantity;
+        ordersDTO.delivery =delivery;
+        return ordersDTO;
+    }
 }

@@ -1,6 +1,5 @@
 package dev_final_team10.GoodBuyUS.domain.payment.dto;
 
-import dev_final_team10.GoodBuyUS.domain.payment.entity.PayType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +20,10 @@ public class CommunityPaymentRequestDto {
     private String failUrl;
     private String method;
     private String bank;
-    private PayType payType;
+
+    //배송지 정보
+    private String recipientName;
+    private String recipientAddress;
+    private String deliveryRequest; // 배송 요청사항
 }
+

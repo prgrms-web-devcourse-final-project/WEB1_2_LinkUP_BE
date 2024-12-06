@@ -10,12 +10,7 @@ public enum CommunityCategory {
     ELECTRONICS("전자제품"),
     FURNITURE("가구/인테리어"),
     KIDS("유아/아동용품"),
-    SPORTS("스포츠/레저"),
-    PETS("반려동물 용품"),
-    BEAUTY("미용/건강"),
-    SEASONAL("계절용품"),
-    HOBBIES("이벤트/취미"),
-    AUTOMOTIVE("자동차/공구");
+    SPORTS("스포츠/레저");
     private final String categoryName;
     CommunityCategory(String categoryName) {
         this.categoryName = categoryName;

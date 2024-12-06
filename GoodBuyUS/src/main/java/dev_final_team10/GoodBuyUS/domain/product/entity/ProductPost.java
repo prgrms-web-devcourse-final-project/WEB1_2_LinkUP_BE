@@ -43,6 +43,7 @@ public class ProductPost extends BaseEntity {
 
     // 물건 원가
     private int originalPrice;
+    private int initstock;
 
     @OneToMany(mappedBy = "productPost")
     private List<Order> orders = new ArrayList<>();
@@ -60,6 +61,7 @@ public class ProductPost extends BaseEntity {
         productPost.originalPrice = product.getProductPrice();
         productPost.setOriginalandDiscount();
         productPost.title = product.getProductName();
+        productPost.initstock = product.getStock();
         return productPost;
     }
 

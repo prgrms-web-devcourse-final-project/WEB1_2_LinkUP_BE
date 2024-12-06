@@ -19,5 +19,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     public List<Order> findAllByProductPost(ProductPost product);
 
     @Query("SELECT o FROM Order o WHERE o.productPost = :productPost AND o.orderStatus = :status")
-    List<Order> findAllByProductPostAndStatus(@Param("productPost") ProductPost productPost, @Param("status") OrderStatus status);
+    public List<Order> findAllByProductPostAndStatus(@Param("productPost") ProductPost productPost, @Param("status") OrderStatus status);
+
+    public boolean existsByUserAndProductPostAndOrderStatus(User user, ProductPost productPost, OrderStatus orderStatus);
+
 }

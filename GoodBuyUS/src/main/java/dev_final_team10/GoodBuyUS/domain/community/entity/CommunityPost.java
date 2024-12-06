@@ -31,6 +31,7 @@ public class CommunityPost {
     private Long period;     //모집일
     private LocalDateTime closeAt;  //모집 기간 = 글 승인 시간 + 글작성할 때 입력하는 일수
     private Long unitAmount;   //한 개당 가격
+    private LocalDateTime paymentDeadline;  //결제 마감 기한 = 모집 다 된 시간 + 12시간
 
 
     @ElementCollection
@@ -51,7 +52,7 @@ public class CommunityPost {
     private Neighborhood neighborhood;  //글작성자의 동네코드
 
 
-    public void updateFields(WriteModifyPostDto writeModifyPostDto, User user, Neighborhood neighborhood, CommunityCategory communityCategory) {
+    public void updateFields(WriteModifyPostDto writeModifyPostDto, User user, Neighborhood neighborhood, CommunityCategory communityCategory,List<String> imageUrls) {
         this.title = writeModifyPostDto.getTitle();
         this.availableNumber = writeModifyPostDto.getAvailableNumber();
         this.category = communityCategory;
@@ -61,7 +62,11 @@ public class CommunityPost {
         this.unitAmount = writeModifyPostDto.getUnitAmount();
         this.user = user;
         this.neighborhood = neighborhood;
-        this.imageUrls = writeModifyPostDto.getImageUrls();
+//        this.imageUrls = writeModifyPostDto.getImageUrls();
+    }
+
+    public void setPaymentDeadline(LocalDateTime paymentDeadline) {
+        this.paymentDeadline = paymentDeadline;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
