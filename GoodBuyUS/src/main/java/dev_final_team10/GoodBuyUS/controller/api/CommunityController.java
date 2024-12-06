@@ -105,7 +105,11 @@ public class CommunityController {
 
     public void sendStreamingData(Long community_post_id) throws IOException {
         Long participantCount = communityService.getParticipantCount(community_post_id);
+        participantCount = (participantCount != null) ? participantCount : 0;
+
         Long paymentCount = communityService.getPaymentCount(community_post_id);
+        paymentCount = (paymentCount != null) ? paymentCount : 0;
+
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
         postStatus postStatus = communityPost.getStatus();
 
