@@ -4,4 +4,6 @@ import lombok.Data;
 
 @Data
 public class ReviewRequestDTO {
+    private String content;
+    private int rate;
 }

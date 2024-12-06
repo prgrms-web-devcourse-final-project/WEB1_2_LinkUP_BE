@@ -1,17 +1,25 @@
 package dev_final_team10.GoodBuyUS.service;
+import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
+import dev_final_team10.GoodBuyUS.domain.product.dto.ReviewRequestDTO;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.domain.product.dto.PostDetailDTO;
 import dev_final_team10.GoodBuyUS.domain.product.dto.ProductPostDTO;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductReview;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.repository.OrderRepository;
 import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
+import dev_final_team10.GoodBuyUS.repository.ProductReviewRepository;
+import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 
 /**
  * Todo
@@ -23,10 +31,14 @@ import java.util.NoSuchElementException;
  * 6. 웹소켓을 통한 상품 재고 실시간 관리
  */
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class ProductPostService {
     private final ProductPostRepository productPostRepository;
+    private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+    private final ProductReviewRepository reviewRepository;
 
     /**
      * 전체 판매 리스트 전달(썸네일), 쿼리 최적화 필요
@@ -36,7 +48,8 @@ public class ProductPostService {
         List<ProductPost> productPosts = productPostRepository.findAll();
         List<ProductPostDTO> productPostDTOS = new ArrayList<>();
         for (ProductPost productPost : productPosts) {
-            ProductPostDTO productPostDTO = ProductPostDTO.of(productPost);
+            double rate = setRating(productPost.getProduct());
+            ProductPostDTO productPostDTO = ProductPostDTO.of(productPost, rate);
             productPostDTOS.add(productPostDTO);
         }
         return productPostDTOS;
@@ -50,12 +63,92 @@ public class ProductPostService {
         ProductPost productPost = productPostRepository.findById(postId).orElseThrow(()-> new NoSuchElementException("없는 게시글입니다."));
         List <ProductReview> reviews = productPost.getProduct().getReviews();
         List<PostDetailDTO.ReviewDTO> reviewDTOS = new ArrayList<>();
+        double rating = setRating(productPost.getProduct());
         for (ProductReview productReview : reviews) {
             PostDetailDTO.ReviewDTO create_reviewDTO = new PostDetailDTO.ReviewDTO();
+            create_reviewDTO.setReviewId(productReview.getProductReviewId());
             create_reviewDTO.setContent(productReview.getContent());
             create_reviewDTO.setRating(productReview.getRating());
+            create_reviewDTO.setUsing(productReview.isIsused());
             reviewDTOS.add(create_reviewDTO);
         }
-        return PostDetailDTO.of(productPost,reviewDTOS);
+        return PostDetailDTO.of(productPost,reviewDTOS, rating);
+    }
+
+    // 리뷰 페이지, 구매내역에서 주문 상태를 확인해야함
+    public ResponseEntity<?> addReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long postId){
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
+        ProductPost productPost = productPostRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("ProductPost not found for postId: " + postId));
+        boolean hasConfirmedPurchase = orderRepository.existsByUserAndProductPostAndOrderStatus(user,productPost,OrderStatus.COMPLETE);
+        if(!hasConfirmedPurchase){
+            throw new IllegalStateException("구매 확정을 한 사용자만 리뷰를 남길 수 있습니다.");
+        }
+        try{
+            ProductReview productReview = ProductReview.createProductReview(
+                    productPost.getProduct(),
+                    reviewRequestDTO.getContent(),
+                    reviewRequestDTO.getRate(),user);
+            reviewRepository.save(productReview);
+            productReview.bindReview(productPost.getProduct());
+            productReview.bindUser(user);
+            log.info("리뷰 등록 완료 : userEmail : {}",user.getEmail());
+            return new ResponseEntity<>("리뷰 등록 완료", HttpStatus.OK);
+        } catch (Exception e){
+            log.error("리뷰 등록 실패 : {}", e.getMessage());
+            throw new RuntimeException("리뷰 등록 실패 : " + e.getMessage());
+        }
+    }
+
+    // 리뷰 수정
+    public ResponseEntity<?> updateReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long reviewId){
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
+        ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
+                .orElseThrow(()-> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
+        try
+        {
+            productReview.changeContent(reviewRequestDTO.getContent());
+            productReview.changeRating(reviewRequestDTO.getRate());
+            log.info("리뷰를 변경한 사용자 {}, 변경 내용 {}, 별점 수정{}",userEmail,reviewRequestDTO.getContent(),reviewRequestDTO.getRate());
+            return new ResponseEntity<>("리뷰 변경 성공", HttpStatus.OK);
+        } catch (RuntimeException e){
+            log.error("리뷰 변경 실패: {}", e.getMessage());
+            throw new RuntimeException("리뷰 변경 실패 : " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> deleteReview(String userEmail, Long reviewId) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
+        ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
+                .orElseThrow(() -> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
+        try {
+            productReview.removeReview();
+            return new ResponseEntity<>("리뷰 삭제 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            // 예외 처리 (DB 오류, 트랜잭션 실패 등)
+            log.error("리뷰 삭제 실패: {}", e.getMessage());
+            throw new RuntimeException("리뷰 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        }
+    }
+
+
+    public double setRating(Product product) {
+        // 상태가 true인 리뷰만 필터링
+        List<ProductReview> reviews = product.getReviews()
+                .stream()
+                .filter(ProductReview::isIsused)
+                .toList();
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+        // 평균 점수를 소수점 첫째 자리까지 계산
+        double averageRating = reviews.stream()
+                .mapToDouble(ProductReview::getRating) // 점수 추출
+                .average()
+                .orElse(0.0);
+        return Math.round(averageRating * 10) / 10.0;
     }
 }

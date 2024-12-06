@@ -11,6 +11,7 @@ import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import dev_final_team10.GoodBuyUS.service.CommunityPaymentService;
 import dev_final_team10.GoodBuyUS.service.UserService;
+import dev_final_team10.GoodBuyUS.service.CommunityWebhookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,12 +27,16 @@ import java.util.Random;
 public class CommunityPaymentController {
 
     private final CommunityPaymentService communityPaymentService;
+    private final CommunityWebhookService communityWebhookService;
     private final UserRepository userRepository;
     private final ParticipationsRepository participationsRepository;
     private final CommunityPostRepository communityPostRepository;
 
+    public CommunityPaymentController(CommunityPaymentService communityPaymentService,
+                                        CommunityWebhookService communityWebhookService) {
     public CommunityPaymentController(CommunityPaymentService communityPaymentService, UserRepository userRepository, ParticipationsRepository participationsRepository, CommunityPostRepository communityPostRepository) {
         this.communityPaymentService = communityPaymentService;
+        this.communityWebhookService = communityWebhookService;
         this.userRepository = userRepository;
         this.participationsRepository = participationsRepository;
         this.communityPostRepository = communityPostRepository;
@@ -148,11 +153,11 @@ public class CommunityPaymentController {
                     .body(Map.of("error", "결제 상태 조회 중 오류 발생", "message", e.getMessage()));
         }
     }
-/* 웹훅 기능 사용시 커뮤니티 결제 서비스에서 웹훅 주석 푸시고 이것도 푸시면 됩니다.
+ //웹훅 기능 사용시 커뮤니티 결제 서비스에서 웹훅 주석 푸시고 이것도 푸시면 됩니다.
     @PostMapping("/webhook")
     public ResponseEntity<?> handleWebhook(@RequestBody TossWebhookDto webhookDto) {
         try {
-            communityPaymentService.processWebhook(webhookDto);
+            communityWebhookService.processWebhook(webhookDto);
             return ResponseEntity.ok("Webhook processed successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

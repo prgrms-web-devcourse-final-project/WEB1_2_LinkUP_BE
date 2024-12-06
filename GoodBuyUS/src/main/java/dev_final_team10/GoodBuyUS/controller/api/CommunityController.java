@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.controller;
+package dev_final_team10.GoodBuyUS.controller.api;
 
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Log4j2
 @RestController
 @AllArgsConstructor
-@RequestMapping("/community")
+@RequestMapping("/api/community")
 public class CommunityController {
 
     private final CommunityService communityService;

@@ -60,6 +60,14 @@ public class CommunityPayment {
     private String cancelReason;
 
     @Column(nullable = true)
+    private String recipientName;
+    @Column(nullable = true)
+    private String recipientAddress;
+
+    @Column(nullable = true)
+    private String deliveryRequest;
+
+    @Column(nullable = true)
     private String qrCode;
 
     @Column(nullable = true)

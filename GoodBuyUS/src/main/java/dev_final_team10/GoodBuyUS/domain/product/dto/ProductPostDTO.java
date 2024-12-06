@@ -18,15 +18,14 @@ public class ProductPostDTO {
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
     private boolean available;
-    public static ProductPostDTO of(ProductPost productPost){
+    public static ProductPostDTO of(ProductPost productPost, double rating){
         ProductPostDTO productPostDTO = new ProductPostDTO();
         productPostDTO.id = productPost.getPostId();
         productPostDTO.name = productPost.getTitle();
         productPostDTO.originalprice  = productPost.getOriginalPrice();
         productPostDTO.discountprice = productPost.getProuctDiscount();
         productPostDTO.minamount = productPost.getMinAmount();
-        productPostDTO.rating = productPost.getProduct().getAverageRating();
-        productPostDTO.url = productPost.getPostURL();
+        productPostDTO.rating = rating;
         productPostDTO.category = productPost.getProduct().getProductCategory();
         productPostDTO.available = productPost.isAvailable();
         return productPostDTO;

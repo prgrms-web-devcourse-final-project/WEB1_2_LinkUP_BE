@@ -1,12 +1,15 @@
-package dev_final_team10.GoodBuyUS.controller;
+package dev_final_team10.GoodBuyUS.controller.api;
 
+import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.service.MypageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mypage")
+@RequestMapping("/api/mypage")
 public class MypageController {
 
     private final MypageService mypageService;
@@ -71,4 +74,25 @@ public class MypageController {
     public List<PostResponseDto> myPostList(){
          return mypageService.myPostList();
     }
+
+    //구매내역 보기
+    @GetMapping("/orders")
+    public ResponseEntity<?> myOrderList(@RequestHeader("Authorization") String token){
+        String userEmail = extractEmailFromToken(token);
+        // 이메일을 기반으로 주문 목록 조회
+        List<OrdersDTO> orders = mypageService.orderlist(userEmail);
+        // 결과가 없을 경우
+        if (orders.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("주문 내역 없음");
+        }
+        // 성공 응답
+        return ResponseEntity.ok(orders);
+    }
+
+    private String extractEmailFromToken(String token) {
+        // 토큰에서 userId를 디코딩하는 로직
+        String tokenValue = token.replace("Bearer ", "");
+        return JWT.decode(tokenValue).getClaim("email").asString();
+    }
+
 }

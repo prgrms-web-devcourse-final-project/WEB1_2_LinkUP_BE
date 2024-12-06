@@ -2,17 +2,22 @@ package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrderRequestDTO;
+import dev_final_team10.GoodBuyUS.domain.order.entity.Delivery;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
+import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.PaymentStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.MainPaymentRepository;
 import dev_final_team10.GoodBuyUS.repository.OrderRepository;
+import dev_final_team10.GoodBuyUS.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.DProduct;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -133,9 +138,15 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
         log.info("결제 승인 응답: {}", response);
 
         payment.setPaymentStatus(PaymentStatus.DONE);
+        order.defineDelivery(Delivery.COMPLETE);
+        order.changeOrderStatus(OrderStatus.COMPLETE);
         payment.setPaymentKey(paymentKey);
         payment.setUpdatedAt(LocalDateTime.now());
         paymentRepository.save(payment);
+        order.getProductPost().getProduct().decreaseStock(order.getQuantity());
+        if(order.getProductPost().getProduct().getStock()<=0){
+            order.getProductPost().unAvailable();
+        }
 
         log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
 
@@ -191,10 +202,10 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
             log.info("결제 승인 응답: {}", response);
 
+
             payment.setPaymentStatus(PaymentStatus.DONE);
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
-
             log.info("결제 승인 처리 완료: Order ID = {}, Payment Key = {}", orderId, paymentKey);
 
         } catch (Exception e) {
@@ -251,9 +262,11 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
 
             payment.setRefundedAmount(payment.getRefundedAmount() + effectiveCancelAmount);
             payment.setCancelReason(cancelReason);
-
+            payment.getOrder().changeOrderStatus(OrderStatus.CANCEL);
+            payment.getOrder().defineDelivery(Delivery.REFUND);
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
+            payment.getOrder().getProductPost().getProduct().increaseStock(payment.getQuantity());
 
             log.info("결제 취소 처리 완료: PaymentKey = {}", paymentKey);
 

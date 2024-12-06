@@ -6,14 +6,15 @@ import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ParticipationsRepository extends JpaRepository<Participations, Long> {
     List<Participations> findAllByCommunityPost_CommunityPostIdAndStatus(Long communityPostId, participationStatus status);
     List<Participations> findAllByCommunityPost_CommunityPostId(Long communityPostId);
+    List<Participations> findByCommunityPost(CommunityPost post);
     List<Participations> findByCommunityPost(CommunityPost post);
     Participations findByCommunityPostAndUser(CommunityPost communityPost, User user);
 
