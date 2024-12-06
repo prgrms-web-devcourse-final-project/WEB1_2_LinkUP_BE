@@ -1,5 +1,7 @@
 package dev_final_team10.GoodBuyUS.controller.api;
 
+import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.service.CommunityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
@@ -23,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -46,8 +50,9 @@ public class CommunityController {
 
     //공구 모집글 작성
     @PostMapping("/post")
-    public ResponseEntity<?> writePost(@RequestBody WriteModifyPostDto writeModifyPostDto){
-        communityService.writePost(writeModifyPostDto);
+    public ResponseEntity<?> writePost(@RequestPart("content") WriteModifyPostDto content,  // 나머지 데이터는 DTO(JSON)로 받기
+                                       @RequestPart("images") List<MultipartFile> images) throws IOException {
+        communityService.writePost(content, images);
         return ResponseEntity.ok(Map.of("message","글 작성이 완료되었습니다."));
     }
 
@@ -59,19 +64,38 @@ public class CommunityController {
 
     //커뮤니티 특정 글 상세 보기
     @GetMapping("/post/{community_post_id}")
-    public PostResponseDto readCommunityPost(@PathVariable Long community_post_id){
+    public ResponseEntity<Map<String, Object>> readCommunityPost(@PathVariable Long community_post_id){
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
-        return PostResponseDto.of(communityPost);
+        User user = currentUser();
+         Participations participations = participationsRepository.findByCommunityPostAndUser(communityPost, user);
+        participationStatus participationStatus = null;
+        boolean isWriter = false;
+
+        if(user == communityPost.getUser()){
+            isWriter = true;
+
+        }
+         if(participations != null){
+             participationStatus = participations.getStatus();
+         }
+        Map<String, Object> response = new HashMap<>();
+        response.put("communityPost", PostResponseDto.of(communityPost));
+        response.put("participationStatus", participationStatus);
+        response.put("isWriter", isWriter);
+
+        return ResponseEntity.ok(response);
+
     }
 
-    //SSE (참여자 수 실시간 스트리밍)
+    //SSE (실시간으로 보내주는 정보들) - 참여현황, 결제현황, 포스트상태, 참여자의 결제여부
     @GetMapping("/post/{community_post_id}/participants")
     public SseEmitter streamParticipants(@PathVariable Long community_post_id) throws IOException {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         emitters.put(community_post_id, emitter);
 
+        User user = currentUser();
         // 초기 데이터 전송
-        sendParticipantUpdate(community_post_id);
+        sendStreamingData(community_post_id);
 
         emitter.onCompletion(() -> emitters.remove(community_post_id));
         emitter.onTimeout(() -> emitters.remove(community_post_id));
@@ -79,9 +103,22 @@ public class CommunityController {
         return emitter;
     }
 
-    public void sendParticipantUpdate(Long community_post_id) throws IOException {
+    public void sendStreamingData(Long community_post_id) throws IOException {
         Long participantCount = communityService.getParticipantCount(community_post_id);
-        emitters.get(community_post_id).send(SseEmitter.event().name("participantUpdate").data(participantCount));
+        participantCount = (participantCount != null) ? participantCount : 0;
+
+        Long paymentCount = communityService.getPaymentCount(community_post_id);
+        paymentCount = (paymentCount != null) ? paymentCount : 0;
+
+        CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
+        postStatus postStatus = communityPost.getStatus();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("participantCount", participantCount);
+        data.put("paymentCount", paymentCount);
+        data.put("postStatus", postStatus);
+        emitters.get(community_post_id).send(SseEmitter.event().name("update").data(data));
+
     }
 
 
@@ -111,7 +148,7 @@ public class CommunityController {
 
     }
     communityService.joinCommunityPost(communityPost, user, request.get("number"));
-    sendParticipantUpdate(community_post_id);
+        sendStreamingData(community_post_id);
         return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
 
     }
@@ -132,11 +169,11 @@ public class CommunityController {
                 break;
             }
         }
-        if (participationInfo.getStatus() == participationStatus.CANCLE) {
+        if (participationInfo.getStatus() == participationStatus.CANCEL) {
             return ResponseEntity.badRequest().body(Map.of("message", "이미 취소한 글입니다."));
         } else if (participationInfo.getStatus() == participationStatus.JOIN) {
             communityService.cancleCommunityPost(communityPost, user, participationInfo, participations);
-            sendParticipantUpdate(community_post_id);
+            sendStreamingData(community_post_id);
             return ResponseEntity.ok(Map.of("message", "취소가 완료되었습니다."));
         }
         return ResponseEntity.badRequest().body(Map.of("message","취소를 할 수 없는 상태입니다."));

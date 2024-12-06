@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: redirectUrl 성공 url 반환 시 확인 가능">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="57a4bc61-5930-4e2e-9282-06e74c03d141" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,9 +18,6 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
-        <task path="$PROJECT_DIR$/GoodBuyUS">
-          <activation />
-        </task>
         <projects_view>
           <tree_state>
             <expand />
@@ -32,67 +27,10 @@
       </state>
     </system>
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="feature/CommunityPaymentSSE" />
-      </map>
-    </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;sumin2eee&quot;
-  }
-}</component>
-  <component name="GitToolBoxStore">
-    <option name="recentBranches">
-      <RecentBranches>
-        <option name="branchesForRepo">
-          <list>
-            <RecentBranchesForRepo>
-              <option name="branches">
-                <list>
-                  <RecentBranch>
-                    <option name="branchName" value="feature/communitydelivery" />
-                    <option name="lastUsedInstant" value="1733452500" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="feature/CommunityPaymentSSE" />
-                    <option name="lastUsedInstant" value="1733452499" />
-                  </RecentBranch>
-                </list>
-              </option>
-              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
-            </RecentBranchesForRepo>
-          </list>
-        </option>
-      </RecentBranches>
-    </option>
-  </component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/prgrms-web-devcourse-final-project/WEB1_2_LinkUP_BE.git&quot;,
-    &quot;accountId&quot;: &quot;8de283f1-5acb-4ce0-ba36-760b34ab5e26&quot;
-  }
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
-}</component>
-  <component name="ProjectId" id="2pl0NLtWl3EKKVl3yNOIbEfb4x1" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.Build GoodBuyUS.executor": "Run",
@@ -100,145 +38,24 @@
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.GoodBuyUsApplication.executor": "Run",
-    "git-widget-placeholder": "feature/communitydelivery",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
+    "last_opened_file_path": "C:/dev/workspace/WEB1_2_LinkUP_BE/GoodBuyUS",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "vcs.Git",
-    "vue.rearranger.settings.migration": "true"
+    "project.structure.side.proportion": "0.0"
   }
 }]]></component>
-  <component name="ReactorSettings">
-    <option name="notificationShown" value="true" />
-  </component>
   <component name="RunManager">
-    <configuration name="GoodBuyUsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="GoodBuyUsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="GoodBuyUS.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="dev_final_team10.GoodBuyUS.GoodBuyUsApplication" />
-      <option name="VM_PARAMETERS" value="-Dspring.profiles.active=dev " />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="dev_final_team10.GoodBuyUS.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Spring Boot.GoodBuyUsApplication" />
-      </list>
-    </recent_temporary>
   </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
-      </set>
-    </attachedChunks>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="" />
-      <created>1733325314738</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1733325314738</updated>
-      <workItem from="1733325316188" duration="13706000" />
-    </task>
-    <task id="LOCAL-00001" summary="feat: 상단 물품 성공 페이지 이동 후 결제 승인 자동화">
-      <option name="closed" value="true" />
-      <created>1733331805377</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1733331805377</updated>
-    </task>
-    <task id="LOCAL-00002" summary="feat: 웹훅 기능 구현(nqrok 사용해 로컬에서 가능하게 함)">
-      <option name="closed" value="true" />
-      <created>1733344887958</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1733344887958</updated>
-    </task>
-    <task id="LOCAL-00003" summary="fix: merge 충돌 해결">
-      <option name="closed" value="true" />
-      <created>1733446526178</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1733446526178</updated>
-    </task>
-    <task id="LOCAL-00004" summary="chore: 환결설정 업데이트">
-      <option name="closed" value="true" />
-      <created>1733446761361</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1733446761361</updated>
-    </task>
-    <task id="LOCAL-00005" summary="chore: 환결설정 업데이트">
-      <option name="closed" value="true" />
-      <created>1733448186959</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1733448186959</updated>
-    </task>
-    <task id="LOCAL-00006" summary="feat: 결제 정보에 배송 정보도 추가">
-      <option name="closed" value="true" />
-      <created>1733451814749</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1733451814749</updated>
-    </task>
-    <task id="LOCAL-00007" summary="feat: 배송 관련 정보 추가">
-      <option name="closed" value="true" />
-      <created>1733452673831</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1733452673831</updated>
-    </task>
-    <task id="LOCAL-00008" summary="feat: redirectUrl 성공 url 반환 시 확인 가능">
-      <option name="closed" value="true" />
-      <created>1733467911814</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1733467911814</updated>
-    </task>
-    <option name="localTasksCounter" value="9" />
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="chore: workspace xml 업데이트" />
-    <MESSAGE value="feat: 상단 물품 성공 페이지 이동 후 결제 승인 자동화" />
-    <MESSAGE value="feat: 웹훅 기능 구현(nqrok 사용해 로컬에서 가능하게 함)" />
-    <MESSAGE value="chore: 환경설정 업데이트" />
-    <MESSAGE value="fix: merge 충돌 해결" />
-    <MESSAGE value="chore: 환결설정 업데이트" />
-    <MESSAGE value="feat: 결제 정보에 배송 정보도 추가" />
-    <MESSAGE value="feat: 배송 관련 정보 추가" />
-    <MESSAGE value="feat: redirectUrl 성공 url 반환 시 확인 가능" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: redirectUrl 성공 url 반환 시 확인 가능" />
   </component>
 </project>

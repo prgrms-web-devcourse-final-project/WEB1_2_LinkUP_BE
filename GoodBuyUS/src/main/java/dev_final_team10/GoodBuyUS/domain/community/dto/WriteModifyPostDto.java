@@ -24,9 +24,10 @@ public class WriteModifyPostDto {
     private String description;
     private String productUrl;
     private List<String> imageUrls;
+    private LocalDateTime paymentDeadline;
 
     //글 작성 시 사용할 메소드
-    public CommunityPost toEntityForCreate(User user, Neighborhood neighborhood, CommunityCategory communityCategory){
+    public CommunityPost toEntityForCreate(User user, Neighborhood neighborhood, CommunityCategory communityCategory, List<String> imageUrls){
         return CommunityPost.builder()
                 .title(title)
                 .category(communityCategory)
