@@ -130,4 +130,13 @@ public class NaverOAuthService {
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         log.info("JWT 발급 완료 - AccessToken: {}, RefreshToken: {}", accessToken, refreshToken);
     }
+
+    public String generateNaverLoginUrl() {
+        return UriComponentsBuilder.fromHttpUrl("https://nid.naver.com/oauth2.0/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", clientId)
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("state", "randomStateValue")
+                .toUriString();
+    }
 }
