@@ -54,7 +54,8 @@ public class MypageController {
 
     //작성한 글이 승인대기 상태일 때 수정가능 하도록
     @PutMapping("/post/{community_post_id}")
-    public ResponseEntity<?> modifyPost(@PathVariable("community_post_id") Long communityPostId, @RequestBody WriteModifyPostDto writeModifyPostDto){
+    public ResponseEntity<?> modifyPost(@PathVariable("community_post_id") Long communityPostId,
+                                        @RequestBody WriteModifyPostDto writeModifyPostDto){
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         //현재 글의 상태가 승인대기가 아니라면 글을 수정하지 못하도록
         if(communityPost.getStatus() != postStatus.NOT_APPROVED){
