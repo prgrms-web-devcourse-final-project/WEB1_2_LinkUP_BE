@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.controller.api;
+package dev_final_team10.GoodBuyUS.controller;
 
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.service.MainPaymentService;
@@ -26,10 +26,6 @@ public class MainPaymentRedirectController {
         try {
             // 기존 결제 성공 로직 호출
             MainPaymentResponseDto responseDto = mainPaymentService.handlePaymentSuccess(paymentKey, orderId, amount);
-
-            // 리다이렉트 URL 구성
-            String redirectUrl = "http://localhost:8080/products/payment-success/" + productId;
-
             // 응답 반환
             return ResponseEntity.ok(Map.of(
                     "productName", responseDto.getProductName(),
@@ -37,7 +33,7 @@ public class MainPaymentRedirectController {
                     "price", responseDto.getPrice(),
                     "totalAmount", responseDto.getTotalPrice(),
                     "status", responseDto.getStatus(),
-                    "redirectUrl", redirectUrl
+                    "redirectUrl", mainPaymentService.buildRedirectUrl(productId, "success")
             ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -51,14 +47,11 @@ public class MainPaymentRedirectController {
             @RequestParam String orderId,
             @RequestParam String message) {
         try {
-            // 결제 실패 시 리다이렉트 URL 구성
-            String redirectUrl = "http://localhost:8080/products/payment-fail/" + productId;
-
             // 응답 반환
             return ResponseEntity.ok(Map.of(
                     "status", "fail",
                     "message", message,
-                    "redirectUrl", redirectUrl
+                    "redirectUrl", mainPaymentService.buildRedirectUrl(productId, "fail")
             ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

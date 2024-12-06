@@ -37,7 +37,9 @@ public class MainPaymentService {
     private final ObjectMapper objectMapper;
     private final OrderRepository orderRepository;
 
-
+    public String buildRedirectUrl(Long productId, String status) {
+        return String.format("http://15.164.5.135:8080/products/payment-%s/%d", status, productId);
+    }
 
     @Transactional
     public MainPaymentResponseDto createAndRequestPayment(Order order) {
@@ -56,11 +58,11 @@ public class MainPaymentService {
                 .build();
 
         paymentRepository.save(payment);
-        // productId 추출
-        Long productId = order.getProductPost().getProduct().getProductId();
 
-        String successUrl = "http://localhost:8080/products/payment-success/" + productId;
-        String failUrl = "http://localhost:8080/products/payment-fail/" + productId;
+
+        Long productId = order.getProductPost().getProduct().getProductId();
+        String successUrl = buildRedirectUrl(productId, "success");
+        String failUrl = buildRedirectUrl(productId, "fail");
         // 토스에 실제적으로 들어가는 것
         try {
             String rawResponse = webClient.post()
@@ -79,13 +81,11 @@ public class MainPaymentService {
             log.info("Toss API 응답: {}", rawResponse);
 
             MainPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, MainPaymentResponseDto.class);
-
-
             responseDto.setOrderId(order.getOrderId());
             responseDto.setProductName(order.getOrderName());
             responseDto.setQuantity(order.getQuantity());
             responseDto.setPrice(order.getProductPost().getOriginalPrice());
-            responseDto.setTotalPrice(order.getPrice());
+            responseDto.setTotalPrice(order.getPrice() * order.getQuantity());
             responseDto.setStatus(payment.getPaymentStatus().name());
             responseDto.setCreatedAt(payment.getCreatedAt());
             responseDto.setUpdatedAt(payment.getUpdatedAt());
