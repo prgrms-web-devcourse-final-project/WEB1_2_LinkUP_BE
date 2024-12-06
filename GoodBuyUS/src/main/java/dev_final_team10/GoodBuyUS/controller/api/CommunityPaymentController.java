@@ -151,7 +151,7 @@ public class CommunityPaymentController {
                     .body(Map.of("error", "결제 상태 조회 중 오류 발생", "message", e.getMessage()));
         }
     }
- //웹훅 기능 사용시 커뮤니티 결제 서비스에서 웹훅 주석 푸시고 이것도 푸시면 됩니다.
+    //웹훅 기능 사용시 커뮤니티 결제 서비스에서 웹훅 주석 푸시고 이것도 푸시면 됩니다.
     @PostMapping("/webhook")
     public ResponseEntity<?> handleWebhook(@RequestBody TossWebhookDto webhookDto) {
         try {
@@ -186,5 +186,3 @@ public class CommunityPaymentController {
 
     }
 }
-
-
