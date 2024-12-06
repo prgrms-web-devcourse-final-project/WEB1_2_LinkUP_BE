@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: 배송 관련 정보 추가">
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: redirectUrl 성공 url 반환 시 확인 가능">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/MainPaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/MainPaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,7 +215,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733452673831</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat: redirectUrl 성공 url 반환 시 확인 가능">
+      <option name="closed" value="true" />
+      <created>1733467911814</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1733467911814</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -232,6 +238,7 @@
     <MESSAGE value="chore: 환결설정 업데이트" />
     <MESSAGE value="feat: 결제 정보에 배송 정보도 추가" />
     <MESSAGE value="feat: 배송 관련 정보 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 배송 관련 정보 추가" />
+    <MESSAGE value="feat: redirectUrl 성공 url 반환 시 확인 가능" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: redirectUrl 성공 url 반환 시 확인 가능" />
   </component>
 </project>
