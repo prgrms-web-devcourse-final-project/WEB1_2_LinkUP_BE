@@ -3,12 +3,10 @@ package dev_final_team10.GoodBuyUS.controller.api;
 import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrderRequestDTO;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
-import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.MainPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.service.MainPaymentService;
 import dev_final_team10.GoodBuyUS.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +38,6 @@ public class MainPaymentController {
             @RequestParam String paymentKey,
             @RequestParam UUID orderId,
             @RequestParam int amount) {
-
         MainPaymentResponseDto responseDto = mainPaymentService.handlePaymentSuccess(paymentKey, orderId, amount);
         return ResponseEntity.ok(responseDto);
     }
