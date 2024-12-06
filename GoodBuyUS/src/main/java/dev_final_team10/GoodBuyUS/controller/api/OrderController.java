@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    @PostMapping("/orders")
+    @PostMapping
     public DetailProductDTo readyToOrder(@RequestBody CountRequestDTO countRequestDTO, @RequestParam Long postId) {
         System.out.println("Controller: readyToOrder 호출됨!"); // 간단한 출력
         return orderService.readyToOrder(countRequestDTO, postId);
