@@ -55,7 +55,6 @@ public class SecurityConfig {
                  * 토스 결제 성공 시 403 에러 해결 바꾸지 마세요!!
                  */
                 .authorizeRequests(authz -> authz
-
                         .requestMatchers("/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/success").permitAll() // 공용 URL
                         .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()

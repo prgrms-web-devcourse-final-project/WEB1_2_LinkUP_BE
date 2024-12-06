@@ -76,61 +76,83 @@ public class ProductPostService {
     }
 
     // 리뷰 페이지, 구매내역에서 주문 상태를 확인해야함
-    public ResponseEntity<?> addReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long postId){
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
-        ProductPost productPost = productPostRepository.findById(postId)
-                .orElseThrow(() -> new NoSuchElementException("ProductPost not found for postId: " + postId));
-        boolean hasConfirmedPurchase = orderRepository.existsByUserAndProductPostAndOrderStatus(user,productPost,OrderStatus.COMPLETE);
-        if(!hasConfirmedPurchase){
-            throw new IllegalStateException("구매 확정을 한 사용자만 리뷰를 남길 수 있습니다.");
-        }
-        try{
+    public ResponseEntity<?> addReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long postId) {
+        try {
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
+            ProductPost productPost = productPostRepository.findById(postId)
+                    .orElseThrow(() -> new NoSuchElementException("ProductPost not found for postId: " + postId));
+            boolean hasConfirmedPurchase = orderRepository.existsByUserAndProductPostAndOrderStatus(user, productPost, OrderStatus.COMPLETE);
+            if (!hasConfirmedPurchase) {
+                throw new IllegalStateException("구매 확정을 한 사용자만 리뷰를 남길 수 있습니다.");
+            }
             ProductReview productReview = ProductReview.createProductReview(
                     productPost.getProduct(),
                     reviewRequestDTO.getContent(),
-                    reviewRequestDTO.getRate(),user);
+                    reviewRequestDTO.getRate(), user);
             reviewRepository.save(productReview);
             productReview.bindReview(productPost.getProduct());
             productReview.bindUser(user);
-            log.info("리뷰 등록 완료 : userEmail : {}",user.getEmail());
+            log.info("리뷰 등록 완료 : userEmail : {}", user.getEmail());
             return new ResponseEntity<>("리뷰 등록 완료", HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            log.error("유저 또는 게시글을 찾을 수 없음 {}", e.getMessage());
+            return new ResponseEntity<>("리뷰 생성 실패",HttpStatus.NOT_FOUND);
+        } catch (IllegalStateException e) {
+            log.error("해당 유저는 구매한 기록이 없음 {}", e.getMessage());
+            return new ResponseEntity<>("리뷰 생성 실패, 구매한 적 없음",HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            log.error("리뷰 등록 실패 : {}", e.getMessage());
-            throw new RuntimeException("리뷰 등록 실패 : " + e.getMessage());
+            log.error(e.getMessage());
+            return new ResponseEntity<>("리뷰 생성 실패",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // 리뷰 수정
     public ResponseEntity<?> updateReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long reviewId){
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
-        ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
+        try {
+            User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NoSuchElementException("해당 이메일을 사용하는 유저가 없습니다.: " + userEmail));
+             ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
                 .orElseThrow(()-> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
-        try
-        {
+            // 리뷰 내용 및 별점 변경
             productReview.changeContent(reviewRequestDTO.getContent());
             productReview.changeRating(reviewRequestDTO.getRate());
-            log.info("리뷰를 변경한 사용자 {}, 변경 내용 {}, 별점 수정{}",userEmail,reviewRequestDTO.getContent(),reviewRequestDTO.getRate());
-            return new ResponseEntity<>("리뷰 변경 성공", HttpStatus.OK);
-        } catch (RuntimeException e){
+            log.info("리뷰를 변경한 사용자 {}, 변경 내용 {}, 별점 수정{}", userEmail, reviewRequestDTO.getContent(), reviewRequestDTO.getRate());
+            // 성공적으로 처리된 경우
+            return ResponseEntity.status(HttpStatus.OK).body("리뷰 변경 성공");
+        }catch (NoSuchElementException e){
             log.error("리뷰 변경 실패: {}", e.getMessage());
-            throw new RuntimeException("리뷰 변경 실패 : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (RuntimeException e){
+            log.error("리뷰 변경 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }catch (Exception e){
+            log.error("리뷰 변경 실패 : {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
+    // 리뷰 삭제
     public ResponseEntity<?> deleteReview(String userEmail, Long reviewId) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
-        ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
-                .orElseThrow(() -> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
         try {
+            // 사용자 조회
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
+            // 리뷰 조회
+            ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
+                    .orElseThrow(() -> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
+            // 리뷰 삭제
             productReview.removeReview();
+            // 성공 응답
             return new ResponseEntity<>("리뷰 삭제 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            // 예외 처리 (DB 오류, 트랜잭션 실패 등)
+        } catch (NoSuchElementException e) {
+            // 사용자 또는 리뷰가 없을 때
             log.error("리뷰 삭제 실패: {}", e.getMessage());
-            throw new RuntimeException("리뷰 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("리뷰 또는 사용자를 찾을 수 없습니다.");
+        } catch (Exception e) {
+            // DB 오류나 트랜잭션 실패 등
+            log.error("리뷰 삭제 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("리뷰 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.");
         }
     }
 
