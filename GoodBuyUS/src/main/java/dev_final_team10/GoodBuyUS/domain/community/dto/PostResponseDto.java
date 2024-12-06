@@ -1,8 +1,6 @@
 package dev_final_team10.GoodBuyUS.domain.community.dto;
 
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
-import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.domain.community.entity.*;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -34,10 +32,12 @@ public class PostResponseDto {
     private postStatus status; //글의 상태(승인대기, 승인완료 등등)
     private Long userId;
     private String nickname;
+    private LocalDateTime paymentDeadline;
 
     //엔티티 -> DTO변환
     public static PostResponseDto of(CommunityPost communityPost) {
-        PostResponseDto dto = new PostResponseDto();
+
+                PostResponseDto dto = new PostResponseDto();
         dto.setCommunityPostId(communityPost.getCommunityPostId());
         dto.setTitle(communityPost.getTitle());
         dto.setTotalAmount(communityPost.getTotalAmount());
@@ -53,7 +53,7 @@ public class PostResponseDto {
         dto.setStatus(communityPost.getStatus());
         dto.setUserId(communityPost.getUser().getId());
         dto.setNickname(communityPost.getUser().getNickname());
-
+        dto.setPaymentDeadline(communityPost.getPaymentDeadline());
         return dto;
     }
 }

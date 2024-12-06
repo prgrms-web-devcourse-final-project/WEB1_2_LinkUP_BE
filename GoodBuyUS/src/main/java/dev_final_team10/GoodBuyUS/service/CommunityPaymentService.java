@@ -1,16 +1,22 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
+import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.CommunityPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPaymentRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -72,7 +78,7 @@ public class CommunityPaymentService {
         }
     }
 //가상계좌 결제승인
-    public CommunityPaymentResponseDto confirmPayment(String paymentKey, String orderId, int amount) {
+    public CommunityPaymentResponseDto confirmPayment(String paymentKey, String orderId, int amount, Long community_post_id, Participations participations) {
         try {
             String rawResponse = webClient.post()
                     .uri("/" + paymentKey)
@@ -98,7 +104,10 @@ public class CommunityPaymentService {
                     .communityApprovedAt(LocalDateTime.now())
                     .build();
 
-            paymentRepository.save(payment);
+            participations.setStatus(participationStatus.PAYMENT_COMPLETE);
+
+
+                paymentRepository.save(payment);
 
             return responseDto;
         } catch (Exception e) {

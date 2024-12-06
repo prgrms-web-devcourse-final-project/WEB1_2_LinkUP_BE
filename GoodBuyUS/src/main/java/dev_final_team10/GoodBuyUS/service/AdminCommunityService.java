@@ -1,6 +1,7 @@
 package dev_final_team10.GoodBuyUS.service;
 
 
+import dev_final_team10.GoodBuyUS.controller.api.CommunityController;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class AdminCommunityService {
 
     private final CommunityPostRepository communityPostRepository;
+    private final CommunityController communityController;
 
     //승인대기 중인 글 목록 확인
     public List<PostResponseDto> notApprovedList() {
@@ -34,19 +37,22 @@ public class AdminCommunityService {
     }
 
     //승인 완료하기
-    public PostResponseDto approvedPost(Long communityPostId) {
+    public PostResponseDto approvedPost(Long communityPostId) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         communityPost.setStatus(postStatus.APPROVED);
         communityPost.setCreatedAt(LocalDateTime.now());
         communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
+        communityController.sendStreamingData(communityPostId);
         return PostResponseDto.of(communityPost);
     }
 
-    public PostResponseDto rejectedPost(Long communityPostId) {
+    //승인거절 하기
+    public PostResponseDto rejectedPost(Long communityPostId) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         communityPost.setStatus(postStatus.REJECTED);
         communityPost.setCreatedAt(LocalDateTime.now());
         communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
+        communityController.sendStreamingData(communityPostId);
         return PostResponseDto.of(communityPost);
     }
 }
