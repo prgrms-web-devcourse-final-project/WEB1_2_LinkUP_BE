@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.controller;
+package dev_final_team10.GoodBuyUS.controller.api;
 
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
@@ -32,16 +32,14 @@ public class CommunityPaymentController {
     private final ParticipationsRepository participationsRepository;
     private final CommunityPostRepository communityPostRepository;
 
-    public CommunityPaymentController(CommunityPaymentService communityPaymentService,
-                                        CommunityWebhookService communityWebhookService) {
-    public CommunityPaymentController(CommunityPaymentService communityPaymentService, UserRepository userRepository, ParticipationsRepository participationsRepository, CommunityPostRepository communityPostRepository) {
+
+    public CommunityPaymentController(CommunityPaymentService communityPaymentService, CommunityWebhookService communityWebhookService, UserRepository userRepository, ParticipationsRepository participationsRepository, CommunityPostRepository communityPostRepository) {
         this.communityPaymentService = communityPaymentService;
         this.communityWebhookService = communityWebhookService;
         this.userRepository = userRepository;
         this.participationsRepository = participationsRepository;
         this.communityPostRepository = communityPostRepository;
     }
-
 
     @PostMapping("/{community_post_id}")
     public ResponseEntity<?> createAndRequestPayment(@RequestBody CommunityPaymentRequestDto requestDto, @PathVariable Long community_post_id) {
@@ -163,7 +161,7 @@ public class CommunityPaymentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
-    }*/
+    }
 
     //현재 사용자 정보 가져오기
     private User currentUser(){

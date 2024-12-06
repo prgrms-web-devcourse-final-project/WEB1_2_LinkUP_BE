@@ -1,7 +1,7 @@
 package dev_final_team10.GoodBuyUS.service;
 
 
-import dev_final_team10.GoodBuyUS.controller.CommunityController;
+import dev_final_team10.GoodBuyUS.controller.api.CommunityController;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
