@@ -1,10 +1,12 @@
 package dev_final_team10.GoodBuyUS.controller;
 
+import dev_final_team10.GoodBuyUS.domain.chat.dto.ChatDTO;
 import dev_final_team10.GoodBuyUS.domain.chat.entity.ChatRoom;
 import dev_final_team10.GoodBuyUS.domain.chat.dto.ChatRoomDTO;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import dev_final_team10.GoodBuyUS.service.ChatRoomService;
+import dev_final_team10.GoodBuyUS.service.ChatService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final ChatService chatService;
 
     //채팅방 생성
     @PostMapping("/chat")
@@ -25,7 +28,14 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRoomService.createChatRoom(chatRoomDTO));
     }
 
-    //채팅방 삭제
+    //채팅 메시지 조회
+    @GetMapping("/chat/{chatRoomId}")
+    public ResponseEntity<List<ChatDTO>> getAllChat(@PathVariable Long chatRoomId) {
+        List<ChatDTO> chatDTOList = chatService.getAllChat(chatRoomId);
+        return ResponseEntity.ok(chatDTOList);
+    }
+
+        //채팅방 삭제
     @DeleteMapping("/chat/{chatRoomId}")
     public void removeChatRoom(@PathVariable Long chatRoomId) {
         chatRoomService.removeChatRoom(chatRoomId);
