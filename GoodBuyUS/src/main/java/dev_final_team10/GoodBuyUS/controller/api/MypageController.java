@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/mypage")
+@RequestMapping("/api/mypage")
 public class MypageController {
 
     private final MypageService mypageService;
