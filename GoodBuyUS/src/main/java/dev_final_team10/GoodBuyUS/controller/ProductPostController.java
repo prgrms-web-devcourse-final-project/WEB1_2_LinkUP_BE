@@ -21,7 +21,7 @@ public class ProductPostController {
        return productPostService.findAllProduct();
     }
 
-    @GetMapping("/product")
+    @PostMapping("/product")
     public PostDetailDTO detailProduct(@RequestParam Long postid){
         return productPostService.findPost(postid);
     }
