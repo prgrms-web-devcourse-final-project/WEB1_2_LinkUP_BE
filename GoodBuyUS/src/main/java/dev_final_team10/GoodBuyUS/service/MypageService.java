@@ -120,7 +120,7 @@ public class MypageService {
         List<OrdersDTO> ordersDTOS = new ArrayList<>();
         for (Order order : orders) {
             MainPayment payment = mainPaymentRepository.findByOrder(order).orElseThrow(null);
-            OrdersDTO ordersDTO = OrdersDTO.of(order.getOrderName(),order.getPrice(), order.getCreatedAt(),payment.getPaymentStatus(),payment.getPaymentKey(),order.getQuantity(), order.getDelivery());
+            OrdersDTO ordersDTO = OrdersDTO.of(order.getOrderName(),order.getPrice(), order.getCreatedAt(),payment.getPaymentStatus(),payment.getPaymentKey(),order.getQuantity(), order.getDelivery(),order.getProductPost().getPostId());
             ordersDTOS.add(ordersDTO);
         }
         return ordersDTOS;
