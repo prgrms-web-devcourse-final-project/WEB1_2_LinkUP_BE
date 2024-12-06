@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.controller;
+package dev_final_team10.GoodBuyUS.controller.api;
 
 import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mypage")
+@RequestMapping("api/mypage")
 public class MypageController {
 
     private final MypageService mypageService;

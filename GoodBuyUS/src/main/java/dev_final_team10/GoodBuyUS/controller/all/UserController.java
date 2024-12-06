@@ -1,4 +1,4 @@
-package dev_final_team10.GoodBuyUS.controller;
+package dev_final_team10.GoodBuyUS.controller.all;
 
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpEmailDto;
@@ -77,9 +77,7 @@ public class UserController {
         if(!jwtService.isTokenValid(token)){
             return ResponseEntity.badRequest().body(Map.of("error","유효하지 않거나 만료된 토큰입니다."));
         }
-        return userService.updatePassword(token, request.get("newPassword"));
-    }
-
+        return userService.updatePassword(token, request.get("newPassword"));}
 
 
 }
