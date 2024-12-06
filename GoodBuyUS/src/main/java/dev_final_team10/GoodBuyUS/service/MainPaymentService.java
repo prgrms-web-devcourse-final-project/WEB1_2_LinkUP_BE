@@ -266,7 +266,7 @@ public MainPaymentResponseDto handlePaymentSuccess(String paymentKey, UUID order
             payment.getOrder().defineDelivery(Delivery.REFUND);
             payment.setUpdatedAt(LocalDateTime.now());
             paymentRepository.save(payment);
-            payment.getOrder().getProductPost().getProduct().decreaseStock(payment.getQuantity());
+            payment.getOrder().getProductPost().getProduct().increaseStock(payment.getQuantity());
 
             log.info("결제 취소 처리 완료: PaymentKey = {}", paymentKey);
 

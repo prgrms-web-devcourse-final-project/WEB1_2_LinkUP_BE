@@ -1,5 +1,4 @@
 package dev_final_team10.GoodBuyUS.service;
-import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
 import dev_final_team10.GoodBuyUS.domain.product.dto.ReviewRequestDTO;
 import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
@@ -14,17 +13,13 @@ import dev_final_team10.GoodBuyUS.repository.ProductReviewRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.service.invoker.HttpServiceArgumentResolver;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 
 /**
  * Todo
@@ -53,7 +48,8 @@ public class ProductPostService {
         List<ProductPost> productPosts = productPostRepository.findAll();
         List<ProductPostDTO> productPostDTOS = new ArrayList<>();
         for (ProductPost productPost : productPosts) {
-            ProductPostDTO productPostDTO = ProductPostDTO.of(productPost);
+            double rate = setRating(productPost.getProduct());
+            ProductPostDTO productPostDTO = ProductPostDTO.of(productPost, rate);
             productPostDTOS.add(productPostDTO);
         }
         return productPostDTOS;
@@ -67,6 +63,7 @@ public class ProductPostService {
         ProductPost productPost = productPostRepository.findById(postId).orElseThrow(()-> new NoSuchElementException("없는 게시글입니다."));
         List <ProductReview> reviews = productPost.getProduct().getReviews();
         List<PostDetailDTO.ReviewDTO> reviewDTOS = new ArrayList<>();
+        double rating = setRating(productPost.getProduct());
         for (ProductReview productReview : reviews) {
             PostDetailDTO.ReviewDTO create_reviewDTO = new PostDetailDTO.ReviewDTO();
             create_reviewDTO.setReviewId(productReview.getProductReviewId());
@@ -75,7 +72,7 @@ public class ProductPostService {
             create_reviewDTO.setUsing(productReview.isIsused());
             reviewDTOS.add(create_reviewDTO);
         }
-        return PostDetailDTO.of(productPost,reviewDTOS);
+        return PostDetailDTO.of(productPost,reviewDTOS, rating);
     }
 
     // 리뷰 페이지, 구매내역에서 주문 상태를 확인해야함
@@ -94,6 +91,8 @@ public class ProductPostService {
                     reviewRequestDTO.getContent(),
                     reviewRequestDTO.getRate(),user);
             reviewRepository.save(productReview);
+            productReview.bindReview(productPost.getProduct());
+            productReview.bindUser(user);
             log.info("리뷰 등록 완료 : userEmail : {}",user.getEmail());
             return new ResponseEntity<>("리뷰 등록 완료", HttpStatus.OK);
         } catch (Exception e){
@@ -133,5 +132,23 @@ public class ProductPostService {
             log.error("리뷰 삭제 실패: {}", e.getMessage());
             throw new RuntimeException("리뷰 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.");
         }
+    }
+
+
+    public double setRating(Product product) {
+        // 상태가 true인 리뷰만 필터링
+        List<ProductReview> reviews = product.getReviews()
+                .stream()
+                .filter(ProductReview::isIsused)
+                .toList();
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+        // 평균 점수를 소수점 첫째 자리까지 계산
+        double averageRating = reviews.stream()
+                .mapToDouble(ProductReview::getRating) // 점수 추출
+                .average()
+                .orElse(0.0);
+        return Math.round(averageRating * 10) / 10.0;
     }
 }
