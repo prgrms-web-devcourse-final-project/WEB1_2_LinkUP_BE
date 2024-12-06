@@ -8,10 +8,13 @@ import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
+import dev_final_team10.GoodBuyUS.domain.user.dto.MypageDefaultDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class MypageService {
@@ -46,7 +51,7 @@ public class MypageService {
 
     //현재 비밀번호 확인하는 메소드
     public boolean isCurrentPasswordValid(String userEmail, String currentPassword) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(()->
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() ->
                 new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
         boolean matches = passwordEncoder.matches(currentPassword, user.getPassword());
         System.out.println(matches);
@@ -65,7 +70,7 @@ public class MypageService {
     //동네 변경하는 메소드
     public ResponseEntity<?> chageNeighbor(String newAddress) {
         //새로 입력한 주소로 동네테이블에서 해당하는 행 찾기
-        String neighborhoodName =  userService.extractNeighborhoodName(newAddress);
+        String neighborhoodName = userService.extractNeighborhoodName(newAddress);
         Neighborhood neighborhood = neighborhoodRepository.findByNeighborhoodName(neighborhoodName);
 
         //현재 로그인한 사용자 정보 가져오기
@@ -76,7 +81,7 @@ public class MypageService {
         user.setNeighborhood(neighborhood);
         userRepository.save(user);
 
-        return ResponseEntity.ok(Map.of("message","주소가 성공적으로 변경되었습니다."));
+        return ResponseEntity.ok(Map.of("message", "주소가 성공적으로 변경되었습니다."));
     }
 
     //커뮤니티에 작성한 글 수정하는 메소드
@@ -111,19 +116,41 @@ public class MypageService {
         for (CommunityPost communityPost : communityPosts) {
             postResponseDtos.add(PostResponseDto.of(communityPost));
         }
-            return postResponseDtos;
+        return postResponseDtos;
     }
 
     // 주문 내역 확인하기
-    public List<OrdersDTO> orderlist(String userEmail){
-        List<Order> orders = orderRepository.findOrderByUser(userRepository.findByEmail(userEmail).orElseThrow(()->new NoSuchElementException("없는 유저")));
+    public List<OrdersDTO> orderlist(String userEmail) {
+        List<Order> orders = orderRepository.findOrderByUser(userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("없는 유저")));
         List<OrdersDTO> ordersDTOS = new ArrayList<>();
         for (Order order : orders) {
             MainPayment payment = mainPaymentRepository.findByOrder(order).orElseThrow(null);
-            OrdersDTO ordersDTO = OrdersDTO.of(order.getOrderName(),order.getPrice(), order.getCreatedAt(),payment.getPaymentStatus(),
-                    payment.getPaymentKey(),order.getQuantity(), order.getDelivery(),order.getProductPost().getPostId(),order.getProductPost().getPostURL());
+            OrdersDTO ordersDTO = OrdersDTO.of(order.getOrderName(), order.getPrice(), order.getCreatedAt(), payment.getPaymentStatus(),
+                    payment.getPaymentKey(), order.getQuantity(), order.getDelivery(), order.getProductPost().getPostId(), order.getProductPost().getPostURL());
             ordersDTOS.add(ordersDTO);
         }
         return ordersDTOS;
     }
+
+    public ResponseEntity<?> mypageMain() {
+        try {
+            User user = userRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
+            MypageDefaultDto mypageDefaultDto = new MypageDefaultDto();
+            mypageDefaultDto.setAddress(user.getAddress());
+            mypageDefaultDto.setName(user.getName());
+            mypageDefaultDto.setProfile(user.getProfile());
+            mypageDefaultDto.setPhoneNum(user.getPhone());
+            return ResponseEntity.ok(mypageDefaultDto);
+        } catch (NoSuchElementException e) {
+            log.error("없는 유저의 마이페이지 접근 줄게 없음 {}", e.getMessage());
+            return new ResponseEntity<>("없는 회원입니다" + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+//    public ResponseEntity<?> editProfile(MultipartFile multipartFile) throws Exception{
+//        try {
+//            User user = userRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
+//            user.
+//        }
+//    }
 }
