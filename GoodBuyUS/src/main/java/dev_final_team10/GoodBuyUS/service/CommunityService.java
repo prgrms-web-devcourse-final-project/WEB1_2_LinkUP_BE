@@ -122,7 +122,7 @@ public class CommunityService {
         //마지막 참가자인 경우 글의 상태가 결제 대기로 바뀌게 + 결제 데드라인 생성
         if(getParticipantCount(communityPost.getCommunityPostId()).equals(communityPost.getAvailableNumber())){
             communityPost.setStatus(postStatus.PAYMENT_STANDBY);
-            List<Participations> participationsList = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPost.getCommunityPostId()1, participationStatus.JOIN);
+            List<Participations> participationsList = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPost.getCommunityPostId(), participationStatus.JOIN);
             for (Participations participations1 : participationsList) {
                 participations1.setStatus(participationStatus.PAYMENT_STANDBY);
                 participationsRepository.save(participations);
