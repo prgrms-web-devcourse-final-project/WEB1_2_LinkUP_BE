@@ -95,4 +95,15 @@ public class MypageController {
         return JWT.decode(tokenValue).getClaim("email").asString();
     }
 
+    // 기본 마이페이지에 필요한 정보 전달
+    @GetMapping
+    public ResponseEntity<?> setting(){
+       return mypageService.mypageMain();
+    }
+
+//    // 프로필 변경 기능 채원님께 문의
+//    @PutMapping("/editprofile")
+//    public ResponseEntity<?> editProfile(@RequestParam("profile") MultipartFile multipartFile) throws Exception{
+//        return mypageService.editProfile();
+//    }
 }
