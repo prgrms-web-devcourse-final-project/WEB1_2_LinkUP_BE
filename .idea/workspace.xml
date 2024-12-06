@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="fix: merge 충돌 해결" />
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: 결제 정보에 배송 정보도 추가" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -151,7 +151,31 @@
       <option name="project" value="LOCAL" />
       <updated>1733446526178</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="chore: 환결설정 업데이트">
+      <option name="closed" value="true" />
+      <created>1733446761361</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1733446761361</updated>
+    </task>
+    <task id="LOCAL-00005" summary="chore: 환결설정 업데이트">
+      <option name="closed" value="true" />
+      <created>1733448186959</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1733448186959</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: 결제 정보에 배송 정보도 추가">
+      <option name="closed" value="true" />
+      <created>1733451814749</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1733451814749</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -163,6 +187,8 @@
     <MESSAGE value="feat: 웹훅 기능 구현(nqrok 사용해 로컬에서 가능하게 함)" />
     <MESSAGE value="chore: 환경설정 업데이트" />
     <MESSAGE value="fix: merge 충돌 해결" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: merge 충돌 해결" />
+    <MESSAGE value="chore: 환결설정 업데이트" />
+    <MESSAGE value="feat: 결제 정보에 배송 정보도 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 결제 정보에 배송 정보도 추가" />
   </component>
 </project>

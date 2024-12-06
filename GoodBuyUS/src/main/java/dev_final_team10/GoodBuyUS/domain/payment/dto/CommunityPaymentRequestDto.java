@@ -20,4 +20,10 @@ public class CommunityPaymentRequestDto {
     private String failUrl;
     private String method;
     private String bank;
+
+    //배송지 정보
+    private String recipientName;
+    private String recipientAddress;
+    private String deliveryRequest; // 배송 요청사항
 }
+

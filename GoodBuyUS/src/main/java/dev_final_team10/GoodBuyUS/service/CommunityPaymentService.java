@@ -56,8 +56,10 @@ public class CommunityPaymentService {
                     .paymentStatus("WAITING_FOR_APPROVAL")
                     .communityPaymentKey(responseDto.getPaymentKey())
                     .secret(responseDto.getSecret())
-                    //.payType(requestDto.getPayType())
                     .communityCreatedAt(LocalDateTime.now())
+                    .recipientName(requestDto.getRecipientName())
+                    .recipientAddress(requestDto.getRecipientAddress())
+                    .deliveryRequest(requestDto.getDeliveryRequest())
                     .build();
 
             paymentRepository.save(payment);
@@ -126,6 +128,12 @@ public class CommunityPaymentService {
                     .build();
 
             paymentRepository.save(payment);
+
+            responseDto = responseDto.toBuilder()
+                    .recipientName(payment.getRecipientName()) // 수령인 이름
+                    .recipientAddress(payment.getRecipientAddress()) // 주소
+                    .deliveryRequest(payment.getDeliveryRequest()) // 배송 요청사항
+                    .build();
 
 
             return responseDto;
