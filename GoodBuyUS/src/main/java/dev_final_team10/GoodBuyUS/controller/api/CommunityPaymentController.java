@@ -140,7 +140,9 @@ private final CommunityController communityController;
                     communityPost.setPaymentDeadline(null);
                     communityPostRepository.save(communityPost);
                     communityController.sendStreamingData(community_post_id);
-            }
+            }   communityPost.setStatus(postStatus.DELETED);
+            communityPost.setPaymentDeadline(null);
+            communityPostRepository.save(communityPost);
 
 
             return ResponseEntity.ok(responseDto);
