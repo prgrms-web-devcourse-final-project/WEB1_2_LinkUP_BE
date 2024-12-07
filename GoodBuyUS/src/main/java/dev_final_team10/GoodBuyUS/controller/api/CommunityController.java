@@ -120,12 +120,13 @@ public class CommunityController {
         paymentCount = (paymentCount != null) ? paymentCount : 0;
 
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
-        postStatus postStatus = communityPost.getStatus();
+        postStatus postStatus = communityPost != null ? communityPost.getStatus() : null;
 
         Map<String, Object> data = new HashMap<>();
         data.put("participantCount", participantCount);
         data.put("paymentCount", paymentCount);
         data.put("postStatus", postStatus);
+
         emitters.get(community_post_id).send(SseEmitter.event().name("update").data(data));
 
     }

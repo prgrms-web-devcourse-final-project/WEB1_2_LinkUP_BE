@@ -44,6 +44,7 @@ public class AdminCommunityService {
         communityPost.setCreatedAt(LocalDateTime.now());
         communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
         communityPost.setTitle(request.get("title"));
+        communityPostRepository.save(communityPost);
         communityController.sendStreamingData(communityPostId);
         return PostResponseDto.of(communityPost);
     }
@@ -55,6 +56,7 @@ public class AdminCommunityService {
         communityPost.setCreatedAt(LocalDateTime.now());
         communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
         communityPost.setTitle(request.get("title"));
+        communityPostRepository.save(communityPost);
         communityController.sendStreamingData(communityPostId);
         return PostResponseDto.of(communityPost);
     }

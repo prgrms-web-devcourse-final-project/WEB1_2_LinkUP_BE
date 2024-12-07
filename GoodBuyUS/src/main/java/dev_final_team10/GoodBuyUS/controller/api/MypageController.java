@@ -67,7 +67,7 @@ public class MypageController {
                                         @RequestBody WriteModifyPostDto writeModifyPostDto){
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         //현재 글의 상태가 승인대기가 아니라면 글을 수정하지 못하도록
-        if(communityPost.getStatus() != postStatus.NOT_APPROVED){
+        if(communityPost.getStatus() != postStatus.NOT_APPROVED && communityPost.getStatus() != postStatus.REJECTED){
             return ResponseEntity.badRequest().body(Map.of("error","글을 수정할 수 없는 상태입니다."));
         }
         PostResponseDto postResponseDto = mypageService.modifyPost(writeModifyPostDto, communityPostId);
