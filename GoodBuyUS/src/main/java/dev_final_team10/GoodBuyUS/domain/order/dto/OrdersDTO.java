@@ -17,8 +17,10 @@ public class OrdersDTO {
     private String payment_key;
     private int quantity;
     private Delivery delivery;
+    private Long postId;
+    private String url;
 
-    public static OrdersDTO of(String productName, int price, LocalDateTime orderDate, PaymentStatus paymentStatus, String payment_key, int quantity, Delivery delivery){
+    public static OrdersDTO of(String productName, int price, LocalDateTime orderDate, PaymentStatus paymentStatus, String payment_key, int quantity, Delivery delivery, Long postId, String url){
         OrdersDTO ordersDTO = new OrdersDTO();
         ordersDTO.productName = productName;
         ordersDTO.price = price;
@@ -27,6 +29,8 @@ public class OrdersDTO {
         ordersDTO.payment_key = payment_key;
         ordersDTO.quantity = quantity;
         ordersDTO.delivery =delivery;
+        ordersDTO.postId = postId;
+        ordersDTO.url = url;
         return ordersDTO;
     }
 }

@@ -57,12 +57,15 @@ public class SecurityConfig {
                 .authorizeRequests(authz -> authz
 
                         .requestMatchers("/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/success").permitAll() // 공용 URL
-                        .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/fail").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/products/payment-success/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/products/payment-success/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/payment-fail/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/products/payment-fail/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/virtual/success/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/virtual/success/**").permitAll()
                         .requestMatchers("api/**").authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 요청은 모두 허용
                         .anyRequest().permitAll()
                 );
 
