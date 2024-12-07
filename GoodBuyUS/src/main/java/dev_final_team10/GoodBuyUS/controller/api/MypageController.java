@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -101,9 +102,9 @@ public class MypageController {
        return mypageService.mypageMain();
     }
 
-//    // 프로필 변경 기능 채원님께 문의
-//    @PutMapping("/editprofile")
-//    public ResponseEntity<?> editProfile(@RequestParam("profile") MultipartFile multipartFile) throws Exception{
-//        return mypageService.editProfile();
-//    }
+    // 프로필 변경 기능 채원님께 문의
+    @PutMapping("/editprofile")
+    public ResponseEntity<?> editProfile(@RequestParam("profile") MultipartFile multipartFile) throws Exception{
+        return mypageService.editProfile(multipartFile);
+    }
 }

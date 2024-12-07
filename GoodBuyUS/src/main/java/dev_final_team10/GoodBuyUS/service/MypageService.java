@@ -14,6 +14,8 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,8 +24,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +50,8 @@ public class MypageService {
     private final MainPaymentRepository mainPaymentRepository;
     private final OrderRepository orderRepository;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     //현재 로그인한 사용자의 이메일을 가져오는 메소드
     public String getCurrentUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -132,6 +141,7 @@ public class MypageService {
         return ordersDTOS;
     }
 
+    // 마이 페이지 접근
     public ResponseEntity<?> mypageMain() {
         try {
             User user = userRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
@@ -147,10 +157,38 @@ public class MypageService {
         }
     }
 
-//    public ResponseEntity<?> editProfile(MultipartFile multipartFile) throws Exception{
-//        try {
-//            User user = userRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
-//            user.
-//        }
-//    }
+    // 유저 프로필 변경
+    public ResponseEntity<?> editProfile(MultipartFile multipartFile) throws Exception{
+        try {
+            User user = userRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
+            String updateProfile = saveProfileImage(multipartFile);
+            user.changeProfile(updateProfile);
+            return new ResponseEntity<>("프로필 변경 완료",HttpStatus.OK);
+        } catch (NoSuchElementException e){
+            log.error("없는 회원입니다");
+            return new ResponseEntity<>("없는 회원입니다" , HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private String saveProfileImage(MultipartFile profile) throws IOException {
+        if (profile == null || profile.isEmpty()) {
+            throw new IOException("프로필 이미지를 선택해 주세요.");
+        }
+        // 파일 이름 추출
+        String fileName = StringUtils.cleanPath(profile.getOriginalFilename());
+
+        // 파일 저장 경로 설정
+        Path targetLocation = Paths.get(uploadDir).resolve(fileName);
+
+        // 디렉터리 생성 (경로가 없으면 생성)
+        Files.createDirectories(targetLocation.getParent());
+
+        // 파일 저장
+        profile.transferTo(targetLocation);
+
+        // 저장된 이미지 파일 경로 반환 (URL로 변경 가능)
+        return targetLocation.toString();  // 또는 저장된 경로의 URL 반환 가능
+    }
 }
