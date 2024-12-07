@@ -3,10 +3,7 @@ package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
-import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
-import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
+import dev_final_team10.GoodBuyUS.domain.community.entity.*;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
@@ -109,7 +106,7 @@ public class MypageService {
         User user = userRepository.findByEmail(getCurrentUserEmail()).orElse(null);
 
         //현재 사용자 글 목록 가져오기
-        List<CommunityPost> communityPosts = communityPostRepository.findAllByUserId(user.getId());
+        List<CommunityPost> communityPosts = communityPostRepository.findAllByUserIdAndStatusNot(user.getId(), postStatus.DELETED );
 
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
 
