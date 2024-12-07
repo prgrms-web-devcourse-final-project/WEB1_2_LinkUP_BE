@@ -12,6 +12,7 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +20,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +46,8 @@ public class MypageService {
     private final MainPaymentRepository mainPaymentRepository;
     private final OrderRepository orderRepository;
     private final ParticipationsRepository participationsRepository;
-
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     //현재 로그인한 사용자의 이메일을 가져오는 메소드
     public String getCurrentUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -82,8 +90,8 @@ public class MypageService {
     }
 
     //커뮤니티에 작성한 글 수정하는 메소드
-    public PostResponseDto modifyPost(WriteModifyPostDto writeModifyPostDto, Long communityPostId) {
-        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+    public PostResponseDto modifyPost(WriteModifyPostDto writeModifyPostDto, List<MultipartFile> images, Long id) throws IOException {
+        CommunityPost communityPost = communityPostRepository.findById(id).orElse(null);
         //현재 사용자 정보 가져오기(글 작성자)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(authentication.getName()).orElse(null);
@@ -93,16 +101,45 @@ public class MypageService {
         CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
 
         communityPost.updateFields(writeModifyPostDto, user, neighborhood, communityCategory);
+        List<String> postImages =  new ArrayList<String>();
+        for(MultipartFile image: images){
+            String save = saveImage(image);
+            postImages.add(save);
 
+        }
         if(communityPost.getStatus() == postStatus.REJECTED){
             communityPost.setStatus(postStatus.NOT_APPROVED);
         }
+        communityPost = writeModifyPostDto.toEntityForCreate(user,neighborhood,communityCategory,postImages);
         //DB 저장
         communityPostRepository.save(communityPost);
 
         return PostResponseDto.of(communityPost);
 
     }
+
+    //이미지를 서버에 저장하는 메소드
+    private String saveImage(MultipartFile profile) throws IOException {
+        if (profile == null || profile.isEmpty()) {
+            throw new IOException("이미지를 넣어주세요.");
+        }
+
+        // 파일 이름 추출
+        String fileName = StringUtils.cleanPath(profile.getOriginalFilename());
+
+        // 파일 저장 경로 설정
+        Path targetLocation = Paths.get(uploadDir).resolve(fileName);
+
+        // 디렉터리 생성 (경로가 없으면 생성)
+        Files.createDirectories(targetLocation.getParent());
+
+        // 파일 저장
+        profile.transferTo(targetLocation);
+
+        // 저장된 이미지 파일 경로 반환 (URL로 변경 가능)
+        return targetLocation.toString();  // 또는 저장된 경로의 URL 반환 가능
+    }
+
 
     //내가 쓴 글 목록 보기
     public List<PostResponseDto> myPostList() {

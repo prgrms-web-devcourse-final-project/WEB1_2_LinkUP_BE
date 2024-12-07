@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,13 +65,14 @@ public class MypageController {
     //작성한 글이 승인대기 상태일 때 수정가능 하도록
     @PutMapping("/post/{community_post_id}")
     public ResponseEntity<?> modifyPost(@PathVariable("community_post_id") Long communityPostId,
-                                        @RequestBody WriteModifyPostDto writeModifyPostDto){
+                                        @RequestPart("content") WriteModifyPostDto content,  // 나머지 데이터는 DTO(JSON)로 받기
+                                        @RequestPart("images") List<MultipartFile> images) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         //현재 글의 상태가 승인대기가 아니라면 글을 수정하지 못하도록
         if(communityPost.getStatus() != postStatus.NOT_APPROVED && communityPost.getStatus() != postStatus.REJECTED){
             return ResponseEntity.badRequest().body(Map.of("error","글을 수정할 수 없는 상태입니다."));
         }
-        PostResponseDto postResponseDto = mypageService.modifyPost(writeModifyPostDto, communityPostId);
+        PostResponseDto postResponseDto = mypageService.modifyPost(content, images, communityPostId);
         return ResponseEntity.ok(Map.of("message", "글이 수정되었습니다.",
                 "updatedPost", postResponseDto));
     }
