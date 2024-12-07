@@ -137,7 +137,12 @@ public class CommunityService {
 
     //참여 수량 세는 메서드
     public Long getParticipantCount(Long communityPostId) {
-        List<Participations> joinParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPostId, participationStatus.JOIN);
+        List<participationStatus> statuses = List.of(
+                participationStatus.JOIN,
+                participationStatus.PAYMENT_STANDBY,
+                participationStatus.PAYMENT_COMPLETE
+        );
+        List<Participations> joinParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatusIn(communityPostId,statuses);
         Long count = 0L;
         for(Participations participation : joinParticipations){
             count += participation.getQuantity();

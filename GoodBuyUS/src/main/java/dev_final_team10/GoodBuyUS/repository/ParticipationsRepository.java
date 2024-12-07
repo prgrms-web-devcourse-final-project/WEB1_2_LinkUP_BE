@@ -12,7 +12,11 @@ import java.util.List;
 
 @Repository
 public interface ParticipationsRepository extends JpaRepository<Participations, Long> {
+    List<Participations> findAllByCommunityPost_CommunityPostIdAndStatusIn(
+            Long communityPostId,
+            List<participationStatus> statuses);
     List<Participations> findAllByCommunityPost_CommunityPostIdAndStatus(Long communityPostId, participationStatus status);
+
     List<Participations> findAllByCommunityPost_CommunityPostId(Long communityPostId);
     List<Participations> findByCommunityPost(CommunityPost post);
     Participations findByCommunityPostAndUser(CommunityPost communityPost, User user);
