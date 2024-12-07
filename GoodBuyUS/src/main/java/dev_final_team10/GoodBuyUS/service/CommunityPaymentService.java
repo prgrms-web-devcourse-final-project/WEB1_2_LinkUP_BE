@@ -12,6 +12,7 @@ import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPaymentRepository;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
+import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,15 @@ public class CommunityPaymentService {
     private final SSEService sseService;
     private final  CommunityPostRepository communityPostRepository;
     private final CommunityService communityService;
+    private final ParticipationsRepository participationsRepository;
 
     public CommunityPaymentService(WebClient.Builder webClientBuilder,
                                     CommunityPaymentRepository paymentRepository,
                                     ObjectMapper objectMapper,
                                     SSEService sseService,
                                    CommunityPostRepository communityPostRepository,
-                                   CommunityService communityService) {
+                                   CommunityService communityService,
+                                   ParticipationsRepository participationsRepository) {
         this.webClient = webClientBuilder
                 .baseUrl("https://api.tosspayments.com/v1/payments")
                 .defaultHeaders(headers -> {
@@ -50,6 +53,7 @@ public class CommunityPaymentService {
         this.sseService = sseService;
         this.communityPostRepository = communityPostRepository;
         this.communityService = communityService;
+        this.participationsRepository = participationsRepository;
     }
 
     public CommunityPaymentResponseDto createAndRequestPayment(CommunityPaymentRequestDto requestDto) {
@@ -114,8 +118,11 @@ public class CommunityPaymentService {
                     .build();
 
             participations.setStatus(participationStatus.PAYMENT_COMPLETE);
+            participationsRepository.save(participations);
             CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
-            if(communityService.getParticipantCount(community_post_id).equals(communityPost.getAvailableNumber())){
+
+            //참여자 모두가 결제 완료한 경우 글의 상태 PAYMENT_COMPLETE
+            if(communityService.getPaymentCount(community_post_id).equals(communityPost.getAvailableNumber())){
                 communityPost.setStatus(postStatus.PAYMENT_COMPLETED);
             }
             communityPostRepository.save(communityPost);
