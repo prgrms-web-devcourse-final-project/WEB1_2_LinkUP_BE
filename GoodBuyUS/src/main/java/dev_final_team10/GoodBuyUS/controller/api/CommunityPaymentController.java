@@ -31,14 +31,15 @@ public class CommunityPaymentController {
     private final UserRepository userRepository;
     private final ParticipationsRepository participationsRepository;
     private final CommunityPostRepository communityPostRepository;
+private final CommunityController communityController;
 
-
-    public CommunityPaymentController(CommunityPaymentService communityPaymentService, CommunityWebhookService communityWebhookService, UserRepository userRepository, ParticipationsRepository participationsRepository, CommunityPostRepository communityPostRepository) {
+    public CommunityPaymentController(CommunityPaymentService communityPaymentService, CommunityWebhookService communityWebhookService, UserRepository userRepository, ParticipationsRepository participationsRepository, CommunityPostRepository communityPostRepository, CommunityController communityController) {
         this.communityPaymentService = communityPaymentService;
         this.communityWebhookService = communityWebhookService;
         this.userRepository = userRepository;
         this.participationsRepository = participationsRepository;
         this.communityPostRepository = communityPostRepository;
+        this.communityController = communityController;
     }
 
     @PostMapping("/{community_post_id}")
@@ -56,10 +57,9 @@ public class CommunityPaymentController {
             requestDto.setOrderName(community_post_id + "게시물에 대한 사용자" + user.getName() +"사용자의 결제");
             requestDto.setCustomerName(user.getName());
             requestDto.setCustomerEmail(user.getEmail());
-            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success/" + community_post_id);
+            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
             requestDto.setFailUrl("http://15.164.5.135:8080/api/v1/virtual/fail"+ community_post_id);
             requestDto.setMethod("VIRTUAL_ACCOUNT");
-
             CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -68,19 +68,21 @@ public class CommunityPaymentController {
         }
     }
 
-    @GetMapping("/success/{community_post_id}")
+    @GetMapping("/success/{community_post_id}/{user_id}")
     public ResponseEntity<?> handlePaymentSuccess(
             @RequestParam String paymentKey,
             @RequestParam String orderId,
             @RequestParam int amount,
-            @PathVariable Long community_post_id) {
+            @PathVariable Long community_post_id,
+            @PathVariable Long user_id) {
         try {
-            User user = currentUser();
+            User user = userRepository.findById(user_id).orElse(null);
             Participations participations = participationsInfo(community_post_id,user);
 
 
 
             CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
+            communityController.sendStreamingData(community_post_id);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -106,6 +108,7 @@ public class CommunityPaymentController {
             Participations participations = participationsInfo(community_post_id,user);
 
             CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
+
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

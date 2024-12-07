@@ -1,14 +1,17 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
 import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
+import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.CommunityPayment;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPaymentRepository;
+import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,11 +29,15 @@ public class CommunityPaymentService {
     private final CommunityPaymentRepository paymentRepository;
     private final ObjectMapper objectMapper;
     private final SSEService sseService;
+    private final  CommunityPostRepository communityPostRepository;
+    private final CommunityService communityService;
 
     public CommunityPaymentService(WebClient.Builder webClientBuilder,
                                     CommunityPaymentRepository paymentRepository,
                                     ObjectMapper objectMapper,
-                                    SSEService sseService) {
+                                    SSEService sseService,
+                                   CommunityPostRepository communityPostRepository,
+                                   CommunityService communityService) {
         this.webClient = webClientBuilder
                 .baseUrl("https://api.tosspayments.com/v1/payments")
                 .defaultHeaders(headers -> {
@@ -41,6 +48,8 @@ public class CommunityPaymentService {
         this.paymentRepository = paymentRepository;
         this.objectMapper = objectMapper;
         this.sseService = sseService;
+        this.communityPostRepository = communityPostRepository;
+        this.communityService = communityService;
     }
 
     public CommunityPaymentResponseDto createAndRequestPayment(CommunityPaymentRequestDto requestDto) {
@@ -105,9 +114,14 @@ public class CommunityPaymentService {
                     .build();
 
             participations.setStatus(participationStatus.PAYMENT_COMPLETE);
-
-
+            CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
+            if(communityService.getParticipantCount(community_post_id).equals(communityPost.getAvailableNumber())){
+                communityPost.setStatus(postStatus.PAYMENT_COMPLETED);
+            }
+            communityPostRepository.save(communityPost);
                 paymentRepository.save(payment);
+
+
 
             return responseDto;
         } catch (Exception e) {
@@ -150,6 +164,9 @@ public class CommunityPaymentService {
             throw new RuntimeException("결제 상태 조회 중 오류 발생: " + e.getMessage(), e);
         }
     }
+
+
+
 
 //가상계좌 결제 취소(상단이랑 다른점은 환불 계좌를 기입해야함)
     @Transactional

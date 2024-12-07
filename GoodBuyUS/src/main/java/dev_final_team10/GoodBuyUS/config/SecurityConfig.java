@@ -60,8 +60,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/success").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/main-payments/success").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/main-payments/fail").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/virtual/success").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/virtual/success").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/virtual/success/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/virtual/success/**").permitAll()
                         .requestMatchers("api/**").authenticated()
                         .anyRequest().permitAll()
                 );
