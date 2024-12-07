@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -37,21 +38,23 @@ public class AdminCommunityService {
     }
 
     //승인 완료하기
-    public PostResponseDto approvedPost(Long communityPostId) throws IOException {
+    public PostResponseDto approvedPost(Long communityPostId, Map<String, String> request) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         communityPost.setStatus(postStatus.APPROVED);
         communityPost.setCreatedAt(LocalDateTime.now());
         communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
+        communityPost.setTitle(request.get("title"));
         communityController.sendStreamingData(communityPostId);
         return PostResponseDto.of(communityPost);
     }
 
     //승인거절 하기
-    public PostResponseDto rejectedPost(Long communityPostId) throws IOException {
+    public PostResponseDto rejectedPost(Long communityPostId, Map<String, String> request) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         communityPost.setStatus(postStatus.REJECTED);
         communityPost.setCreatedAt(LocalDateTime.now());
         communityPost.setCloseAt(LocalDateTime.now().plusDays(communityPost.getPeriod()));
+        communityPost.setTitle(request.get("title"));
         communityController.sendStreamingData(communityPostId);
         return PostResponseDto.of(communityPost);
     }

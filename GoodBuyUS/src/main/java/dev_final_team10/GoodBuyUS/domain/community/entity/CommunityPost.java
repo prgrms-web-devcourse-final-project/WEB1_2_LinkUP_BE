@@ -65,6 +65,10 @@ public class CommunityPost {
 //        this.imageUrls = writeModifyPostDto.getImageUrls();
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setPaymentDeadline(LocalDateTime paymentDeadline) {
         this.paymentDeadline = paymentDeadline;
     }

@@ -163,7 +163,7 @@ public class CommunityController {
     }
 
     //커뮤니티 게시글 취소하기 (참여하기 후 취소)
-    @PutMapping("/post/{community_post_id}/cancle")
+    @PutMapping("/post/{community_post_id}/cancel")
     public ResponseEntity<?> cancelCommunityPost(@PathVariable Long community_post_id) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
         //이 글의 참여자 (참여했던 포함) 가져오기
