@@ -2,6 +2,8 @@ package dev_final_team10.GoodBuyUS.controller.api;
 
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
+import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
+import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
@@ -18,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -116,14 +119,30 @@ private final CommunityController communityController;
         }
     }
 
-    @PostMapping("/cancel-payment")
-    public ResponseEntity<?> cancelPayment(@RequestBody Map<String, Object> requestBody) {
+    @PostMapping("/cancel-payment/{community_post_id}")
+    public ResponseEntity<?> cancelPayment(@RequestBody Map<String, Object> requestBody,@PathVariable Long community_post_id) {
         try {
             String paymentKey = (String) requestBody.get("paymentKey");
             String cancelReason = (String) requestBody.get("cancelReason");
             Map<String, String> refundAccount = (Map<String, String>) requestBody.get("refundReceiveAccount");
 
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = userRepository.findByEmail(authentication.getName()).orElse(null);
+            Participations participations = participationsInfo(community_post_id,user);
+
             CommunityPaymentResponseDto responseDto = communityPaymentService.cancelPayment(paymentKey, cancelReason, refundAccount);
+            participations.setStatus(participationStatus.PAYMENT_CANCEL);
+            participationsRepository.save(participations);
+
+            CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
+            if(communityPost.getCloseAt().isAfter(LocalDateTime.now())){
+                    communityPost.setStatus(postStatus.APPROVED);
+                    communityPost.setPaymentDeadline(null);
+                    communityPostRepository.save(communityPost);
+                    communityController.sendStreamingData(community_post_id);
+            }
+
+
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
