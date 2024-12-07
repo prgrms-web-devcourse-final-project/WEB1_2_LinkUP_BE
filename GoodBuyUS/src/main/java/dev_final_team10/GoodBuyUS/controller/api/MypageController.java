@@ -4,25 +4,32 @@ import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
+import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
+import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
+import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.service.MypageService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping("/api/mypage")
 public class MypageController {
 
     private final MypageService mypageService;
     private final CommunityPostRepository communityPostRepository;
+    private final ParticipationsRepository participationsRepository;
+    private final CommunityController communityController;
 
     //현재 비밀번호 일치하는지 확인 - 비밀번호 변경 전에
     @PostMapping("/verify")
@@ -69,6 +76,21 @@ public class MypageController {
                 "updatedPost", postResponseDto));
     }
 
+
+    @DeleteMapping("/post/{community_post_id}")
+    public ResponseEntity<?> deletePost(@PathVariable("community_post_id") Long communityPostId) throws IOException {
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
+        communityPost.setStatus(postStatus.DELETED);
+        communityPostRepository.save(communityPost);
+        List<Participations> participations = participationsRepository.findAllByCommunityPost_CommunityPostId(communityPostId);
+        participations.forEach(participation -> participation.setStatus(participationStatus.CANCEL));
+        participationsRepository.saveAll(participations);
+        communityController.sendStreamingData(communityPostId);
+        return ResponseEntity.ok(Map.of("message", "글이 삭제되었습니다."));
+    }
+
+
+
     //내가 작성한 글 목록 보기
     @GetMapping("/post")
     public List<PostResponseDto> myPostList(){
@@ -94,5 +116,7 @@ public class MypageController {
         String tokenValue = token.replace("Bearer ", "");
         return JWT.decode(tokenValue).getClaim("email").asString();
     }
+
+
 
 }
