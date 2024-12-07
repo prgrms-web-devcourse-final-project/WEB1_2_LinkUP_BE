@@ -10,4 +10,6 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
     List<CommunityPost> findAllByUserId(Long id);
 
     List<CommunityPost> findByNeighborhood(Neighborhood neighborhood);
+
+    CommunityPost findByCommunityPostId(Long id);
 }

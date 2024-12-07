@@ -12,7 +12,6 @@ import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.service.MypageService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +75,7 @@ public class MypageController {
                 "updatedPost", postResponseDto));
     }
 
-
+    //작성한 글 삭제
     @DeleteMapping("/post/{community_post_id}")
     public ResponseEntity<?> deletePost(@PathVariable("community_post_id") Long communityPostId) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
@@ -116,6 +115,15 @@ public class MypageController {
         String tokenValue = token.replace("Bearer ", "");
         return JWT.decode(tokenValue).getClaim("email").asString();
     }
+
+
+    //내 공구 참여 내역 보기(참여 취소, 결제취소 외에는 다 보이도록)
+    @GetMapping("/community")
+    public List<PostResponseDto> communityJoinList() {
+
+            return mypageService.communityJoinList();
+        }
+
 
 
 

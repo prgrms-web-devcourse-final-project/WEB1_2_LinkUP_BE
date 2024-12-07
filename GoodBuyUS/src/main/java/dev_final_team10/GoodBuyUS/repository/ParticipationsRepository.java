@@ -20,6 +20,7 @@ public interface ParticipationsRepository extends JpaRepository<Participations, 
     List<Participations> findAllByCommunityPost_CommunityPostId(Long communityPostId);
     List<Participations> findByCommunityPost(CommunityPost post);
     Participations findByCommunityPostAndUser(CommunityPost communityPost, User user);
+    List<Participations> findAllByUserIdAndStatusIn(Long userId, List<participationStatus> statuses);
 
 
 }

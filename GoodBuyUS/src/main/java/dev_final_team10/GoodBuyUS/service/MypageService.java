@@ -5,6 +5,8 @@ import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityCategory;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
+import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
+import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
@@ -12,6 +14,7 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+@Log4j2
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -37,6 +41,7 @@ public class MypageService {
     private final CommunityPostRepository communityPostRepository;
     private final MainPaymentRepository mainPaymentRepository;
     private final OrderRepository orderRepository;
+    private final ParticipationsRepository participationsRepository;
 
     //현재 로그인한 사용자의 이메일을 가져오는 메소드
     public String getCurrentUserEmail() {
@@ -126,4 +131,31 @@ public class MypageService {
         }
         return ordersDTOS;
     }
+
+    //나의 공구 참여 내역 목록
+    public List<PostResponseDto> communityJoinList() {
+        //현재 로그인한 사용자 정보
+        User user = userRepository.findByEmail(getCurrentUserEmail()).orElse(null);
+        //나의 참여 내역 가져오기
+        List<participationStatus> statuses = List.of(
+                participationStatus.JOIN,
+                participationStatus.PAYMENT_STANDBY,
+                participationStatus.PAYMENT_COMPLETE
+        );
+        List<Participations> participationsList = participationsRepository.findAllByUserIdAndStatusIn(user.getId(),statuses);
+        log.info("ParList" + participationsList);
+        List<CommunityPost> communityPosts = new ArrayList<>();
+        for(Participations participations : participationsList){
+            communityPosts.add(communityPostRepository.findByCommunityPostId(participations.getCommunityPost().getCommunityPostId()));
+        }
+        log.info("CommunityPosts" + communityPosts);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for(CommunityPost communityPost : communityPosts){
+            postResponseDtos.add(PostResponseDto.of(communityPost));
+        }
+        log.info("PostResponseDtos" + postResponseDtos);
+        return postResponseDtos;
+    }
 }
+
+
