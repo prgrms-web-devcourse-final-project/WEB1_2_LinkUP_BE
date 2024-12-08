@@ -27,7 +27,7 @@ public class CommunityPost {
     @Enumerated(EnumType.STRING)
     private CommunityCategory category;    //상품 카테고리       //추후 추가 예정
     private Long availableNumber;   //참여 가능 수량
-    private LocalDateTime createdAt;   //글 작성 시간 - 승인이 완료된 시점(작성 시에는 null로 비워두기)
+    private LocalDateTime createdAt;   //글 작성 시간 - 승인이 완료된 시점(작성 시에는 작성 시점으로)
     private Long period;     //모집일
     private LocalDateTime closeAt;  //모집 기간 = 글 승인 시간 + 글작성할 때 입력하는 일수
     private Long unitAmount;   //한 개당 가격
@@ -52,7 +52,7 @@ public class CommunityPost {
     private Neighborhood neighborhood;  //글작성자의 동네코드
 
 
-    public void updateFields(WriteModifyPostDto writeModifyPostDto, User user, Neighborhood neighborhood, CommunityCategory communityCategory,List<String> imageUrls) {
+    public void updateFields(WriteModifyPostDto writeModifyPostDto, User user, Neighborhood neighborhood, CommunityCategory communityCategory ) {
         this.title = writeModifyPostDto.getTitle();
         this.availableNumber = writeModifyPostDto.getAvailableNumber();
         this.category = communityCategory;
@@ -62,7 +62,12 @@ public class CommunityPost {
         this.unitAmount = writeModifyPostDto.getUnitAmount();
         this.user = user;
         this.neighborhood = neighborhood;
-//        this.imageUrls = writeModifyPostDto.getImageUrls();
+        this.imageUrls = writeModifyPostDto.getImageUrls();
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setPaymentDeadline(LocalDateTime paymentDeadline) {

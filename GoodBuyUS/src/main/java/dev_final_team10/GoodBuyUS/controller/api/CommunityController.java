@@ -106,6 +106,9 @@ public class CommunityController {
         emitter.onCompletion(() -> emitters.remove(community_post_id));
         emitter.onTimeout(() -> emitters.remove(community_post_id));
 
+
+
+
         return emitter;
     }
 
@@ -117,12 +120,13 @@ public class CommunityController {
         paymentCount = (paymentCount != null) ? paymentCount : 0;
 
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
-        postStatus postStatus = communityPost.getStatus();
+        postStatus postStatus = communityPost != null ? communityPost.getStatus() : null;
 
         Map<String, Object> data = new HashMap<>();
         data.put("participantCount", participantCount);
         data.put("paymentCount", paymentCount);
         data.put("postStatus", postStatus);
+
         emitters.get(community_post_id).send(SseEmitter.event().name("update").data(data));
 
     }
@@ -160,7 +164,7 @@ public class CommunityController {
     }
 
     //커뮤니티 게시글 취소하기 (참여하기 후 취소)
-    @PutMapping("/post/{community_post_id}/cancle")
+    @PutMapping("/post/{community_post_id}/cancel")
     public ResponseEntity<?> cancelCommunityPost(@PathVariable Long community_post_id) throws IOException {
         CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
         //이 글의 참여자 (참여했던 포함) 가져오기
@@ -178,7 +182,7 @@ public class CommunityController {
         if (participationInfo.getStatus() == participationStatus.CANCEL) {
             return ResponseEntity.badRequest().body(Map.of("message", "이미 취소한 글입니다."));
         } else if (participationInfo.getStatus() == participationStatus.JOIN) {
-            communityService.cancleCommunityPost(communityPost, user, participationInfo, participations);
+            communityService.cancelCommunityPost(communityPost, user, participationInfo, participations);
             sendStreamingData(community_post_id);
             return ResponseEntity.ok(Map.of("message", "취소가 완료되었습니다."));
         }

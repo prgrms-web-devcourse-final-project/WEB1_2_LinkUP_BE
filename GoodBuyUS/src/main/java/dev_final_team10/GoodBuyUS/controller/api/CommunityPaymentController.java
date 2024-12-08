@@ -2,6 +2,8 @@ package dev_final_team10.GoodBuyUS.controller.api;
 
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
+import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
+import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentRequestDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.CommunityPaymentResponseDto;
 import dev_final_team10.GoodBuyUS.domain.payment.dto.TossWebhookDto;
@@ -18,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,14 +34,15 @@ public class CommunityPaymentController {
     private final UserRepository userRepository;
     private final ParticipationsRepository participationsRepository;
     private final CommunityPostRepository communityPostRepository;
+private final CommunityController communityController;
 
-
-    public CommunityPaymentController(CommunityPaymentService communityPaymentService, CommunityWebhookService communityWebhookService, UserRepository userRepository, ParticipationsRepository participationsRepository, CommunityPostRepository communityPostRepository) {
+    public CommunityPaymentController(CommunityPaymentService communityPaymentService, CommunityWebhookService communityWebhookService, UserRepository userRepository, ParticipationsRepository participationsRepository, CommunityPostRepository communityPostRepository, CommunityController communityController) {
         this.communityPaymentService = communityPaymentService;
         this.communityWebhookService = communityWebhookService;
         this.userRepository = userRepository;
         this.participationsRepository = participationsRepository;
         this.communityPostRepository = communityPostRepository;
+        this.communityController = communityController;
     }
 
     @PostMapping("/{community_post_id}")
@@ -48,18 +52,15 @@ public class CommunityPaymentController {
         Participations participation = participationsInfo(community_post_id, user);
         Random random = new Random();
 
-
-
         try {
             requestDto.setOrderId("goodbuyus" +  random.nextInt(50000)+1500);   //orderID랜덤으로 생성
             requestDto.setAmount((int) (communityPost.getUnitAmount() * participation.getQuantity()));  //게시물의 개당 가격 * 현재 사용자의 구매 수
             requestDto.setOrderName(community_post_id + "게시물에 대한 사용자" + user.getName() +"사용자의 결제");
             requestDto.setCustomerName(user.getName());
             requestDto.setCustomerEmail(user.getEmail());
-            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success/" + community_post_id);
+            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
             requestDto.setFailUrl("http://15.164.5.135:8080/api/v1/virtual/fail"+ community_post_id);
             requestDto.setMethod("VIRTUAL_ACCOUNT");
-
             CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
@@ -68,19 +69,21 @@ public class CommunityPaymentController {
         }
     }
 
-    @GetMapping("/success/{community_post_id}")
+    @GetMapping("/success/{community_post_id}/{user_id}")
     public ResponseEntity<?> handlePaymentSuccess(
             @RequestParam String paymentKey,
             @RequestParam String orderId,
             @RequestParam int amount,
-            @PathVariable Long community_post_id) {
+            @PathVariable Long community_post_id,
+            @PathVariable Long user_id) {
         try {
-            User user = currentUser();
+            User user = userRepository.findById(user_id).orElse(null);
             Participations participations = participationsInfo(community_post_id,user);
 
 
 
             CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
+            communityController.sendStreamingData(community_post_id);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -106,6 +109,7 @@ public class CommunityPaymentController {
             Participations participations = participationsInfo(community_post_id,user);
 
             CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
+
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -113,14 +117,32 @@ public class CommunityPaymentController {
         }
     }
 
-    @PostMapping("/cancel-payment")
-    public ResponseEntity<?> cancelPayment(@RequestBody Map<String, Object> requestBody) {
+    @PostMapping("/cancel-payment/{community_post_id}")
+    public ResponseEntity<?> cancelPayment(@RequestBody Map<String, Object> requestBody,@PathVariable Long community_post_id) {
         try {
             String paymentKey = (String) requestBody.get("paymentKey");
             String cancelReason = (String) requestBody.get("cancelReason");
             Map<String, String> refundAccount = (Map<String, String>) requestBody.get("refundReceiveAccount");
 
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = userRepository.findByEmail(authentication.getName()).orElse(null);
+            Participations participations = participationsInfo(community_post_id,user);
+
             CommunityPaymentResponseDto responseDto = communityPaymentService.cancelPayment(paymentKey, cancelReason, refundAccount);
+            participations.setStatus(participationStatus.PAYMENT_CANCEL);
+            participationsRepository.save(participations);
+
+            CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
+            if(communityPost.getCloseAt().isAfter(LocalDateTime.now())){
+                    communityPost.setStatus(postStatus.APPROVED);
+                    communityPost.setPaymentDeadline(null);
+                    communityPostRepository.save(communityPost);
+                    communityController.sendStreamingData(community_post_id);
+            }   communityPost.setStatus(postStatus.DELETED);
+            communityPost.setPaymentDeadline(null);
+            communityPostRepository.save(communityPost);
+
+
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
