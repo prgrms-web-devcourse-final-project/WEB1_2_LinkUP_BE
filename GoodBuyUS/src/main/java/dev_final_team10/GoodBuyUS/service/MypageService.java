@@ -5,7 +5,9 @@ import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.*;
 import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
+import dev_final_team10.GoodBuyUS.domain.order.dto.RefundListDto;
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
+import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
 import dev_final_team10.GoodBuyUS.domain.payment.entity.MainPayment;
 import dev_final_team10.GoodBuyUS.domain.user.dto.MypageDefaultDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
@@ -251,6 +253,41 @@ public class MypageService {
         }
         log.info("PostResponseDtos" + postResponseDtos);
         return postResponseDtos;
+    }
+
+    public ResponseEntity<?> refundlist() {
+        String email = getCurrentUserEmail();
+        try{
+            User user = userRepository.findByEmail(email).orElseThrow(()-> new NoSuchElementException("없는 회원입니다"));
+            List<Order> orders = user.getOrders().stream()
+                    .filter(order -> order.getOrderStatus().equals(OrderStatus.CANCEL))
+                    .toList();
+            List<RefundListDto> refundLists = new ArrayList<>();
+            for (Order order : orders) {
+                MainPayment payment = mainPaymentRepository.findByOrder(order).orElseThrow(()-> new NoSuchElementException("잘못된 주문입니다"));
+                RefundListDto refundListDto = new RefundListDto(payment.getProductName(),payment.getQuantity(),payment.getPrice(),order.getProductPost().getPostURL(),
+                        payment.getPaymentStatus(),order.getProductPost().getPostId());
+                refundLists.add(refundListDto);
+            }
+            return new ResponseEntity<>("환불된 주문 조회 완료", HttpStatus.OK);
+        } catch (NoSuchElementException e){
+            return new ResponseEntity<>("회원 or 주문이 없습니다",HttpStatus.NOT_FOUND);
+        } catch (Exception e){
+            return new ResponseEntity<>("서버 오류", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<?> changeNickname(String nickName) {
+        String email = getCurrentUserEmail();
+        try{
+            User user = userRepository.findByEmail(email).orElseThrow(()-> new NoSuchElementException("없는 회원입니다"));
+            user.changeNickName(nickName);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (NoSuchElementException e){
+            return new ResponseEntity<>("닉네임 변경 실패 : 없는 유저입니다", HttpStatus.NOT_FOUND);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
 

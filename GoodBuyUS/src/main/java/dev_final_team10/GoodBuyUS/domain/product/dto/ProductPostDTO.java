@@ -6,6 +6,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class ProductPostDTO {
     private Long id;
@@ -15,6 +17,8 @@ public class ProductPostDTO {
     private int minamount;
     private double rating;
     private String url;
+    private LocalDateTime deadline;
+    private boolean selling;
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
     private boolean available;
@@ -28,6 +32,7 @@ public class ProductPostDTO {
         productPostDTO.rating = rating;
         productPostDTO.category = productPost.getProduct().getProductCategory();
         productPostDTO.available = productPost.isAvailable();
+        productPostDTO.deadline = productPost.getProduct_period();
         return productPostDTO;
     }
 }
