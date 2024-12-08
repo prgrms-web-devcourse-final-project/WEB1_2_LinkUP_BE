@@ -76,5 +76,11 @@ public class User {
         this.warnings++;
     }
 
+    public void changeProfile(String newProfile){
+        this.profile = newProfile;
+    }
 
+    public void changeNickName(String nickname){
+        this.nickname = nickname;
+    }
 }

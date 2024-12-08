@@ -84,8 +84,8 @@ public class MainPaymentService {
             responseDto.setOrderId(order.getOrderId());
             responseDto.setProductName(order.getOrderName());
             responseDto.setQuantity(order.getQuantity());
-            responseDto.setPrice(order.getProductPost().getOriginalPrice());
-            responseDto.setTotalPrice(order.getPrice() * order.getQuantity());
+            responseDto.setPrice(order.getProductPost().getProuctDiscount());
+            responseDto.setTotalPrice(responseDto.getPrice()*responseDto.getQuantity());
             responseDto.setStatus(payment.getPaymentStatus().name());
             responseDto.setCreatedAt(payment.getCreatedAt());
             responseDto.setUpdatedAt(payment.getUpdatedAt());

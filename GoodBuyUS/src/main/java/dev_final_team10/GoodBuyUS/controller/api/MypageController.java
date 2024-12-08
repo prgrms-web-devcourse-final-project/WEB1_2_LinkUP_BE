@@ -117,7 +117,17 @@ public class MypageController {
         String tokenValue = token.replace("Bearer ", "");
         return JWT.decode(tokenValue).getClaim("email").asString();
     }
+    // 기본 마이페이지에 필요한 정보 전달
+    @GetMapping
+    public ResponseEntity<?> setting(){
+       return mypageService.mypageMain();
+    }
 
+    // 프로필 변경 기능 채원님께 문의
+    @PutMapping("/editprofile")
+    public ResponseEntity<?> editProfile(@RequestParam("profile") MultipartFile multipartFile) throws Exception{
+        return mypageService.editProfile(multipartFile);
+    }
 
     //내 공구 참여 내역 보기(참여 취소, 결제취소 외에는 다 보이도록)
     @GetMapping("/community")
@@ -126,7 +136,13 @@ public class MypageController {
             return mypageService.communityJoinList();
         }
 
+    @GetMapping("refund_orders")
+    public ResponseEntity<?> refundOrder(){
+        return mypageService.refundlist();
+    }
 
-
-
+    @PutMapping("/change_nickname")
+    public ResponseEntity<?> changeNickname(@RequestParam String nickName){
+        return mypageService.changeNickname(nickName);
+    }
 }
