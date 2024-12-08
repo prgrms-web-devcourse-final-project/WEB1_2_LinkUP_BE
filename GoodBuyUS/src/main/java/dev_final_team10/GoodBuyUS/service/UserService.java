@@ -171,7 +171,7 @@ public class UserService {
          + "<a href='" + resetLink + "' style='text-decoration: none; color: #000000;'>비밀번호 재설정</a>"
          + "</div>"
          + "</body></html>";
-        emailService.sendEmailWithInlineImage(email, "비밀번호 재설정 링크", htmlContent, "static/images/logo.png");
+        emailService.sendEmailWithInlineImage(email, "비밀번호 재설정 링크", htmlContent, "images/logo.png");
 
         return ResponseEntity.ok(Map.of("message","비밀번호 재설정 링크가 이메일로 전송되었습니다."));
     }
