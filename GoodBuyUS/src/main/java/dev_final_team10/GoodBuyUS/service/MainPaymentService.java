@@ -38,7 +38,7 @@ public class MainPaymentService {
     private final OrderRepository orderRepository;
 
     public String buildRedirectUrl(Long productId, String status) {
-        return String.format("http://localhost:5173/products/payment-%s/%d", status, productId);
+        return String.format(" http://15.164.5.135:8080/products/payment-%s/%d", status, productId);
     }                           // 리다이렉트 주소 변경
 
     @Transactional

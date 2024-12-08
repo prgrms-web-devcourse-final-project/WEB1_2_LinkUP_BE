@@ -14,6 +14,7 @@ import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import dev_final_team10.GoodBuyUS.service.CommunityPaymentService;
 import dev_final_team10.GoodBuyUS.service.UserService;
 import dev_final_team10.GoodBuyUS.service.CommunityWebhookService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/virtual")
 public class CommunityPaymentController {
@@ -53,15 +55,18 @@ private final CommunityController communityController;
         Random random = new Random();
 
         try {
+            String generatedOrderId = "goodbuyus" + random.nextInt(50000) + 1500;
+            log.info("생성된 Order ID: {}", generatedOrderId);
             requestDto.setOrderId("goodbuyus" +  random.nextInt(50000)+1500);   //orderID랜덤으로 생성
             requestDto.setAmount((int) (communityPost.getUnitAmount() * participation.getQuantity()));  //게시물의 개당 가격 * 현재 사용자의 구매 수
             requestDto.setOrderName(community_post_id + "게시물에 대한 사용자" + user.getName() +"사용자의 결제");
             requestDto.setCustomerName(user.getName());
             requestDto.setCustomerEmail(user.getEmail());
-            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
-            requestDto.setFailUrl("http://15.164.5.135:8080/api/v1/virtual/fail"+ community_post_id);
+            requestDto.setSuccessUrl("http://localhost:8080/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
+            requestDto.setFailUrl("http://localhost:8080/api/v1/virtual/fail"+ community_post_id);
             requestDto.setMethod("VIRTUAL_ACCOUNT");
             CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);
+            log.info("결제 요청 성공: {}", responseDto);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -77,15 +82,16 @@ private final CommunityController communityController;
             @PathVariable Long community_post_id,
             @PathVariable Long user_id) {
         try {
+            log.info("결제 성공 요청 - Payment Key: {}, Order ID: {}, Amount: {}", paymentKey, orderId, amount);
             User user = userRepository.findById(user_id).orElse(null);
             Participations participations = participationsInfo(community_post_id,user);
 
-
-
             CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
+            log.info("결제 승인 완료 - Payment Key: {}, Order ID: {}", paymentKey, orderId);
             communityController.sendStreamingData(community_post_id);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
+            log.error("결제 승인 중 오류 발생: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "결제 승인 중 오류 발생", "message", e.getMessage()));
         }
@@ -196,6 +202,7 @@ private final CommunityController communityController;
     private Participations participationsInfo(Long communityPostId, User user) {
 
         List<Participations> participations = participationsRepository.findAllByCommunityPost_CommunityPostId(communityPostId);
+        log.info("참여자 목록 조회 - Post ID: {}, 참여자 수: {}", communityPostId, participations.size());
         Participations participationInfo = null; // 초기값 설정
 
         for (Participations participation : participations) {
@@ -203,6 +210,11 @@ private final CommunityController communityController;
                 participationInfo = participation;
                 break;
             }
+        }
+        if (participationInfo == null) {
+            log.warn("참여 정보를 찾을 수 없습니다 - Post ID: {}, User: {}", communityPostId, user.getEmail());
+        } else {
+            log.info("참여 정보 조회 성공 - Participation: {}", participationInfo);
         }
         return participationInfo;
 

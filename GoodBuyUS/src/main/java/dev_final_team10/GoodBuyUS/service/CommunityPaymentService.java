@@ -13,6 +13,7 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPaymentRepository;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+@Slf4j
 @Service
 public class CommunityPaymentService {
 
@@ -55,7 +58,7 @@ public class CommunityPaymentService {
         this.communityService = communityService;
         this.participationsRepository = participationsRepository;
     }
-
+    @Transactional
     public CommunityPaymentResponseDto createAndRequestPayment(CommunityPaymentRequestDto requestDto) {
         try {
             String rawResponse = webClient.post()
@@ -80,17 +83,22 @@ public class CommunityPaymentService {
                     .recipientAddress(requestDto.getRecipientAddress())
                     .deliveryRequest(requestDto.getDeliveryRequest())
                     .build();
-
-            paymentRepository.save(payment);
-
+            // 배송 정보
+            responseDto = responseDto.toBuilder()
+                    .recipientName(payment.getRecipientName())
+                    .recipientAddress(payment.getRecipientAddress())
+                    .deliveryRequest(payment.getDeliveryRequest())
+                    .build();
+            paymentRepository.saveAndFlush(payment);
+            log.info("결제 요청 생성 완료 - Order ID: {}", requestDto.getOrderId());
             return responseDto;
-
-
         } catch (Exception e) {
+            log.error("결제 요청 중 오류 발생: {}", e.getMessage());
             throw new RuntimeException("결제 요청 중 오류 발생: " + e.getMessage(), e);
         }
     }
 //가상계좌 결제승인
+    @Transactional
     public CommunityPaymentResponseDto confirmPayment(String paymentKey, String orderId, int amount, Long community_post_id, Participations participations) {
         try {
             String rawResponse = webClient.post()
@@ -102,11 +110,17 @@ public class CommunityPaymentService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+            log.info("결제 승인 요청에 대한 Toss API 응답: {}", rawResponse);
 
             CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
 
             CommunityPayment payment = paymentRepository.findByParticipationsOrderId(orderId)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 주문을 찾을 수 없습니다: " + orderId));
+                    .orElseThrow(() -> {
+                        log.error("결제 승인 중 데이터 조회 실패. Order ID: {}", orderId);
+                        List<CommunityPayment> allPayments = paymentRepository.findAll();
+                        log.info("현재 DB에 저장된 Payments: {}", allPayments);
+                        return new IllegalArgumentException("해당 주문을 찾을 수 없습니다: " + orderId);
+                    });
 
             payment = payment.toBuilder()
                     .paymentStatus(responseDto.getStatus())
@@ -116,21 +130,30 @@ public class CommunityPaymentService {
                     .customerName(responseDto.getVirtualAccount().getCustomerName())
                     .communityApprovedAt(LocalDateTime.now())
                     .build();
+            // 배송 정보
+            responseDto = responseDto.toBuilder()
+                    .recipientName(payment.getRecipientName()) // 배송 정보 추가
+                    .recipientAddress(payment.getRecipientAddress())
+                    .deliveryRequest(payment.getDeliveryRequest())
+                    .build();
 
             participations.setStatus(participationStatus.PAYMENT_COMPLETE);
             participationsRepository.save(participations);
+            log.info("참여 상태 업데이트: {}", participations);
             CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
 
             //참여자 모두가 결제 완료한 경우 글의 상태 PAYMENT_COMPLETE
             if(communityService.getPaymentCount(community_post_id).equals(communityPost.getAvailableNumber())){
                 communityPost.setStatus(postStatus.PAYMENT_COMPLETED);
+                communityPostRepository.save(communityPost);
+                log.info("글 상태가 PAYMENT_COMPLETED로 변경되었습니다. Post ID: {}", community_post_id);
             }
-            communityPostRepository.save(communityPost);
-                paymentRepository.save(payment);
-
-
-
+            communityPostRepository.saveAndFlush(communityPost);
+            paymentRepository.saveAndFlush(payment); // 동기화 보장
+            //communityPostRepository.save(communityPost);
+            //paymentRepository.save(payment);
             return responseDto;
+
         } catch (Exception e) {
             throw new RuntimeException("결제 승인 처리 중 오류 발생: " + e.getMessage(), e);
         }
@@ -188,6 +211,7 @@ public class CommunityPaymentService {
                             "holderName", refundAccount.get("holderName")
                     )
             );
+            log.info("Toss API로 전달된 환불 요청 데이터: {}", requestBody);
 
             String rawResponse = webClient.post()
                     .uri("/{paymentKey}/cancel", paymentKey)
@@ -198,7 +222,7 @@ public class CommunityPaymentService {
 
             CommunityPaymentResponseDto responseDto = objectMapper.readValue(rawResponse, CommunityPaymentResponseDto.class);
             CommunityPayment payment = paymentRepository.findByCommunityPaymentKey(paymentKey)
-                    .orElseThrow(() -> new RuntimeException("결제 정보를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new RuntimeException("환불 가능한 금액이 없습니다."));
 
             if ("CANCELED".equals(responseDto.getStatus())) {
                 payment = payment.toBuilder()
