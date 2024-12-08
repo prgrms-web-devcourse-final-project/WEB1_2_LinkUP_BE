@@ -226,6 +226,7 @@ public class MypageService {
 
         // 저장된 이미지 파일 경로 반환 (URL로 변경 가능)
         return targetLocation.toString();  // 또는 저장된 경로의 URL 반환 가능
+    }
 
       //나의 공구 참여 내역 목록
     public List<PostResponseDto> communityJoinList() {
