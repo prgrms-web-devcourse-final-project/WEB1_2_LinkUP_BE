@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="refactor: develop 최신화 및 리팩토링">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/MainPaymentRedirectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/MainPaymentRedirectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" afterDir="false" />
-    </list>
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="chore:환경변수 업데이트" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -247,7 +242,23 @@
       <option name="project" value="LOCAL" />
       <updated>1733664113442</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="refactor: develop 최신화 및 리팩토링 주소 오류 수정">
+      <option name="closed" value="true" />
+      <created>1733669492623</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1733669492623</updated>
+    </task>
+    <task id="LOCAL-00011" summary="chore:환경변수 업데이트">
+      <option name="closed" value="true" />
+      <created>1733669639173</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1733669639173</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -273,6 +284,8 @@
     <MESSAGE value="refactor: 커뮤니티 결제 리팩토링 + 상단물품 성공 리다이렉트 주소 15.16~으로 변경(로컬 작업 시 localhost:8080으로 변환해야 문제 없습니다.)" />
     <MESSAGE value="refactor: 배포 주소 설정(프론트 요구 사항)" />
     <MESSAGE value="refactor: develop 최신화 및 리팩토링" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: develop 최신화 및 리팩토링" />
+    <MESSAGE value="refactor: develop 최신화 및 리팩토링 주소 오류 수정" />
+    <MESSAGE value="chore:환경변수 업데이트" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore:환경변수 업데이트" />
   </component>
 </project>
