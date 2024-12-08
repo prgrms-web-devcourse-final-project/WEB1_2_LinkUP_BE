@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="refactor: develop 최신화 및 리팩토링">
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/CommunityPaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/CommunityPaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" afterDir="false" />
-    </list>
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="refactor: 배포 주소 설정(프론트 요구 사항)" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,6 +49,12 @@
       </map>
     </option>
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "sumin2eee"
+  }
+}]]></component>
   <component name="GitToolBoxStore">
     <option name="recentBranches">
       <RecentBranches>
@@ -85,7 +84,21 @@
       </RecentBranches>
     </option>
   </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/prgrms-web-devcourse-final-project/WEB1_2_LinkUP_BE.git",
+    "accountId": "8de283f1-5acb-4ce0-ba36-760b34ab5e26"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2pw3hH0vIOjeocs43tyfEyUZUxi" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.Build GoodBuyUS.executor": "Run",
@@ -95,7 +108,7 @@
     "RequestMappingsPanelWidth1": "75",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.GoodBuyUsApplication.executor": "Run",
-    "git-widget-placeholder": "feature/payment__controller",
+    "git-widget-placeholder": "develop",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -147,6 +160,15 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task id="LOCAL-00001" summary="feat: 상단물품 성공반환 주소 컨트롤러 생성">
       <option name="closed" value="true" />
@@ -215,6 +237,9 @@
     <option name="localTasksCounter" value="9" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -234,6 +259,7 @@
     <MESSAGE value="chore: 환경설정 업데이트" />
     <MESSAGE value="refactor: 커뮤니티 결제 리팩토링 + 상단물품 성공 리다이렉트 주소 15.16~으로 변경(로컬 작업 시 localhost:8080으로 변환해야 문제 없습니다.)" />
     <MESSAGE value="refactor: develop 최신화 및 리팩토링" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: develop 최신화 및 리팩토링" />
+    <MESSAGE value="refactor: 배포 주소 설정(프론트 요구 사항)" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 배포 주소 설정(프론트 요구 사항)" />
   </component>
 </project>

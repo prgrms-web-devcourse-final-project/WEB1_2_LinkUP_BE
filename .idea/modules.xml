@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GoodBuyUS.iml" filepath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GoodBuyUS.test.iml" filepath="$PROJECT_DIR$/.idea/modules/GoodBuyUS.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.iml" filepath="$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.main.iml" filepath="$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.test.iml" filepath="$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.test.iml" />

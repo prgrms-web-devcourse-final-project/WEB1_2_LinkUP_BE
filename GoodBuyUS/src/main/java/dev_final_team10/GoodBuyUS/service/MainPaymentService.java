@@ -37,9 +37,16 @@ public class MainPaymentService {
     private final ObjectMapper objectMapper;
     private final OrderRepository orderRepository;
 
-    public String buildRedirectUrl(Long productId, String status) {
-        return String.format("http://15.164.5.135:8080/products/payment-%s/%d", status, productId);
-    }                           // 리다이렉트 주소 변경
+/*    public String buildRedirectUrl(Long productId, String status) {
+        return String.format("http://localhost:5173/products/payment-%s/%d", status, productId);
+    }*/
+    // 리다이렉트 주소 변경
+public String buildRedirectUrl(Long productId, String status) {
+    boolean isLocal = false; // 배포 환경 여부
+    String baseUrl = isLocal ? "http://localhost:5173" : "http://15.164.5.135";
+
+    return String.format("%s/products/payment-%s/%d", baseUrl, status, productId);
+}
 
     @Transactional
     public MainPaymentResponseDto createAndRequestPayment(Order order) {
