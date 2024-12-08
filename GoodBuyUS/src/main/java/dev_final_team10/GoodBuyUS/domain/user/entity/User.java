@@ -79,4 +79,8 @@ public class User {
     public void changeProfile(String newProfile){
         this.profile = newProfile;
     }
+
+    public void changeNickName(String nickname){
+        this.nickname = nickname;
+    }
 }

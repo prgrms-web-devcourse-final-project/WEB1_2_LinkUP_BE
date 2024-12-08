@@ -135,4 +135,14 @@ public class MypageController {
 
             return mypageService.communityJoinList();
         }
+
+    @GetMapping("refund_orders")
+    public ResponseEntity<?> refundOrder(){
+        return mypageService.refundlist();
+    }
+
+    @PutMapping("/change_nickname")
+    public ResponseEntity<?> changeNickname(@RequestParam String nickName){
+        return mypageService.changeNickname(nickName);
+    }
 }
