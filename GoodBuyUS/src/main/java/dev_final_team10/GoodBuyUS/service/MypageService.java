@@ -265,11 +265,11 @@ public class MypageService {
             List<RefundListDto> refundLists = new ArrayList<>();
             for (Order order : orders) {
                 MainPayment payment = mainPaymentRepository.findByOrder(order).orElseThrow(()-> new NoSuchElementException("잘못된 주문입니다"));
-                RefundListDto refundListDto = new RefundListDto(payment.getProductName(),payment.getQuantity(),payment.getPrice(),order.getProductPost().getPostURL(),
+                RefundListDto refundListDto = new RefundListDto(order.getProductPost().getTitle(),payment.getQuantity(),payment.getPrice(),order.getProductPost().getPostURL(),
                         payment.getPaymentStatus(),order.getProductPost().getPostId());
                 refundLists.add(refundListDto);
             }
-            return new ResponseEntity<>("환불된 주문 조회 완료", HttpStatus.OK);
+            return new ResponseEntity<>(refundLists, HttpStatus.OK);
         } catch (NoSuchElementException e){
             return new ResponseEntity<>("회원 or 주문이 없습니다",HttpStatus.NOT_FOUND);
         } catch (Exception e){
