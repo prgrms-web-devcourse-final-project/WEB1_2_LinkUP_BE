@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="refactor: 상단물품 결제 리팩토링">
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="refactor: develop 최신화 및 리팩토링">
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/dev_final_team10.GoodBuyUS.main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/CommunityPaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/CommunityPaymentController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +52,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/redirectUrl" />
+        <entry key="$PROJECT_DIR$" value="develop" />
       </map>
     </option>
   </component>
@@ -63,7 +66,7 @@
                 <list>
                   <RecentBranch>
                     <option name="branchName" value="feature/payment_controller" />
-                    <option name="lastUsedInstant" value="1733624684" />
+                    <option name="lastUsedInstant" value="1733647371" />
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="feature/redirect_url" />
@@ -90,6 +93,7 @@
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
     "RequestMappingsPanelWidth1": "75",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.GoodBuyUsApplication.executor": "Run",
     "git-widget-placeholder": "feature/payment__controller",
     "node.js.detected.package.eslint": "true",
@@ -103,6 +107,19 @@
   }
 }]]></component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="GoodBuyUS.test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="GoodBuyUS.test" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GoodBuyUsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="mail.username" value="noreply.webus@gmail.com" />
@@ -123,6 +140,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.GoodBuyUsApplication" />
         <item itemvalue="Spring Boot.GoodBuyUsApplication" />
         <item itemvalue="Spring Boot.GoodBuyUsApplication" />
         <item itemvalue="Spring Boot.GoodBuyUsApplication" />
@@ -162,7 +180,39 @@
       <option name="project" value="LOCAL" />
       <updated>1733508112319</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="refactor: 상단 결제 redirecturl변경">
+      <option name="closed" value="true" />
+      <created>1733626305476</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1733626305476</updated>
+    </task>
+    <task id="LOCAL-00006" summary="chore: 환경설정 업데이트">
+      <option name="closed" value="true" />
+      <created>1733626416721</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1733626416721</updated>
+    </task>
+    <task id="LOCAL-00007" summary="refactor: 커뮤니티 결제 리팩토링 + 상단물품 성공 리다이렉트 주소 15.16~으로 변경(로컬 작업 시 localhost:8080으로 변환해야 문제 없습니다.)">
+      <option name="closed" value="true" />
+      <created>1733647130512</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1733647130512</updated>
+    </task>
+    <task id="LOCAL-00008" summary="refactor: develop 최신화 및 리팩토링">
+      <option name="closed" value="true" />
+      <created>1733647500900</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1733647500900</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -180,6 +230,10 @@
     <MESSAGE value="feat: 상단물품 성공반환 주소 컨트롤러 생성" />
     <MESSAGE value="refactor: 상단물품결제 리팩토링" />
     <MESSAGE value="refactor: 상단물품 결제 리팩토링" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: 상단물품 결제 리팩토링" />
+    <MESSAGE value="refactor: 상단 결제 redirecturl변경" />
+    <MESSAGE value="chore: 환경설정 업데이트" />
+    <MESSAGE value="refactor: 커뮤니티 결제 리팩토링 + 상단물품 성공 리다이렉트 주소 15.16~으로 변경(로컬 작업 시 localhost:8080으로 변환해야 문제 없습니다.)" />
+    <MESSAGE value="refactor: develop 최신화 및 리팩토링" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: develop 최신화 및 리팩토링" />
   </component>
 </project>
