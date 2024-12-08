@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,6 +19,7 @@ public class MainPaymentRedirectController {
 
     private final MainPaymentService mainPaymentService;
 
+
     @RequestMapping(value = "/payment-success/{productId}", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<?> handleProductPaymentSuccess(
             @PathVariable Long productId,
@@ -26,36 +29,67 @@ public class MainPaymentRedirectController {
         try {
             // 기존 결제 성공 로직 호출
             MainPaymentResponseDto responseDto = mainPaymentService.handlePaymentSuccess(paymentKey, orderId, amount);
-            // 응답 반환
-            return ResponseEntity.ok(Map.of(
-                    "productName", responseDto.getProductName(),
-                    "quantity", responseDto.getQuantity(),
-                    "price", responseDto.getPrice(),
-                    "totalAmount", responseDto.getTotalPrice(),
-                    "status", responseDto.getStatus(),
-                    "redirectUrl", mainPaymentService.buildRedirectUrl(productId, "success")
-            ));
+
+            // 프론트엔드 URL 생성
+            String frontendSuccessUrl = String.format(
+                    "http://15.164.5.135/products/payment-success/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s",
+                    productId,
+                    URLEncoder.encode(responseDto.getProductName(), StandardCharsets.UTF_8), // 한글 인코딩
+                    responseDto.getQuantity(),
+                    responseDto.getPrice(),
+                    responseDto.getTotalPrice(),
+                    responseDto.getStatus()
+            );
+            return ResponseEntity.status(HttpStatus.FOUND) // HTTP 302 리다이렉트
+                    .header("Location", frontendSuccessUrl)
+                    .build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "결제 성공 처리 중 오류 발생", "message", e.getMessage()));
+            String frontendFailUrl = String.format(
+                    "http://15.164.5.135/products/payment-fail/%d?error=%s",
+                    productId,
+                    e.getMessage()
+            );
+            return ResponseEntity.status(HttpStatus.FOUND) // HTTP 302 리다이렉트
+                    .header("Location", frontendFailUrl)
+                    .build();
         }
     }
 
     @RequestMapping(value = "/payment-fail/{productId}", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<?> handleProductPaymentFail(
             @PathVariable Long productId,
-            @RequestParam String orderId,
-            @RequestParam String message) {
+            @RequestParam(required = false) String paymentKey,
+            @RequestParam(required = false) UUID orderId,
+            @RequestParam(required = false) String message) {
         try {
-            // 필요시 추가(프론트 분들 의견 듣고)
-            return ResponseEntity.ok(Map.of(
-                    "status", "fail",
-                    "message", message,
-                    "redirectUrl", mainPaymentService.buildRedirectUrl(productId, "fail")
-            ));
+            MainPaymentResponseDto responseDto = null;
+            if (paymentKey != null && orderId != null) {
+                responseDto = mainPaymentService.getPaymentDetails(paymentKey);
+            }
+
+            String frontendFailUrl = String.format(
+                    "http://15.164.5.135/products/payment-fail/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s&error=%s",
+                    productId,
+                    responseDto != null ? URLEncoder.encode(responseDto.getProductName(), StandardCharsets.UTF_8) : "Unknown",
+                    responseDto != null ? responseDto.getQuantity() : 0,
+                    responseDto != null ? responseDto.getPrice() : 0,
+                    responseDto != null ? responseDto.getTotalPrice() : 0,
+                    responseDto != null ? responseDto.getStatus() : "FAIL",
+                    URLEncoder.encode(message != null ? message : "Unknown error", StandardCharsets.UTF_8)
+            );
+            return ResponseEntity.status(HttpStatus.FOUND) // HTTP 302 리다이렉트
+                    .header("Location", frontendFailUrl)
+                    .build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "결제 실패 처리 중 오류 발생", "message", e.getMessage()));
+            String fallbackFailUrl = String.format(
+                    "http://15.164.5.135/products/payment-fail/%d?error=%s",
+                    productId,
+                    URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8)
+            );
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header("Location", fallbackFailUrl)
+                    .build();
         }
     }
 }
+
