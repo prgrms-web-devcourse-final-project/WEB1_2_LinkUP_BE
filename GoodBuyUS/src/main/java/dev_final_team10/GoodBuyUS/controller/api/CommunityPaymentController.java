@@ -52,8 +52,6 @@ private final CommunityController communityController;
         Participations participation = participationsInfo(community_post_id, user);
         Random random = new Random();
 
-
-
         try {
             requestDto.setOrderId("goodbuyus" +  random.nextInt(50000)+1500);   //orderID랜덤으로 생성
             requestDto.setAmount((int) (communityPost.getUnitAmount() * participation.getQuantity()));  //게시물의 개당 가격 * 현재 사용자의 구매 수
