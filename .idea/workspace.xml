@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="chore:환경변수 업데이트" />
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: develop 최신화(Email,User Service)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/service/MainPaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -258,7 +262,31 @@
       <option name="project" value="LOCAL" />
       <updated>1733669639173</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="chore:환경변수 업데이트">
+      <option name="closed" value="true" />
+      <created>1733669725418</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1733669725418</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: develop 최신화(Email,User Service)">
+      <option name="closed" value="true" />
+      <created>1733669816007</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1733669816007</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat: develop 최신화(Email,User Service)">
+      <option name="closed" value="true" />
+      <created>1733669902495</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1733669902495</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -286,6 +314,7 @@
     <MESSAGE value="refactor: develop 최신화 및 리팩토링" />
     <MESSAGE value="refactor: develop 최신화 및 리팩토링 주소 오류 수정" />
     <MESSAGE value="chore:환경변수 업데이트" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore:환경변수 업데이트" />
+    <MESSAGE value="feat: develop 최신화(Email,User Service)" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: develop 최신화(Email,User Service)" />
   </component>
 </project>

@@ -39,7 +39,7 @@ public class MainPaymentService {
 
 public String buildRedirectUrl(Long productId, String status) {
     boolean isLocal = true; // 로컬 환경 여부
-    String baseUrl = isLocal ? "http://localhost:8080" : "http://15.164.5.135";
+    String baseUrl = isLocal ? "http://15.164.5.135:8080" : "http://15.164.5.135";
 
     return String.format("%s/products/payment-%s/%d", baseUrl, status, productId);
 }
