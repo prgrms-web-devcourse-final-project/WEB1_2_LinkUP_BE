@@ -137,7 +137,12 @@ public class CommunityService {
 
     //참여 수량 세는 메서드
     public Long getParticipantCount(Long communityPostId) {
-        List<Participations> joinParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatus(communityPostId, participationStatus.JOIN);
+        List<participationStatus> statuses = List.of(
+                participationStatus.JOIN,
+                participationStatus.PAYMENT_STANDBY,
+                participationStatus.PAYMENT_COMPLETE
+        );
+        List<Participations> joinParticipations = participationsRepository.findAllByCommunityPost_CommunityPostIdAndStatusIn(communityPostId,statuses);
         Long count = 0L;
         for(Participations participation : joinParticipations){
             count += participation.getQuantity();
@@ -155,7 +160,7 @@ public class CommunityService {
     }
 
     //커뮤니티 글에 참여 후 취소하는 메소드
-    public void cancleCommunityPost(CommunityPost communityPost, User user, Participations participations, List<Participations> participationsList) {
+    public void cancelCommunityPost(CommunityPost communityPost, User user, Participations participations, List<Participations> participationsList) {
 
         //작성자일 경우 글이 삭제상태로 바뀌면서 이 글에 참여했던 참여자들의 상태도 CANCEL로 바뀜
         if(participations.isWriter()){
