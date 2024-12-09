@@ -36,7 +36,7 @@
 
     // JWT에서 사용자 이메일 추출
     function fetchUserEmail() {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = sessionStorage.getItem('accessToken'); // sessionStorage로 변경
         if (!accessToken) {
             alert('로그인이 필요합니다.');
             throw new Error('Access token is missing');
@@ -75,7 +75,7 @@
 
     // 기존 메시지 로드 (REST API 호출)
     function loadExistingMessages() {
-        fetch(`${baseURL}/chat/${roomId}`)  // 기존 메시지를 로드하는 API 호출
+        fetch(`${baseURL}/api/chat/${roomId}`)  // 기존 메시지를 로드하는 API 호출
             .then(response => response.json())
             .then(messages => {
                 messages.forEach(message => {

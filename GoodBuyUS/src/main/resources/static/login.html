@@ -77,8 +77,8 @@
                 console.log("Refresh Token:", refreshToken);
 
                 if (accessToken && refreshToken) {
-                    localStorage.setItem('accessToken', accessToken);
-                    localStorage.setItem('refreshToken', refreshToken);
+                    sessionStorage.setItem('accessToken', accessToken);
+                    sessionStorage.setItem('refreshToken', refreshToken);
                     alert('로그인 성공!');
                     window.location.href = 'chat-list.html';
                 } else {
