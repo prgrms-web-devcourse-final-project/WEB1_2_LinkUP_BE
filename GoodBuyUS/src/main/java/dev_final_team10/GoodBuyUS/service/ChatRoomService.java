@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMemberRepository chatMemberRepository;
+    private final ChatRepository chatRepository;
     private final CommunityPostRepository postRepository;
     private final ParticipationsRepository participationsRepository;
 
@@ -46,8 +47,10 @@ public class ChatRoomService {
     }
 
     //채팅방 삭제
+    @PreAuthorize("hasRole('ADMIN')")
     public void removeChatRoom(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+        chatRepository.deleteByChatRoom(chatRoom);
         chatRoomRepository.delete(chatRoom);
     }
 
