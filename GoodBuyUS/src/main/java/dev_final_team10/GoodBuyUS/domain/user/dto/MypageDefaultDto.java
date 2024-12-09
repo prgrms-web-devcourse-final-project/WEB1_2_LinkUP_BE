@@ -11,4 +11,5 @@ public class MypageDefaultDto {
     private String profile;
     private String phoneNum;
     private String address;
+    private String nickname;
 }

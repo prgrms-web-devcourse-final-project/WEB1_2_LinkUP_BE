@@ -185,7 +185,8 @@ public class MypageService {
             User user = userRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new NoSuchElementException("없는 회원입니다"));
             MypageDefaultDto mypageDefaultDto = new MypageDefaultDto();
             mypageDefaultDto.setAddress(user.getAddress());
-            mypageDefaultDto.setName(user.getNickname());
+            mypageDefaultDto.setName(user.getName());
+            mypageDefaultDto.setNickname(user.getNickname());
             mypageDefaultDto.setProfile(user.getProfile());
             mypageDefaultDto.setPhoneNum(user.getPhone());
             return ResponseEntity.ok(mypageDefaultDto);
