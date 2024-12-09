@@ -64,6 +64,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/products/payment-fail/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/virtual/success/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/virtual/success/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/community/post/{community_post_id}/participants").permitAll()
                         .requestMatchers("api/**").authenticated()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 요청은 모두 허용
                         .anyRequest().permitAll()
