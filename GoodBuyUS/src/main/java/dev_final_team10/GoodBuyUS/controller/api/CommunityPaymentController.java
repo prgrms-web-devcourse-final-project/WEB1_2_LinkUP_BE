@@ -21,6 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -83,23 +85,82 @@ private final CommunityController communityController;
             @PathVariable Long user_id) {
         try {
             log.info("결제 성공 요청 - Payment Key: {}, Order ID: {}, Amount: {}", paymentKey, orderId, amount);
+            // 사용자와 참여 정보 가져오기
             User user = userRepository.findById(user_id).orElse(null);
             Participations participations = participationsInfo(community_post_id,user);
-
+            // 결제 승인 처리
             CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
             log.info("결제 승인 완료 - Payment Key: {}, Order ID: {}", paymentKey, orderId);
             communityController.sendStreamingData(community_post_id);
-            return ResponseEntity.ok(responseDto);
+            // 프론트엔드 리다이렉트 URL 생성
+            String frontendRedirectUrl = String.format(
+                    "http://15.164.5.135/community/success/%d?status=%s&amount=%d&recipientName=%s&accountNumber=%s&bankId=%s&recipientAddress=%s&deliveryRequest=%s",
+                    community_post_id,
+                    responseDto.getStatus(),
+                    responseDto.getTotalAmount(),
+                    URLEncoder.encode(responseDto.getRecipientName(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(responseDto.getVirtualAccount().getAccountNumber(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(responseDto.getVirtualAccount().getBankCode(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(responseDto.getRecipientAddress(), StandardCharsets.UTF_8),
+                    URLEncoder.encode(responseDto.getDeliveryRequest(), StandardCharsets.UTF_8)
+            );
+            /*return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             log.error("결제 승인 중 오류 발생: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "결제 승인 중 오류 발생", "message", e.getMessage()));
         }
-    }
+    }*/
 
+            // 프론트엔드로 리다이렉트
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header("Location", frontendRedirectUrl)
+                    .build();
+
+        } catch (Exception e) {
+            log.error("결제 승인 중 오류 발생: {}", e.getMessage(), e);
+
+            // 실패 시 프론트엔드 리다이렉트 URL 생성
+            String frontendFailUrl = String.format(
+                    "http://15.164.5.135/community/fail/%d?error=%s",
+                    community_post_id,
+                    URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8)
+            );
+
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header("Location", frontendFailUrl)
+                    .build();
+        }
+    }
+/*
     @GetMapping("/fail")
     public ResponseEntity<?> handlePaymentFail(@RequestParam String orderId, @RequestParam String message) {
         return ResponseEntity.badRequest().body(Map.of("status", "fail", "orderId", orderId, "message", message));
+    }
+*/
+    @GetMapping("/fail/{community_post_id}")
+    public ResponseEntity<?> handlePaymentFail(
+            @RequestParam String orderId,
+            @RequestParam String message,
+            @PathVariable Long community_post_id) {
+        try {
+            // 프론트엔드 리다이렉트 URL 생성
+            String frontendFailUrl = String.format(
+                    "http://15.164.5.135/community/fail/%d?orderId=%s&error=%s",
+                    community_post_id,
+                    URLEncoder.encode(orderId, StandardCharsets.UTF_8),
+                    URLEncoder.encode(message, StandardCharsets.UTF_8)
+            );
+
+            // 프론트엔드로 리다이렉트
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header("Location", frontendFailUrl)
+                    .build();
+        } catch (Exception e) {
+            log.error("결제 실패 처리 중 오류 발생: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PostMapping("/confirm-payment/{paymentKey}/{community_post_id}")
