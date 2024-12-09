@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -119,17 +120,28 @@ public class NaverOAuthService {
      * 자체 JWT 발급
      */
     private void issueJwtTokens(User user, HttpServletResponse response) {
+        // Step 1: JWT 생성
         String accessToken = jwtService.createAccessToken(user.getEmail());
         String refreshToken = jwtService.createRefreshToken();
 
-        // Refresh Token 저장
+        // Step 2: Refresh Token 저장
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
 
-        // JWT 전송
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        log.info("JWT 발급 완료 - AccessToken: {}, RefreshToken: {}", accessToken, refreshToken);
+        // Step 3: 리다이렉트 URL 생성
+        String redirectUrl = "http://15.164.5.135/signin"
+                + "?accessToken=" + accessToken
+                + "&refreshToken=" + refreshToken;
+
+        try {
+            // Step 4: 클라이언트를 리다이렉트
+            response.sendRedirect(redirectUrl);
+            log.info("클라이언트를 {}로 리다이렉트", redirectUrl);
+        } catch (IOException e) {
+            log.error("리다이렉트 중 오류 발생", e);
+        }
     }
+
 
     public String generateNaverLoginUrl() {
         return UriComponentsBuilder.fromHttpUrl("https://nid.naver.com/oauth2.0/authorize")
