@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: develop 최신화(Email,User Service)">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/CommunityPaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/java/dev_final_team10/GoodBuyUS/controller/api/CommunityPaymentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GoodBuyUS/src/main/resources/application-dev.properties" afterDir="false" />
-    </list>
+    <list default="true" id="48e829db-746e-4e2c-bdf9-23a0e3df7c63" name="Changes" comment="feat: develop 최신화(CommunityPaymentController:프론트용 리다이렉트 주소 추가)" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -304,9 +300,17 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1733703312905</updated>
-      <workItem from="1733703315713" duration="11385000" />
+      <workItem from="1733703315713" duration="12205000" />
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="feat: develop 최신화(CommunityPaymentController:프론트용 리다이렉트 주소 추가)">
+      <option name="closed" value="true" />
+      <created>1733715784291</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1733715784291</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -335,6 +339,7 @@
     <MESSAGE value="refactor: develop 최신화 및 리팩토링 주소 오류 수정" />
     <MESSAGE value="chore:환경변수 업데이트" />
     <MESSAGE value="feat: develop 최신화(Email,User Service)" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: develop 최신화(Email,User Service)" />
+    <MESSAGE value="feat: develop 최신화(CommunityPaymentController:프론트용 리다이렉트 주소 추가)" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: develop 최신화(CommunityPaymentController:프론트용 리다이렉트 주소 추가)" />
   </component>
 </project>
