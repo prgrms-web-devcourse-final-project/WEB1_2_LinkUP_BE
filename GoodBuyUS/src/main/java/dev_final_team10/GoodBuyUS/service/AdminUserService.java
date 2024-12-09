@@ -81,7 +81,7 @@ public class AdminUserService {
 
     }
     @Transactional
-    @Scheduled(cron = "0 */1 * * * *") // 매 1분마다 실행
+    @Scheduled (cron = "0 0 */1 * * *")// 매 1분마다 실행
     public void autoUnbanExpiredUsers() {
         List<BannedUser> expiredBans = bannedUserRepository.findAll().stream()
                 .filter(bannedUser -> bannedUser.getBanEnd().isBefore(LocalDateTime.now()))
