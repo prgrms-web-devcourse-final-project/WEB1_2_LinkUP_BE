@@ -35,19 +35,20 @@ public class NaverOAuthController {
      * 네이버 로그인 콜백 처리
      */
     @GetMapping("/naver/callback")
-    public ResponseEntity<String> naverCallback(
+    public void naverCallback(
             @RequestParam String code,
             @RequestParam String state,
             HttpServletResponse response) {
         try {
+            // 네이버 로그인 처리 및 리다이렉트
             naverOAuthService.processNaverLogin(code, state, response);
-
-            return ResponseEntity.ok("네이버 로그인 성공! 헤더에서 토큰을 확인하세요.");
         } catch (Exception e) {
             log.error("네이버 로그인 처리 중 오류 발생", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("네이버 로그인 처리 중 오류가 발생했습니다.");
+            try {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "로그인 처리 중 오류 발생");
+            } catch (IOException ex) {
+                log.error("에러 응답 전송 중 추가 오류 발생", ex);
+            }
         }
-
     }
 }
