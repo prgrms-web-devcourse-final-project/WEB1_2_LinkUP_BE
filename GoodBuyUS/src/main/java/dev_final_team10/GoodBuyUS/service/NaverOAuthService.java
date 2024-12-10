@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,6 +25,7 @@ public class NaverOAuthService {
     private final RestTemplate restTemplate;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String clientId;
@@ -103,8 +105,12 @@ public class NaverOAuthService {
 
         return userRepository.findBySnsTypeAndSnsId("NAVER", snsId)
                 .orElseGet(() -> {
+
+                    String defaultPassword = passwordEncoder.encode("socialDummyPassword");
+
                     User newUser = User.builder()
                             .email(email)
+                            .password(defaultPassword)
                             .name(name)
                             .phone(phone)
                             .profile(profileImage)
@@ -129,7 +135,7 @@ public class NaverOAuthService {
         userRepository.save(user);
 
         // Step 3: 리다이렉트 URL 생성
-        String redirectUrl = "http://15.164.5.135/signin"
+        String redirectUrl = "localhost:8080/signin"
                 + "?accessToken=" + accessToken
                 + "&refreshToken=" + refreshToken;
 
