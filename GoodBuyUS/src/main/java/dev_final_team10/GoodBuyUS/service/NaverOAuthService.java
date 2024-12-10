@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -100,27 +101,41 @@ public class NaverOAuthService {
         String snsId = (String) userInfo.get("id");
         String email = (String) userInfo.get("email");
         String name = (String) userInfo.get("name");
-        String phone = (String) userInfo.get("mobile"); // 네이버에서 제공하는 핸드폰 번호
+        String phone = (String) userInfo.get("mobile");
         String profileImage = (String) userInfo.get("profile_image");
 
-        return userRepository.findBySnsTypeAndSnsId("NAVER", snsId)
-                .orElseGet(() -> {
+        // 이메일 중복 검증
+        Optional<User> existingUser = userRepository.findByEmail(email);
 
-                    String defaultPassword = passwordEncoder.encode("socialDummyPassword");
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
 
-                    User newUser = User.builder()
-                            .email(email)
-                            .password(defaultPassword)
-                            .name(name)
-                            .phone(phone)
-                            .profile(profileImage)
-                            .snsType("NAVER")
-                            .snsId(snsId)
-                            .role(Role.USER)
-                            .build();
-                    return userRepository.save(newUser);
-                });
+            // 자체 로그인 계정인 경우 예외 처리
+            if (!"NAVER".equals(user.getSnsType())) {
+                throw new IllegalStateException("이미 존재하는 이메일입니다 굿바이어스 로그인을 이용해주세요: " + email);
+            }
+
+            // 기존 유저 반환 (업데이트 없이)
+            return user;
+        }
+
+        // 신규 유저 생성
+        String defaultPassword = passwordEncoder.encode("socialDummyPassword");
+
+        User newUser = User.builder()
+                .email(email)
+                .password(defaultPassword)
+                .name(name)
+                .phone(phone)
+                .profile(profileImage)
+                .snsType("NAVER")
+                .snsId(snsId)
+                .role(Role.USER)
+                .build();
+
+        return userRepository.save(newUser);
     }
+
 
     /**
      * 자체 JWT 발급
