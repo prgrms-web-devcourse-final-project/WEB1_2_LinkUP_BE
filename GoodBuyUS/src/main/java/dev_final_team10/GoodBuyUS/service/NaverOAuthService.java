@@ -112,7 +112,7 @@ public class NaverOAuthService {
 
             // 자체 로그인 계정인 경우 예외 처리
             if (!"NAVER".equals(user.getSnsType())) {
-                throw new IllegalStateException("이미 존재하는 이메일입니다: " + email);
+                throw new IllegalStateException("이미 존재하는 이메일입니다 굿바이어스 로그인을 이용해주세요: " + email);
             }
 
             // 기존 유저 반환 (업데이트 없이)
