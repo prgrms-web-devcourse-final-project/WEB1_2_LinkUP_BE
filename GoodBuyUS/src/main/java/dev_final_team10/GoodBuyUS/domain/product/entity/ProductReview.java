@@ -18,7 +18,7 @@ public class ProductReview extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productReviewId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -30,9 +30,8 @@ public class ProductReview extends BaseEntity {
     @Max(value = 5, message = "최대 5점을 넘을 수 없습니다.")
     private int rating;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(nullable = false)
+    private Long userId;
 
     private boolean isused;
 
@@ -45,18 +44,13 @@ public class ProductReview extends BaseEntity {
         this.product = product;
     }
 
-    public void bindUser(User user){
-        user.getProductReviews().add(this);
-        this.user = user;
-    }
-
     /**
      * @param product
      * @param content
      * @param rating
      * @return
      */
-    public static ProductReview createProductReview(Product product, String content, int rating, User user) {
+    public static ProductReview createProductReview(Product product, String content, int rating, Long userId) {
         if (product == null) {
             throw new IllegalArgumentException("Product cannot be null when creating a ProductReview.");
         }
@@ -64,7 +58,7 @@ public class ProductReview extends BaseEntity {
         productReview.product = product;
         productReview.content = content;
         productReview.rating = rating;
-        productReview.user = user;
+        productReview.userId = userId;
         productReview.isused = true;
         return productReview;
     }
