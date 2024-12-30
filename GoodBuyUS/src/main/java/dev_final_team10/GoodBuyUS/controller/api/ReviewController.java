@@ -2,6 +2,7 @@ package dev_final_team10.GoodBuyUS.controller.api;
 
 import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.product.dto.ReviewRequestDTO;
+import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.service.ProductPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -24,6 +25,19 @@ public class ReviewController {
     public HttpEntity<?> deleteReview(@RequestHeader("Authorization") String token, @PathVariable Long review_id){
         String userEmail = extractEmailFromToken(token);
         return productPostService.deleteReview(userEmail,review_id);
+    }
+
+    // 리뷰 물리적 삭제
+
+    /**
+     * 유저에서 관리하는 리뷰 테이블에서 안지워짐;; 이건 어떻게 같이 지우지?
+     * @param token
+     * @param review_id
+     */
+    @DeleteMapping("/remove/{review_id}")
+    public void deleteReview2(@RequestHeader("Authorization") String token, @PathVariable Long review_id){
+        String userEmail = extractEmailFromToken(token);
+        productPostService.deleteReview(review_id, userEmail);
     }
 
     // 리뷰 수정
