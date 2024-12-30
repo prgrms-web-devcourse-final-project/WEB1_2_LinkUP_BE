@@ -74,4 +74,11 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}
             sudo docker stop backend || true
             sudo docker rm backend || true
-            sudo docker run -d --name backend -p 8080:8080 -e TZ=Asia/Seoul ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}
+            sudo docker run -d --name backend -p 8080:8080 \
+              -e TZ=Asia/Seoul \
+              -e DB_URL=${{ secrets.DB_URL }} \
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              -e mail_username=${{ secrets.MAIL_USERNAME }} \
+              -e mail_password=${{ secrets.MAIL_PASSWORD }} \
+              ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}
