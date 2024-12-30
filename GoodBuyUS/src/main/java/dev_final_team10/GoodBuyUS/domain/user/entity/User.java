@@ -1,13 +1,14 @@
 package dev_final_team10.GoodBuyUS.domain.user.entity;
 
 import dev_final_team10.GoodBuyUS.domain.order.entity.Order;
-import dev_final_team10.GoodBuyUS.domain.product.entity.ProductReview;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -36,16 +37,17 @@ public class User {
     @Column(name = "sns_id")
     private String snsId; // 소셜 로그인 사용자 고유 ID
 
-
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role; // 권한
 
     private String refreshToken; // 리프레쉬 토큰
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<ProductReview> productReviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @ElementCollection
+    @CollectionTable(name = "user_reivews", joinColumns = @JoinColumn(name = "member_id"))
+    private Set<Long> reviews = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
     @Column(name = "warnings", nullable = false, columnDefinition = "int default 0")
@@ -59,7 +61,6 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "neighborhood_code")
     private Neighborhood neighborhood;   //지역코드
-
 
     //비밀번호 암호화 메소드
     public void passwordEncode(PasswordEncoder passwordEncoder) {
