@@ -30,7 +30,7 @@ public class ProductPostDTO {
         productPostDTO.discountprice = productPost.getProuctDiscount();
         productPostDTO.minamount = productPost.getMinAmount();
         productPostDTO.rating = rating;
-        productPostDTO.category = productPost.getProduct().getProductCategory();
+        productPostDTO.category = productPost.getProduct().getProductCategory(); //n+1문제 발생
         productPostDTO.available = productPost.isAvailable();
         productPostDTO.deadline = productPost.getProduct_period();
         return productPostDTO;
