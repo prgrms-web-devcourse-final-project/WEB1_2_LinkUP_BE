@@ -43,6 +43,9 @@ public class ProductPostService {
     /**
      * 전체 판매 리스트 전달(썸네일), 쿼리 최적화 필요
      * 현재 판매 중인 것들만!
+     * n+1 문제 발생
+     * Hibernate: select p1_0.product_id,p1_0.average_rating,p1_0.detail_category,p1_0.product_category,p1_0.product_image,p1_0.product_name,p1_0.product_price,p1_0.reviews_count,p1_0.stock,p1_0.sub_category from product p1_0 where p1_0.product_id=?
+     * Hibernate: select r1_0.product_id,r1_0.product_review_id,r1_0.content,r1_0.created_at,r1_0.isused,r1_0.modified_at,r1_0.rating,r1_0.user_id from product_review r1_0 where r1_0.product_id=?
      */
     public List<ProductPostDTO> findAllProduct(){
         List<ProductPost> productPosts = productPostRepository.findAll();
@@ -89,10 +92,11 @@ public class ProductPostService {
             ProductReview productReview = ProductReview.createProductReview(
                     productPost.getProduct(),
                     reviewRequestDTO.getContent(),
-                    reviewRequestDTO.getRate(), user);
+                    reviewRequestDTO.getRate(),
+                    user.getId());
             reviewRepository.save(productReview);
             productReview.bindReview(productPost.getProduct());
-            productReview.bindUser(user);
+            user.getReviews().add(productReview.getProductReviewId());
             log.info("리뷰 등록 완료 : userEmail : {}", user.getEmail());
             return new ResponseEntity<>("리뷰 등록 완료", HttpStatus.OK);
         } catch (NoSuchElementException e) {
@@ -112,7 +116,7 @@ public class ProductPostService {
         try {
             User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new NoSuchElementException("해당 이메일을 사용하는 유저가 없습니다.: " + userEmail));
-             ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
+             ProductReview productReview = reviewRepository.findByUserIdAndProductReviewId(user.getId(), reviewId)
                 .orElseThrow(()-> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
             // 리뷰 내용 및 별점 변경
             productReview.changeContent(reviewRequestDTO.getContent());
@@ -132,16 +136,16 @@ public class ProductPostService {
         }
     }
 
-    // 리뷰 삭제
+    // 리뷰 삭제 - 논리
     public ResponseEntity<?> deleteReview(String userEmail, Long reviewId) {
         try {
             // 사용자 조회
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
             // 리뷰 조회
-            ProductReview productReview = reviewRepository.findByUserAndProductReviewId(user, reviewId)
+            ProductReview productReview = reviewRepository.findByUserIdAndProductReviewId(user.getId(), reviewId)
                     .orElseThrow(() -> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
-            // 리뷰 삭제
+            // 리뷰 논리적 삭제
             productReview.removeReview();
             // 성공 응답
             return new ResponseEntity<>("리뷰 삭제 성공", HttpStatus.OK);
@@ -156,6 +160,23 @@ public class ProductPostService {
         }
     }
 
+    //리뷰 삭제 - 물리
+    public void deleteReview(Long reviewId, String userEmail){
+        try{
+            // 사용자 조회
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new NoSuchElementException("User not found for email: " + userEmail));
+            ProductReview removeReview = reviewRepository.findById(reviewId)
+                    .orElseThrow(()-> new NoSuchElementException("작성된적 없는 리뷰입니다."));
+            user.getReviews().remove(reviewId);
+            userRepository.save(user);
+            reviewRepository.delete(removeReview);
+        } catch (NoSuchElementException e){
+            log.error("작성이 안돼서 지울게 없음"+e.getMessage());
+        } catch (RuntimeException e){
+            log.error("DB 문제"+e.getMessage());
+        }
+    }
 
     public double setRating(Product product) {
         // 상태가 true인 리뷰만 필터링
