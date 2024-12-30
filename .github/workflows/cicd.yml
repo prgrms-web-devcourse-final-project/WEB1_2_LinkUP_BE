@@ -8,6 +8,9 @@ on:
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: GoodBuyUS
     steps:
       # 체크아웃
       - name: Checkout develop
@@ -33,7 +36,7 @@ jobs:
 
       # 권한 부여
       - name: Grant execute permission for gradlew
-        run: chmod +x GoodBuyUS/gradlew
+        run: chmod +x gradlew
 
       # Gradle 빌드
       - name: Build with Gradle
@@ -43,7 +46,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           mail_username: ${{ secrets.MAIL_USERNAME }}
           mail_password: ${{ secrets.MAIL_PASSWORD }}
-        run: ./GoodBuyUS/gradlew build -x test
+        run: ./gradlew build -x test
 
       # 도커허브 로그인
       - name: Login to Docker Hub
