@@ -47,11 +47,14 @@ public class ProductPostService {
      * Hibernate: select p1_0.product_id,p1_0.average_rating,p1_0.detail_category,p1_0.product_category,p1_0.product_image,p1_0.product_name,p1_0.product_price,p1_0.reviews_count,p1_0.stock,p1_0.sub_category from product p1_0 where p1_0.product_id=?
      * Hibernate: select r1_0.product_id,r1_0.product_review_id,r1_0.content,r1_0.created_at,r1_0.isused,r1_0.modified_at,r1_0.rating,r1_0.user_id from product_review r1_0 where r1_0.product_id=?
      */
+/**
+ * 페치 조인으로 쿼리 수 감소, n+1 문제 해결, 리뷰가 없어서 평점은 로딩이 안됨
+ */
     public List<ProductPostDTO> findAllProduct(){
-        List<ProductPost> productPosts = productPostRepository.findAll();
+        List<ProductPost> productPosts = productPostRepository.findAllWithProductAndReviews();
         List<ProductPostDTO> productPostDTOS = new ArrayList<>();
         for (ProductPost productPost : productPosts) {
-            double rate = setRating(productPost.getProduct());
+            double rate = productPost.calculateAverageStarRating();
             ProductPostDTO productPostDTO = ProductPostDTO.of(productPost, rate);
             productPostDTOS.add(productPostDTO);
         }
