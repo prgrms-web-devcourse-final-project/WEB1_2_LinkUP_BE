@@ -2,15 +2,16 @@ package dev_final_team10.GoodBuyUS.domain.community.entity;
 
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "community_comment")
 public class CommunityComment {
 
@@ -26,8 +27,8 @@ public class CommunityComment {
     @JoinColumn(name = "user_id")
     private User user;  //댓글 작성자
 
-    private LocalDateTime CommentDate;  //댓글 작성 시간
-    private String CommentText; //댓글 내용
-    private int Status; //댓글 상태
+    private LocalDateTime commentDate;  //댓글 작성 시간
+    private String commentText; //댓글 내용
+    private Long parentCommentId; //상위 댓글 아이디
 
 }
