@@ -1,7 +1,7 @@
 package dev_final_team10.GoodBuyUS.service;
 
-import dev_final_team10.GoodBuyUS.controller.api.CommunityController;
 import dev_final_team10.GoodBuyUS.domain.community.dto.CommunityCommentDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.CommunityCommentResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityComment;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
@@ -23,7 +23,7 @@ public class CommunityCommentService {
     private final CommunityCommentRepository communityCommentRepository;
 
     //댓글 작성
-    public void writeComment(CommunityCommentDto communityCommentDto, Long postId) {
+    public CommunityCommentResponseDto writeComment(CommunityCommentDto communityCommentDto, Long postId) {
         //현재 사용자 정보 가져오기(댓글 작성자)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(authentication.getName()).orElse(null);
@@ -35,6 +35,6 @@ public class CommunityCommentService {
         CommunityComment communityComment = communityCommentDto.toEntityForCreate(communityPost, user, communityCommentDto.getParentId(), communityCommentDto.getContent());
         communityCommentRepository.save(communityComment);
 
-
+        return CommunityCommentResponseDto.of(communityComment);
     }
 }

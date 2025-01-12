@@ -1,6 +1,7 @@
 package dev_final_team10.GoodBuyUS.controller.api;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.CommunityCommentDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.CommunityCommentResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityComment;
 import dev_final_team10.GoodBuyUS.service.CommunityCommentService;
 import lombok.AllArgsConstructor;
@@ -19,9 +20,8 @@ public class CommunityCommentController {
     
     //댓글 작성
     @PostMapping("{community_post_id}")
-    public ResponseEntity<?> writeComment(@RequestBody CommunityCommentDto communityCommentDto,
-                                          @PathVariable Long community_post_id){
-        commentService.writeComment(communityCommentDto, community_post_id);
-        return ResponseEntity.ok(Map.of("message", "댓글 작성이 완료되었습니다"));
+    public CommunityCommentResponseDto writeComment(@RequestBody CommunityCommentDto communityCommentDto,
+                                                                    @PathVariable Long community_post_id){
+         return commentService.writeComment(communityCommentDto, community_post_id);
     }
 }
