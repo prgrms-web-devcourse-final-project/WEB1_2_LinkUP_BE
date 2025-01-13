@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -50,15 +52,22 @@ public class ProductPostService {
     /**
      * 페치 조인으로 쿼리 수 감소, n+1 문제 해결
      */
-    public List<ProductPostDTO> findAllProduct(){
-        List<ProductPost> productPosts = productPostRepository.findAllWithProductAndReviews();
-        List<ProductPostDTO> productPostDTOS = new ArrayList<>();
-        for (ProductPost productPost : productPosts) {
-            double rate = productPost.calculateAverageStarRating();
-            ProductPostDTO productPostDTO = ProductPostDTO.of(productPost, rate);
-            productPostDTOS.add(productPostDTO);
+    public ResponseEntity<List<ProductPostDTO>> findAllProduct(){
+        try{
+            List<ProductPost> productPosts = productPostRepository.findAllWithProductAndReviews();
+            List<ProductPostDTO> productPostDTOS = new ArrayList<>();
+
+            for (ProductPost productPost : productPosts) {
+                double rate = productPost.calculateAverageStarRating();
+                ProductPostDTO productPostDTO = ProductPostDTO.of(productPost, rate);
+                productPostDTOS.add(productPostDTO);
+            }
+            return  ResponseEntity.ok(productPostDTOS);
+        } catch (NoSuchElementException e){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArrayList<>());
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
-        return productPostDTOS;
     }
 
     /**
