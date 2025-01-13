@@ -15,4 +15,10 @@ public interface ProductPostRepository extends JpaRepository<ProductPost, Long> 
            "JOIN FETCH pp.product p " +
            "LEFT JOIN FETCH p.reviews")
    List<ProductPost> findAllWithProductAndReviews();
+
+   @Query("SELECT pp FROM ProductPost pp " +
+           "JOIN FETCH pp.product p " +
+           "LEFT JOIN FETCH p.reviews r " +
+           "WHERE pp.postId = :id")
+   ProductPost findDetailByPostId(Long id);
 }
