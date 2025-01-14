@@ -2,12 +2,18 @@ package dev_final_team10.GoodBuyUS.domain.community.entity;
 
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserReview {
 
     @Id
@@ -20,7 +26,7 @@ public class UserReview {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;  //공구 주최자(리뷰를 받는 사람)
+    private User host;  //공구 주최자(리뷰를 받는 사람)
 
     private int question1Score;
     private int question2Score;
