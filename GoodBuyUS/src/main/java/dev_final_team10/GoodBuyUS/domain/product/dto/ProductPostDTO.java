@@ -18,7 +18,7 @@ public class ProductPostDTO {
     private double rating;
     private String url;
     private LocalDateTime deadline;
-    private boolean selling;
+//    private boolean selling;
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
     private boolean available;
