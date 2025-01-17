@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WriteModifyPostDto {
     private String title;
-    private String category;
+    private CommunityCategory category;
     private Long availableNumber;
     private Long period;
     private Long totalAmount;
@@ -27,10 +27,10 @@ public class WriteModifyPostDto {
     private LocalDateTime paymentDeadline;
 
     //글 작성 시 사용할 메소드
-    public CommunityPost toEntityForCreate(User user, Neighborhood neighborhood, CommunityCategory communityCategory, List<String> imageUrls){
+    public CommunityPost toEntityForCreate(User user, Neighborhood neighborhood , List<String> imageUrls){
         return CommunityPost.builder()
                 .title(title)
-                .category(communityCategory)
+                .category(category)
                 .availableNumber(availableNumber)
                 .totalAmount(totalAmount)
                 .unitAmount(unitAmount)
