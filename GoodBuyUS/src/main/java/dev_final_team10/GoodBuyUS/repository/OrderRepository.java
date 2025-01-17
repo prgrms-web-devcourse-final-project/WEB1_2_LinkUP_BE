@@ -5,6 +5,7 @@ import dev_final_team10.GoodBuyUS.domain.order.entity.OrderStatus;
 import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.product.entity.ProductPost;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,8 @@ import java.util.UUID;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
+
+    @EntityGraph(attributePaths = {"productPost"})
     public List<Order> findOrderByUser(User user);
     public List<Order> findAllByProductPost(ProductPost product);
 
