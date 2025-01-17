@@ -31,7 +31,4 @@ public class UserReviewService {
 
         return userReviewDto;
     }
-
-    //사용자 리뷰 등록
-
 }
