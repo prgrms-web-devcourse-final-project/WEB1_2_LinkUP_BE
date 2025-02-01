@@ -48,8 +48,6 @@ public class CommunityService {
         User user = userRepository.findByEmail(authentication.getName()).orElse(null);
         //현재 사용자 동네 정보 가져오기
         Neighborhood neighborhood = user.getNeighborhood();
-        //카테고리 설정
-        CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
         List<String> postImages =  new ArrayList<String>();
         for(MultipartFile image: images){
             String save = saveImage(image);
@@ -57,7 +55,7 @@ public class CommunityService {
 
         }
         //DTO -> entity로 변환
-        CommunityPost communityPost = writeModifyPostDto.toEntityForCreate(user, neighborhood, communityCategory, postImages);
+        CommunityPost communityPost = writeModifyPostDto.toEntityForCreate(user, neighborhood, postImages);
 
 
         //DB 저장
