@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ProductReviewRepository extends JpaRepository<ProductReview, Long> {
    public Optional<ProductReview> findByUserIdAndProductReviewId(Long userid, Long reviewId);
-   @Query("SELECT AVG(pr.rating) FROM ProductReview pr WHERE pr.product = :product")
+   @Query("SELECT AVG(pr.rating) FROM ProductReview pr WHERE pr.product = :product AND pr.isused = true")
    public double getRate(Product product);
 }
