@@ -87,4 +87,14 @@ public class ProductPost extends BaseEntity {
         this.available = true;
     }
 
+    // 별점 계산 메서드
+    public double calculateAverageStarRating() {
+        if (product == null || product.getReviews() == null || product.getReviews().isEmpty()) {
+            return 0.0; // 리뷰가 없으면 0.0 반환
+        }
+        return product.getReviews().stream()
+                .mapToDouble(ProductReview::getRating) // 별점 추출
+                .average() // 평균 계산
+                .orElse(0.0); // 값이 없을 경우 기본값 0.0
+    }
 }
