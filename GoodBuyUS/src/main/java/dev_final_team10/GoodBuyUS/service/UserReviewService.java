@@ -1,6 +1,7 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.UserReviewDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.UserReviewResponse;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
 import dev_final_team10.GoodBuyUS.domain.community.entity.UserReview;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
@@ -30,5 +31,16 @@ public class UserReviewService {
         userReviewRepository.save(userReview);
 
         return userReviewDto;
+    }
+
+    //사용자 리뷰 보기
+    public UserReviewResponse getUserReviews(Long userId) {
+
+        //리뷰 평점 평균 불러오기
+        Double overallAvgScore = userReviewRepository.findOverallAverageScore(userId);
+        double avgRating = (overallAvgScore != null) ? overallAvgScore : 0.0;
+
+        //상세 리뷰 목록 불러오기
+
     }
 }

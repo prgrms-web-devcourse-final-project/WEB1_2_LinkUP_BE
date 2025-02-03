@@ -10,10 +10,6 @@
         <module name="dev_final_team10.GoodBuyUS.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="dev_final_team10.GoodBuyUS" target="17" />
-      <module name="dev_final_team10.GoodBuyUS.main" target="17" />
-      <module name="dev_final_team10.GoodBuyUS.test" target="17" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="17" />
   </component>
 </project>
