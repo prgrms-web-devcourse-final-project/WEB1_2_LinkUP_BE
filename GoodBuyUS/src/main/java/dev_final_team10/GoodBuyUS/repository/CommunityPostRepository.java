@@ -2,6 +2,7 @@ package dev_final_team10.GoodBuyUS.repository;
 
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 
+import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
 import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,10 +23,11 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost, Lo
     FROM CommunityPost c
     LEFT JOIN Participations p 
         ON c.communityPostId = p.communityPost.communityPostId 
-        AND p.status = 'JOIN'
+        AND p.status IN  (:statuses)
     WHERE c.communityPostId = :communityId
     GROUP BY c.communityPostId, c.availableNumber
 """)
-    Long findRemainingQuantity(@Param("communityId") Long communityId);
+    Long findRemainingQuantity(@Param("communityId") Long communityId,
+                               @Param("statuses") List<participationStatus> statuses);
 
 }
