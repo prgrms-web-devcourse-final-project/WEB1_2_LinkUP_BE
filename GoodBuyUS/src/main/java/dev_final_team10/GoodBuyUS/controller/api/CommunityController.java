@@ -78,10 +78,15 @@ public class CommunityController {
          if(participations != null){
              participationStatus = participations.getStatus();
          }
+
+        //현재 남은 수량
+        Long remainQuantity = communityPostRepository.findRemainingQuantity(community_post_id);
+
         Map<String, Object> response = new HashMap<>();
         response.put("communityPost", PostResponseDto.of(communityPost));
         response.put("participationStatus", participationStatus);
         response.put("isWriter", isWriter);
+        response.put("remainQuantity", remainQuantity);
 
         return ResponseEntity.ok(response);
 
