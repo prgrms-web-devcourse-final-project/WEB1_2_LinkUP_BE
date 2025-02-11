@@ -18,8 +18,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         //정적 리소스 매핑(업로드된 이미지 접근 가능하도록 설정)
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
-            registry.addResourceHandler("/GoodBuyUs/upload/**") //url패턴
-                    .addResourceLocations("file:GoodBuyUs/upload/");   //실제 파일 경로
+            registry.addResourceHandler("/upload/**") //url패턴
+                    .addResourceLocations("file:/home/ubuntu/GoodBuyUS/upload/");   //실제 파일 경로
         }
 
     }
