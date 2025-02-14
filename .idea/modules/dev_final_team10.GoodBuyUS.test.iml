@@ -7,13 +7,13 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
+  <component name="NewModuleRootManager">
     <output-test url="file://$MODULE_DIR$/../../GoodBuyUS/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../GoodBuyUS/src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../GoodBuyUS/src/test/java" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="temurin-17" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="dev_final_team10.GoodBuyUS.main" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-data-jpa:3.3.5" level="project" />

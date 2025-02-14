@@ -31,4 +31,7 @@ public class CommunityComment {
     private String commentText; //댓글 내용
     private Long parentCommentId; //상위 댓글 아이디
 
+    public void update(String content) {
+        this.commentText = content;
+    }
 }
