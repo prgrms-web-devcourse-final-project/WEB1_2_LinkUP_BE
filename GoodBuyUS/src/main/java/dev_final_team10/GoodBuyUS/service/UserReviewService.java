@@ -33,14 +33,14 @@ public class UserReviewService {
         return userReviewDto;
     }
 
-    //사용자 리뷰 보기
-    public UserReviewResponse getUserReviews(Long userId) {
-
-        //리뷰 평점 평균 불러오기
-        Double overallAvgScore = userReviewRepository.findOverallAverageScore(userId);
-        double avgRating = (overallAvgScore != null) ? overallAvgScore : 0.0;
-
-        //상세 리뷰 목록 불러오기
-
-    }
+//    //사용자 리뷰 보기
+//    public UserReviewResponse getUserReviews(Long userId) {
+//
+//        //리뷰 평점 평균 불러오기
+//        Double overallAvgScore = userReviewRepository.findOverallAverageScore(userId);
+//        double avgRating = (overallAvgScore != null) ? overallAvgScore : 0.0;
+//
+//        //상세 리뷰 목록 불러오기
+//
+//    }
 }

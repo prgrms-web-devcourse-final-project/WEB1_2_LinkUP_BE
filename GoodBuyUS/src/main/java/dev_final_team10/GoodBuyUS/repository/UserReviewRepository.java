@@ -9,9 +9,8 @@ import java.util.List;
 
 public interface UserReviewRepository extends JpaRepository<UserReview, Long> {
 
-    List<UserReview> findByUser_Id(Long id);
-
-    @Query("SELECT AVG((r.question1Score + r.question2Score + r.question3Score) / 3.0) FROM UserReview r WHERE r.userId = :userId")
-    Double findOverallAverageScore(@Param("userId") Long userId);
+//
+//    @Query("SELECT AVG((r.question1Score + r.question2Score + r.question3Score) / 3.0) FROM UserReview r WHERE r.userId = :userId")
+//    Double findOverallAverageScore(@Param("userId") Long userId);
 
 }

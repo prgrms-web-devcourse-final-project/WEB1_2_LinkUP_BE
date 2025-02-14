@@ -1,7 +1,9 @@
 package dev_final_team10.GoodBuyUS.controller.api;
 
-import dev_final_team10.GoodBuyUS.domain.community.entity.postStatus;
+import dev_final_team10.GoodBuyUS.domain.community.dto.CommunityCommentResponseDto;
+import dev_final_team10.GoodBuyUS.domain.community.entity.*;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
+import dev_final_team10.GoodBuyUS.repository.CommunityCommentRepository;
 import dev_final_team10.GoodBuyUS.service.CommunityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,13 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
-import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
-import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
@@ -25,7 +26,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -46,6 +46,7 @@ public class CommunityController {
     private final ParticipationsRepository participationsRepository;
     private final UserRepository userRepository;
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final CommunityCommentRepository communityCommentRepository;
 
 
     //공구 모집글 작성
@@ -87,11 +88,20 @@ public class CommunityController {
         );
         Long remainQuantity = communityPostRepository.findRemainingQuantity(community_post_id, statuses);
 
+        //해당 게시글의 댓글 목록 불러오기
+        List<CommunityComment> communityComments = communityCommentRepository.findByCommunityPost_CommunityPostId(community_post_id);
+        List<CommunityCommentResponseDto> communityCommentResponseDtos = new ArrayList<>();
+        for(CommunityComment comment : communityComments){
+            CommunityCommentResponseDto communityCommentResponseDto = CommunityCommentResponseDto.of(comment);
+            communityCommentResponseDtos.add(communityCommentResponseDto);
+        }
+
         Map<String, Object> response = new HashMap<>();
         response.put("communityPost", PostResponseDto.of(communityPost));
         response.put("participationStatus", participationStatus);
         response.put("isWriter", isWriter);
         response.put("remainQuantity", remainQuantity);
+        response.put("comment", communityCommentResponseDtos);
 
         return ResponseEntity.ok(response);
 
