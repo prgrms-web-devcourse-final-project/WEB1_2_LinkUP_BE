@@ -89,7 +89,7 @@ public class MypageController {
         List<Participations> participations = participationsRepository.findAllByCommunityPost_CommunityPostId(communityPostId);
         participations.forEach(participation -> participation.setStatus(participationStatus.CANCEL));
         participationsRepository.saveAll(participations);
-        communityController.sendStreamingData(communityPostId);
+//        communityController.sendStreamingData(communityPostId);
         return ResponseEntity.ok(Map.of("message", "글이 삭제되었습니다."));
     }
 

@@ -78,58 +78,68 @@ public class CommunityController {
          if(participations != null){
              participationStatus = participations.getStatus();
          }
+
+        //현재 남은 수량
+        List<participationStatus> statuses = List.of(
+                participationStatus.JOIN,
+                participationStatus.PAYMENT_STANDBY,
+                participationStatus.PAYMENT_COMPLETE
+        );
+        Long remainQuantity = communityPostRepository.findRemainingQuantity(community_post_id, statuses);
+
         Map<String, Object> response = new HashMap<>();
         response.put("communityPost", PostResponseDto.of(communityPost));
         response.put("participationStatus", participationStatus);
         response.put("isWriter", isWriter);
+        response.put("remainQuantity", remainQuantity);
 
         return ResponseEntity.ok(response);
 
     }
 
-    //SSE (실시간으로 보내주는 정보들) - 참여현황, 결제현황, 포스트상태, 참여자의 결제여부
-    @GetMapping("/post/{community_post_id}/participants")
-    public SseEmitter streamParticipants(@PathVariable Long community_post_id) throws IOException {
-        // SseEmitter를 emitters에서 가져오거나, 없으면 새로 생성
-        SseEmitter emitter = emitters.get(community_post_id);
-
-        if (emitter == null) {
-            // SseEmitter가 없으면 새로 생성하고 emitters에 추가
-            emitter = new SseEmitter(Long.MAX_VALUE);
-            emitters.put(community_post_id, emitter);
-        }
-
-// 항상 데이터를 전송하도록 변경
-        sendStreamingData(community_post_id);
-
-        // 이벤트가 완료되었을 때 처리
-        emitter.onCompletion(() -> emitters.remove(community_post_id));
-        emitter.onTimeout(() -> emitters.remove(community_post_id));
-
-
-
-
-        return emitter;
-    }
-
-    public void sendStreamingData(Long community_post_id) throws IOException {
-        Long participantCount = communityService.getParticipantCount(community_post_id);
-        participantCount = (participantCount != null) ? participantCount : 0;
-
-        Long paymentCount = communityService.getPaymentCount(community_post_id);
-        paymentCount = (paymentCount != null) ? paymentCount : 0;
-
-        CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
-        postStatus postStatus = communityPost != null ? communityPost.getStatus() : null;
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("participantCount", participantCount);
-        data.put("paymentCount", paymentCount);
-        data.put("postStatus", postStatus);
-
-        emitters.get(community_post_id).send(SseEmitter.event().name("update").data(data));
-
-    }
+//    //SSE (실시간으로 보내주는 정보들) - 참여현황, 결제현황, 포스트상태, 참여자의 결제여부
+//    @GetMapping("/post/{community_post_id}/participants")
+//    public SseEmitter streamParticipants(@PathVariable Long community_post_id) throws IOException {
+//        // SseEmitter를 emitters에서 가져오거나, 없으면 새로 생성
+//        SseEmitter emitter = emitters.get(community_post_id);
+//
+//        if (emitter == null) {
+//            // SseEmitter가 없으면 새로 생성하고 emitters에 추가
+//            emitter = new SseEmitter(Long.MAX_VALUE);
+//            emitters.put(community_post_id, emitter);
+//        }
+//
+//// 항상 데이터를 전송하도록 변경
+//        sendStreamingData(community_post_id);
+//
+//        // 이벤트가 완료되었을 때 처리
+//        emitter.onCompletion(() -> emitters.remove(community_post_id));
+//        emitter.onTimeout(() -> emitters.remove(community_post_id));
+//
+//
+//
+//
+//        return emitter;
+//    }
+//
+//    public void sendStreamingData(Long community_post_id) throws IOException {
+//        Long participantCount = communityService.getParticipantCount(community_post_id);
+//        participantCount = (participantCount != null) ? participantCount : 0;
+//
+//        Long paymentCount = communityService.getPaymentCount(community_post_id);
+//        paymentCount = (paymentCount != null) ? paymentCount : 0;
+//
+//        CommunityPost communityPost = communityPostRepository.findById(community_post_id).orElse(null);
+//        postStatus postStatus = communityPost != null ? communityPost.getStatus() : null;
+//
+//        Map<String, Object> data = new HashMap<>();
+//        data.put("participantCount", participantCount);
+//        data.put("paymentCount", paymentCount);
+//        data.put("postStatus", postStatus);
+//
+//        emitters.get(community_post_id).send(SseEmitter.event().name("update").data(data));
+//
+//    }
 
 
     //커뮤니티 게시글 참여하기
@@ -158,7 +168,7 @@ public class CommunityController {
 
     }
     communityService.joinCommunityPost(communityPost, user, request.get("number"));
-        sendStreamingData(community_post_id);
+//        sendStreamingData(community_post_id);
         return ResponseEntity.ok(Map.of("message","참여가 완료되었습니다."));
 
     }
@@ -183,7 +193,7 @@ public class CommunityController {
             return ResponseEntity.badRequest().body(Map.of("message", "이미 취소한 글입니다."));
         } else if (participationInfo.getStatus() == participationStatus.JOIN) {
             communityService.cancelCommunityPost(communityPost, user, participationInfo, participations);
-            sendStreamingData(community_post_id);
+//            sendStreamingData(community_post_id);
             return ResponseEntity.ok(Map.of("message", "취소가 완료되었습니다."));
         }
         return ResponseEntity.badRequest().body(Map.of("message","취소를 할 수 없는 상태입니다."));
