@@ -37,4 +37,16 @@ public class CommunityCommentService {
 
         return CommunityCommentResponseDto.of(communityComment);
     }
+
+    //댓글 수정
+    public CommunityCommentResponseDto modifyComment(String content, Long communityCommentId) {
+        CommunityComment comment = communityCommentRepository.findById(communityCommentId)  .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다. ID: " + communityCommentId));
+        comment.update(content);
+        return CommunityCommentResponseDto.of(comment);
+    }
+
+    //댓글 삭제
+    public void deleteComment(Long communityCommentId) {
+        communityCommentRepository.deleteById(communityCommentId);
+    }
 }
