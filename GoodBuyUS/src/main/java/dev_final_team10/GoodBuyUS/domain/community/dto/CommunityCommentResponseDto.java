@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class CommunityCommentResponseDto {
     private Long id;
     private Long communityPostId;
+    private Long userId;
     private String nickname;
     private String profile;
     private LocalDateTime createdAt;
@@ -25,6 +26,7 @@ public class CommunityCommentResponseDto {
         CommunityCommentResponseDto dto = new CommunityCommentResponseDto();
         dto.setId(communityComment.getCommentId());
         dto.setCommunityPostId(communityComment.getCommunityPost().getCommunityPostId());
+        dto.setUserId(communityComment.getUser().getId());
         dto.setNickname(communityComment.getUser().getNickname());
         dto.setProfile(communityComment.getUser().getProfile());
         dto.setCreatedAt(communityComment.getCommentDate());
