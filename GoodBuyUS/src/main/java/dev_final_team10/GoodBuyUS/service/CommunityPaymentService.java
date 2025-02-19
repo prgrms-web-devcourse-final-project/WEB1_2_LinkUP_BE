@@ -1,6 +1,7 @@
 package dev_final_team10.GoodBuyUS.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev_final_team10.GoodBuyUS.domain.chat.dto.ChatRoomDTO;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
 import dev_final_team10.GoodBuyUS.domain.community.entity.participationStatus;
@@ -36,14 +37,15 @@ public class CommunityPaymentService {
     private final  CommunityPostRepository communityPostRepository;
     private final CommunityService communityService;
     private final ParticipationsRepository participationsRepository;
+    private final ChatRoomService chatRoomService;
 
     public CommunityPaymentService(WebClient.Builder webClientBuilder,
-                                    CommunityPaymentRepository paymentRepository,
-                                    ObjectMapper objectMapper,
-                                    SSEService sseService,
+                                   CommunityPaymentRepository paymentRepository,
+                                   ObjectMapper objectMapper,
+                                   SSEService sseService,
                                    CommunityPostRepository communityPostRepository,
                                    CommunityService communityService,
-                                   ParticipationsRepository participationsRepository) {
+                                   ParticipationsRepository participationsRepository, ChatRoomService chatRoomService) {
         this.webClient = webClientBuilder
                 .baseUrl("https://api.tosspayments.com/v1/payments")
                 .defaultHeaders(headers -> {
@@ -57,6 +59,7 @@ public class CommunityPaymentService {
         this.communityPostRepository = communityPostRepository;
         this.communityService = communityService;
         this.participationsRepository = participationsRepository;
+        this.chatRoomService = chatRoomService;
     }
     @Transactional
     public CommunityPaymentResponseDto createAndRequestPayment(CommunityPaymentRequestDto requestDto) {
@@ -147,6 +150,12 @@ public class CommunityPaymentService {
                 communityPost.setStatus(postStatus.PAYMENT_COMPLETED);
                 communityPostRepository.save(communityPost);
                 log.info("글 상태가 PAYMENT_COMPLETED로 변경되었습니다. Post ID: {}", community_post_id);
+
+                ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
+                chatRoomDTO.setPostId(community_post_id);
+                chatRoomDTO.setCapacity(participationsRepository.findByCommunityPost(communityPost).size());
+
+                chatRoomService.createChatRoom(chatRoomDTO);
             }
             communityPostRepository.saveAndFlush(communityPost);
             paymentRepository.saveAndFlush(payment); // 동기화 보장
