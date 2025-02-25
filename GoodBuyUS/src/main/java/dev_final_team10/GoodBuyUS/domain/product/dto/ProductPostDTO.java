@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ProductPostDTO {
-    private Long id;
+    private Long productPostId;
     private String name;
     private int originalprice;
     private int discountprice;
@@ -24,7 +24,7 @@ public class ProductPostDTO {
     private boolean available;
     public static ProductPostDTO of(ProductPost productPost, double rating){
         ProductPostDTO productPostDTO = new ProductPostDTO();
-        productPostDTO.id = productPost.getPostId();
+        productPostDTO.productPostId = productPost.getPostId();
         productPostDTO.name = productPost.getTitle();
         productPostDTO.originalprice  = productPost.getOriginalPrice();
         productPostDTO.discountprice = productPost.getProuctDiscount();
