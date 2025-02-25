@@ -1,13 +1,18 @@
 package dev_final_team10.GoodBuyUS.service;
 
 
+import dev_final_team10.GoodBuyUS.domain.product.dto.WishDetails;
+import dev_final_team10.GoodBuyUS.domain.product.dto.WishListDto;
+import dev_final_team10.GoodBuyUS.domain.product.entity.Product;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpEmailDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Neighborhood;
 import dev_final_team10.GoodBuyUS.domain.user.dto.UserSignUpDto;
 import dev_final_team10.GoodBuyUS.domain.user.entity.Role;
 import dev_final_team10.GoodBuyUS.domain.user.entity.User;
+import dev_final_team10.GoodBuyUS.domain.user.entity.WishListItem;
 import dev_final_team10.GoodBuyUS.jwt.JwtService;
 import dev_final_team10.GoodBuyUS.repository.NeighborhoodRepository;
+import dev_final_team10.GoodBuyUS.repository.ProductRepository;
 import dev_final_team10.GoodBuyUS.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +24,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -40,6 +47,7 @@ public class UserService {
     private final NeighborhoodRepository neighborhoodRepository;
     private final JwtService jwtService;
     private final EmailService emailService;
+    private final ProductRepository productRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -187,5 +195,52 @@ public class UserService {
         return ResponseEntity.ok(Map.of("message","비밀번호가 성공적으로 변경되었습니다."));
     }
 
+    /**
+     * set은 중복을 허용하지 않아서 애초에 상품이 중복되어 들어갈 일이 없음
+     * set이 저장하는 형식 중 기본 타입이 아닌 객체도 사용 가능
+     * @param email
+     * @param wish
+     * @return
+     */
+    public ResponseEntity<String> addWishList(String email, WishListDto wish) {
+        /**
+         * 상품의 개수를 넘어가면(상품의 아이디가 아닌 것을 요청할 시 추가되면 안됨)
+         */
+        Long allProduct = Long.valueOf(productRepository.count());
+        if(wish.getProductPostId() > allProduct){
+            return ResponseEntity.badRequest().body("해당 상품은 추가할 수 없습니다.");
+        }
+        User user = userRepository.findByEmail(email).orElseThrow();
+        Set<WishListItem> wishList = user.getWishList();
+        if (user.getWishList().stream().anyMatch(item -> item.getProductId().equals(wish.getProductPostId()))) {
+            user.removeWishListItem(wish.getProductPostId());
+            userRepository.save(user);
+            return ResponseEntity.ok("상품이 위시리스트에서 삭제되었습니다.");
+        } else {
+            user.addWishListItem(wish.getProductPostId());
+            userRepository.save(user);
+            return ResponseEntity.ok("상품이 위시리스트에 추가되었습니다.");
+        }
+    }
+
+    public ResponseEntity<List<WishDetails>> getWishDetails(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+
+        List<WishDetails> wishDetails = user.getWishList().stream()
+                .map(wishItem -> {
+                    Product product = productRepository.findById(wishItem.getProductId())
+                            .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+
+                    return new WishDetails(
+                            product.getProductName(),
+                            product.getProductPrice(),
+                            product.getProductImage(),
+                            wishItem.getAddedAt()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(wishDetails);
+    }
 
 }
