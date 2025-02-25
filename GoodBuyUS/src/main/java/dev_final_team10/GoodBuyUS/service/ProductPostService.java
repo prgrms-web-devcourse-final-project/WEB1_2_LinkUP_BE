@@ -67,6 +67,7 @@ public class ProductPostService {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArrayList<>());
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
     }
 
     public ResponseEntity<PostDetailDTO> findPostV2(Long postId){
@@ -128,9 +129,9 @@ public class ProductPostService {
     public ResponseEntity<String> updateReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long reviewId){
         try {
             User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NoSuchElementException("해당 이메일을 사용하는 유저가 없습니다.: " + userEmail));
-             ProductReview productReview = reviewRepository.findByUserIdAndProductReviewId(user.getId(), reviewId)
-                .orElseThrow(()-> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
+                    .orElseThrow(() -> new NoSuchElementException("해당 이메일을 사용하는 유저가 없습니다.: " + userEmail));
+            ProductReview productReview = reviewRepository.findByUserIdAndProductReviewId(user.getId(), reviewId)
+                    .orElseThrow(()-> new NoSuchElementException("기존에 작성한 리뷰가 없습니다."));
             // 리뷰 내용 및 별점 변경
             productReview.changeContent(reviewRequestDTO.getContent());
             productReview.changeRating(reviewRequestDTO.getRate());
