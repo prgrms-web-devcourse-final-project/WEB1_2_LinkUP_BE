@@ -67,7 +67,6 @@ public class ProductPostService {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArrayList<>());
         } catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
-        }
     }
 
     public ResponseEntity<PostDetailDTO> findPostV2(Long postId){

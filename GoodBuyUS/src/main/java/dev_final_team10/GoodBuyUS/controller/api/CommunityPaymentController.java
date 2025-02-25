@@ -91,7 +91,7 @@ private final CommunityController communityController;
             // 결제 승인 처리
             CommunityPaymentResponseDto responseDto = communityPaymentService.confirmPayment(paymentKey, orderId, amount, community_post_id, participations);
             log.info("결제 승인 완료 - Payment Key: {}, Order ID: {}", paymentKey, orderId);
-            communityController.sendStreamingData(community_post_id);
+//            communityController.sendStreamingData(community_post_id);
             // 프론트엔드 리다이렉트 URL 생성
             String frontendRedirectUrl = String.format(
                     "http://15.164.5.135/community/success/%d?status=%s&amount=%d&recipientName=%s&accountNumber=%s&bankId=%s&recipientAddress=%s&deliveryRequest=%s",
@@ -204,7 +204,7 @@ private final CommunityController communityController;
                     communityPost.setStatus(postStatus.APPROVED);
                     communityPost.setPaymentDeadline(null);
                     communityPostRepository.save(communityPost);
-                    communityController.sendStreamingData(community_post_id);
+//                    communityController.sendStreamingData(community_post_id);
             }   communityPost.setStatus(postStatus.DELETED);
             communityPost.setPaymentDeadline(null);
             communityPostRepository.save(communityPost);

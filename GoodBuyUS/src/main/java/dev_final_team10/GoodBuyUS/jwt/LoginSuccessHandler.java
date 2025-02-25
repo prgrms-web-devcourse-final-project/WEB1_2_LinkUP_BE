@@ -49,6 +49,13 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 
         responseBody.put("roles", role);  // roles는 사용자의 권한 목록
+        // email을 통해 사용자를 조회하고 userid를 추출
+        userRepository.findByEmail(email)
+                .ifPresent(user -> {
+                    responseBody.put("userid", user.getId()); // User의 id를 추가
+                    user.updateRefreshToken(refreshToken);
+                    userRepository.saveAndFlush(user);
+                });
         try {
             response.setContentType("application/json");
             response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));

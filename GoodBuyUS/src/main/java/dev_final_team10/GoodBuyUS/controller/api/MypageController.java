@@ -29,7 +29,6 @@ public class MypageController {
     private final MypageService mypageService;
     private final CommunityPostRepository communityPostRepository;
     private final ParticipationsRepository participationsRepository;
-    private final CommunityController communityController;
 
     //현재 비밀번호 일치하는지 확인 - 비밀번호 변경 전에
     @PostMapping("/verify")
@@ -86,7 +85,7 @@ public class MypageController {
         List<Participations> participations = participationsRepository.findAllByCommunityPost_CommunityPostId(communityPostId);
         participations.forEach(participation -> participation.setStatus(participationStatus.CANCEL));
         participationsRepository.saveAll(participations);
-        communityController.sendStreamingData(communityPostId);
+//        communityController.sendStreamingData(communityPostId);
         return ResponseEntity.ok(Map.of("message", "글이 삭제되었습니다."));
     }
 
@@ -145,4 +144,9 @@ public class MypageController {
     public ResponseEntity<?> changeNickname(@RequestParam String nickName){
         return mypageService.changeNickname(nickName);
     }
+//
+//    @GetMapping("{user_id}/reviews")
+//    public ResponseEntity<UserReviewResponse> getUserReviews(@PathVariable Long userId){
+//        return ResponseEntity.ok(userReviewService.getUserReviews(userId));
+//    }
 }

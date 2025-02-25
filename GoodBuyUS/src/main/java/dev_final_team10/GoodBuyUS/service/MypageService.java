@@ -107,7 +107,7 @@ public class MypageService {
         //현재 사용자 동네 정보 가져오기
         Neighborhood neighborhood = user.getNeighborhood();
         //카테고리 설정
-        CommunityCategory communityCategory = CommunityCategory.fromString(writeModifyPostDto.getCategory());
+        CommunityCategory communityCategory = writeModifyPostDto.getCategory();
 
         communityPost.updateFields(writeModifyPostDto, user, neighborhood, communityCategory);
         List<String> postImages =  new ArrayList<String>();
@@ -119,7 +119,7 @@ public class MypageService {
         if(communityPost.getStatus() == postStatus.REJECTED){
             communityPost.setStatus(postStatus.NOT_APPROVED);
         }
-        communityPost = writeModifyPostDto.toEntityForCreate(user,neighborhood,communityCategory,postImages);
+        communityPost = writeModifyPostDto.toEntityForCreate(user,neighborhood,postImages);
         //DB 저장
         communityPostRepository.save(communityPost);
 
