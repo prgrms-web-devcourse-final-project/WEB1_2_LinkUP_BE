@@ -42,7 +42,7 @@ public class ReviewController {
 
     // 리뷰 수정
     @PutMapping("/update/{review_id}")
-    public HttpEntity<?> updateReview(@RequestHeader("Authorization") String token, @PathVariable Long review_id, @RequestBody ReviewRequestDTO reviewRequestDTO){
+    public HttpEntity<String> updateReview(@RequestHeader("Authorization") String token, @PathVariable Long review_id, @RequestBody ReviewRequestDTO reviewRequestDTO){
         String userEmail = extractEmailFromToken(token);
         return productPostService.updateReview(userEmail,reviewRequestDTO,review_id);
     }

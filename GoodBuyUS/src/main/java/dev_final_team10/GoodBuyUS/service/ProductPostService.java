@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -47,35 +49,46 @@ public class ProductPostService {
      * Hibernate: select p1_0.product_id,p1_0.average_rating,p1_0.detail_category,p1_0.product_category,p1_0.product_image,p1_0.product_name,p1_0.product_price,p1_0.reviews_count,p1_0.stock,p1_0.sub_category from product p1_0 where p1_0.product_id=?
      * Hibernate: select r1_0.product_id,r1_0.product_review_id,r1_0.content,r1_0.created_at,r1_0.isused,r1_0.modified_at,r1_0.rating,r1_0.user_id from product_review r1_0 where r1_0.product_id=?
      */
-    public List<ProductPostDTO> findAllProduct(){
-        List<ProductPost> productPosts = productPostRepository.findAllWithProductAndReviews();
-        List<ProductPostDTO> productPostDTOS = new ArrayList<>();
-        for (ProductPost productPost : productPosts) {
-            double rate = productPost.calculateAverageStarRating();
-            ProductPostDTO productPostDTO = ProductPostDTO.of(productPost, rate);
-            productPostDTOS.add(productPostDTO);
-        }
-        return productPostDTOS;
+    /**
+     * 페치 조인으로 쿼리 수 감소, n+1 문제 해결
+     */
+    public ResponseEntity<List<ProductPostDTO>> findAllProduct(){
+        try{
+            List<ProductPost> productPosts = productPostRepository.findAllWithProductAndReviews();
+            List<ProductPostDTO> productPostDTOS = new ArrayList<>();
+
+            for (ProductPost productPost : productPosts) {
+                double rate = productPost.calculateAverageStarRating();
+                ProductPostDTO productPostDTO = ProductPostDTO.of(productPost, rate);
+                productPostDTOS.add(productPostDTO);
+            }
+            return  ResponseEntity.ok(productPostDTOS);
+        } catch (NoSuchElementException e){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArrayList<>());
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
     }
 
-    /**
-     * 상세 내용 페이지
-     * 쿼리 간단화할 수 있으면 좋겠음, 지금 reviews를 쓰는 이유가 productPost에 rating과 리뷰가 없기 때문인데 두 테이블을 페치 조인한다면 쿼리 하나로 해결할 수 있을 것 같음
-     */
-    public PostDetailDTO findPost(Long postId){
-        ProductPost productPost = productPostRepository.findById(postId).orElseThrow(()-> new NoSuchElementException("없는 게시글입니다."));
-        List <ProductReview> reviews = productPost.getProduct().getReviews();
-        List<PostDetailDTO.ReviewDTO> reviewDTOS = new ArrayList<>();
-        double rating = setRating(productPost.getProduct());
-        for (ProductReview productReview : reviews) {
-            PostDetailDTO.ReviewDTO create_reviewDTO = new PostDetailDTO.ReviewDTO();
-            create_reviewDTO.setReviewId(productReview.getProductReviewId());
-            create_reviewDTO.setContent(productReview.getContent());
-            create_reviewDTO.setRating(productReview.getRating());
-            create_reviewDTO.setUsing(productReview.isIsused());
-            reviewDTOS.add(create_reviewDTO);
+    public ResponseEntity<PostDetailDTO> findPostV2(Long postId){
+        try{
+            ProductPost productPost1 = productPostRepository.findDetailByPostId(postId);
+            List <ProductReview> reviews = productPost1.getProduct().getReviews();
+            List<PostDetailDTO.ReviewDTO> reviewDTOS = new ArrayList<>();
+            double rating = setRating(productPost1.getProduct());
+            for (ProductReview productReview : reviews) {
+                PostDetailDTO.ReviewDTO create_reviewDTO = new PostDetailDTO.ReviewDTO();
+                create_reviewDTO.setReviewId(productReview.getProductReviewId());
+                create_reviewDTO.setContent(productReview.getContent());
+                create_reviewDTO.setRating(productReview.getRating());
+                create_reviewDTO.setUsing(productReview.isIsused());
+                reviewDTOS.add(create_reviewDTO);
+            }
+            return ResponseEntity.ok(PostDetailDTO.of(productPost1,reviewDTOS, rating));
+        } catch (NoSuchElementException e){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return PostDetailDTO.of(productPost,reviewDTOS, rating);
     }
 
     // 리뷰 페이지, 구매내역에서 주문 상태를 확인해야함
@@ -112,7 +125,7 @@ public class ProductPostService {
     }
 
     // 리뷰 수정
-    public ResponseEntity<?> updateReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long reviewId){
+    public ResponseEntity<String> updateReview(String userEmail, ReviewRequestDTO reviewRequestDTO, Long reviewId){
         try {
             User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new NoSuchElementException("해당 이메일을 사용하는 유저가 없습니다.: " + userEmail));

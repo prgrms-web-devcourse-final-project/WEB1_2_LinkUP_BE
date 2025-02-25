@@ -37,7 +37,7 @@ public class ProductPost extends BaseEntity {
     /**
      * OneToOne은 항상 eager ?
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 

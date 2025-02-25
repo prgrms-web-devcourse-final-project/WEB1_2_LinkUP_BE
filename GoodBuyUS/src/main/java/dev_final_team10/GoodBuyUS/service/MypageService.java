@@ -171,7 +171,7 @@ public class MypageService {
         List<Order> orders = orderRepository.findOrderByUser(userRepository.findByEmail(userEmail).orElseThrow(() -> new NoSuchElementException("없는 유저")));
         List<OrdersDTO> ordersDTOS = new ArrayList<>();
         for (Order order : orders) {
-            MainPayment payment = mainPaymentRepository.findByOrder(order).orElseThrow(null);
+            MainPayment payment = mainPaymentRepository.findWithByOrder(order);
             OrdersDTO ordersDTO = OrdersDTO.of(order.getOrderName(), order.getPrice(), order.getCreatedAt(), payment.getPaymentStatus(),
                     payment.getPaymentKey(), order.getQuantity(), order.getDelivery(), order.getProductPost().getPostId(), order.getProductPost().getPostURL());
             ordersDTOS.add(ordersDTO);

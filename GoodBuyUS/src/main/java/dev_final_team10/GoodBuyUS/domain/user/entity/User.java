@@ -47,6 +47,11 @@ public class User {
     @CollectionTable(name = "user_reivews", joinColumns = @JoinColumn(name = "member_id"))
     private Set<Long> reviews = new HashSet<>();
 
+    @ElementCollection
+    @CollectionTable(name = "wish_list", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "product_id") //product_id 컬럼 추가
+    private Set<WishListItem> wishList = new HashSet<>();
+
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
@@ -84,4 +89,13 @@ public class User {
     public void changeNickName(String nickname){
         this.nickname = nickname;
     }
+
+    public void removeWishListItem(Long productId) {
+        this.wishList.removeIf(item -> item.getProductId().equals(productId));
+    }
+
+    public void addWishListItem(Long productId) {
+        this.wishList.add(new WishListItem(productId));
+    }
+
 }
