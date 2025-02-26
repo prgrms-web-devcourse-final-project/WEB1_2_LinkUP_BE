@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class ProductPostController {
     }
 
     @GetMapping("/update")
-    public void updateAllProduct(){
+    public RedirectView updateAllProduct(){
         productPostRepository.updateDate();
+        return new RedirectView("goodbuyUs");
     }
 }
