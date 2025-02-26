@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/success").permitAll() // 공용 URL
 
                         .requestMatchers(HttpMethod.GET, "/products/payment-success/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/goodbuyUs/update").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/payment-success/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/payment-fail/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/payment-fail/**").permitAll()
