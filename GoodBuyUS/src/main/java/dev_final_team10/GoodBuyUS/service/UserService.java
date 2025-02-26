@@ -232,6 +232,7 @@ public class UserService {
                             .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
                     return new WishDetails(
+                            product.getProductId(),
                             product.getProductName(),
                             product.getProductPrice(),
                             product.getProductImage(),
