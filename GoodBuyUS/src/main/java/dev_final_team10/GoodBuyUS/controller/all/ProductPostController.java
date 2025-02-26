@@ -3,6 +3,7 @@ import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.product.dto.PostDetailDTO;
 import dev_final_team10.GoodBuyUS.domain.product.dto.ProductPostDTO;
 import dev_final_team10.GoodBuyUS.domain.product.dto.ReviewRequestDTO;
+import dev_final_team10.GoodBuyUS.repository.ProductPostRepository;
 import dev_final_team10.GoodBuyUS.service.ProductPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 @Tag(name = "상단 상품 판매", description = "전체 상품 조회, 상세 상품 조회 api")
 public class ProductPostController {
     private final ProductPostService productPostService;
+    private final ProductPostRepository productPostRepository;
 
     @Operation(summary = "전체 판매 상품 조회")
     @ApiResponses(value = {
@@ -42,5 +44,10 @@ public class ProductPostController {
     @GetMapping("/product")
     public ResponseEntity<PostDetailDTO> detailProduct(@RequestParam Long postid){
         return productPostService.findPostV2(postid);
+    }
+
+    @GetMapping("/update")
+    public void updateAllProduct(){
+        productPostRepository.updateDate();
     }
 }
