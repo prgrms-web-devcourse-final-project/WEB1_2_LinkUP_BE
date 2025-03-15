@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .login-container {
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Login</h1>
+<div class="login-container">
+    <input type="email" id="email" placeholder="Email" required> <!-- 이메일 필드 -->
+    <input type="password" id="password" placeholder="Password" required>
+    <button id="loginBtn">Login</button>
+</div>
+
+<script>
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+        const email = document.getElementById('email').value; // 이메일 값
+        const password = document.getElementById('password').value; // 비밀번호 값
+
+        try {
+            const response = await fetch('http://localhost:8080/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            console.log("응답 상태:", response.status); // 상태 코드 로그
+            console.log("응답 헤더:", [...response.headers.entries()]); // 헤더 전체 로그
+
+            if (response.ok) {
+                // 헤더에서 토큰 가져오기
+                const accessToken = response.headers.get('Authorization');
+                const refreshToken = response.headers.get('Authorization-refresh');
+
+                console.log("Access Token:", accessToken);
+                console.log("Refresh Token:", refreshToken);
+
+                if (accessToken && refreshToken) {
+                    sessionStorage.setItem('accessToken', accessToken);
+                    sessionStorage.setItem('refreshToken', refreshToken);
+                    alert('로그인 성공!');
+                    window.location.href = 'chat-list.html';
+                } else {
+                    alert('헤더에서 토큰을 가져오지 못했습니다.');
+                }
+            } else {
+                const errorText = await response.text();
+                alert(`로그인 실패: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('로그인 요청 중 오류 발생:', error);
+            alert('로그인 요청 중 오류 발생: ' + error.message);
+        }
+    });
+
+</script>
+
+
+
+</body>
+</html>

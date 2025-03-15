@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #chatRoomList {
+            list-style: none;
+            padding: 0;
+        }
+        .chat-room {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .chat-room:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .room-name {
+            font-size: 1.2em;
+            color: #555;
+        }
+        .room-capacity {
+            font-size: 0.9em;
+            color: #888;
+        }
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>Chat Room List</h1>
+
+<!-- 채팅방 목록 -->
+<section>
+    <button id="loadRoomsBtn">Load Chat Rooms</button>
+    <ul id="chatRoomList"></ul>
+</section>
+
+<script>
+    const baseURL = 'http://localhost:8080'; // 백엔드 URL
+    const accessToken = sessionStorage.getItem('accessToken');
+
+    // 액세스 토큰이 없으면 로그인 페이지로 리다이렉트
+    if (!accessToken) {
+        alert('로그인이 필요합니다.');
+        window.location.href = 'login.html'; // 로그인 페이지로 이동
+    }
+
+    // 채팅방 목록 조회
+    document.getElementById('loadRoomsBtn').addEventListener('click', async () => {
+        try {
+            // 변경된 엔드포인트로 요청 URL 수정
+            const response = await fetch(`${baseURL}/api/mypage/chatlist`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`, // 헤더에 토큰 포함
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch chat rooms.');
+            }
+
+            const chatRooms = await response.json();
+            console.log(chatRooms); // 응답 데이터 확인
+
+            // 채팅방 목록 렌더링
+            const chatRoomList = document.getElementById('chatRoomList');
+            chatRoomList.innerHTML = ''; // 기존 목록 초기화
+
+            chatRooms.forEach((room) => {
+                const li = document.createElement('li');
+                li.className = 'chat-room';
+                li.innerHTML = `
+                    <div>
+                        <span class="room-name">${room.roomName}</span>
+                        <span class="room-capacity">(${room.capacity}명)</span>
+                    </div>
+                    <a href="chat-room.html?roomId=${room.postId}">Enter Room</a>  <!-- postId 사용 -->
+                `;
+                chatRoomList.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Error loading chat rooms:', error);
+            alert('채팅방 목록을 불러오는 데 실패했습니다.');
+        }
+    });
+</script>
+
+</body>
+</html>
