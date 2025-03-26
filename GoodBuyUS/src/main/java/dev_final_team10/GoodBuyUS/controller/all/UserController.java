@@ -64,7 +64,7 @@ public class UserController {
         boolean isValid = jwtService.isTokenValid(token);
 
         if(isValid){
-            response.setHeader("Location", "http://15.164.5.135/resetpassword?token=" + token);
+            response.setHeader("Location", "https://goodbuyus.store/resetpassword?token=" + token);
             return ResponseEntity.status(HttpStatus.FOUND).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
