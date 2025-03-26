@@ -18,7 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/goodbuyUs")
+@RequestMapping("goodbuyUs")
 @RequiredArgsConstructor
 @Tag(name = "상단 상품 판매", description = "전체 상품 조회, 상세 상품 조회 api")
 public class ProductPostController {
