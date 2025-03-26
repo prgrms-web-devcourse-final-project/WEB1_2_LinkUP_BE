@@ -32,6 +32,7 @@ public class PostDetailDTO {
         private String content;
         private int rating;
         private boolean using;
+        private Long userId;
     }
 
     public static PostDetailDTO of(ProductPost productPost, List<ReviewDTO> reviews, double rating){
