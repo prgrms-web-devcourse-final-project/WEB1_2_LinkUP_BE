@@ -64,8 +64,9 @@ private final CommunityController communityController;
             requestDto.setOrderName(community_post_id + "게시물에 대한 사용자" + user.getName() +"사용자의 결제");
             requestDto.setCustomerName(user.getName());
             requestDto.setCustomerEmail(user.getEmail());
-            requestDto.setSuccessUrl("https://goodbuyus.store/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
-            requestDto.setFailUrl("https://goodbuyus.store/api/v1/virtual/fail"+ community_post_id);
+            requestDto.setSuccessUrl("https://goodbuyus.store:8080/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
+            requestDto.setFailUrl("https://goodbuyus.store:8080/api/v1/virtual/fail"+ community_post_id);
+
             requestDto.setMethod("VIRTUAL_ACCOUNT");
             CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);
             log.info("결제 요청 성공: {}", responseDto);

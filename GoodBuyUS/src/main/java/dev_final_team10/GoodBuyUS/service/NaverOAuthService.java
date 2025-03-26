@@ -150,7 +150,7 @@ public class NaverOAuthService {
         userRepository.save(user);
 
         // Step 3: 리다이렉트 URL 생성
-        String redirectUrl = "http://15.164.5.135/signin"
+        String redirectUrl = "https://goodbuyus.store/signin"
                 + "?accessToken=" + accessToken
                 + "&refreshToken=" + refreshToken;
 
