@@ -85,9 +85,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173");  // 허용된 출처
-        configuration.addAllowedOrigin("http://15.164.5.135");
+        configuration.addAllowedOrigin("https://goodbuyus.store");
         configuration.addAllowedOrigin("ws://localhost:5173"); // 웹소켓 허용
-        configuration.addAllowedOrigin("ws://15.164.5.135");
+        configuration.addAllowedOrigin("wss://goodbuyus.store");
         configuration.addAllowedMethod("*");  // 모든 HTTP 메소드 허용
         configuration.addAllowedHeader("*");  // 모든 헤더 허용
         configuration.setAllowCredentials(true);  // 자격 증명 허용
