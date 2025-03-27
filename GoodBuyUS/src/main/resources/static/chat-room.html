@@ -75,7 +75,7 @@
 
     // 기존 메시지 로드 (REST API 호출)
     function loadExistingMessages() {
-        fetch(`${baseURL}/api/chat/${roomId}`)  // 기존 메시지를 로드하는 API 호출
+        fetch(`${baseURL}/chat/${roomId}`)  // 기존 메시지를 로드하는 API 호출
             .then(response => response.json())
             .then(messages => {
                 messages.forEach(message => {
