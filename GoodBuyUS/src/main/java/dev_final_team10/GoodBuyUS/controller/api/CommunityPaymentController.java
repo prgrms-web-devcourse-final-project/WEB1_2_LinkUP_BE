@@ -30,7 +30,7 @@ import java.util.Random;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/virtual")
+@RequestMapping("/v1/virtual")
 public class CommunityPaymentController {
 
     private final CommunityPaymentService communityPaymentService;
@@ -64,8 +64,8 @@ private final CommunityController communityController;
             requestDto.setOrderName(community_post_id + "게시물에 대한 사용자" + user.getName() +"사용자의 결제");
             requestDto.setCustomerName(user.getName());
             requestDto.setCustomerEmail(user.getEmail());
-            requestDto.setSuccessUrl("https://goodbuyus.store:8080/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
-            requestDto.setFailUrl("https://goodbuyus.store:8080/api/v1/virtual/fail"+ community_post_id);
+            requestDto.setSuccessUrl("https://goodbuyus.store:8080/v1/virtual/success/" + community_post_id + "/" + user.getId());
+            requestDto.setFailUrl("https://goodbuyus.store:8080/v1/virtual/fail"+ community_post_id);
 
             requestDto.setMethod("VIRTUAL_ACCOUNT");
             CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);

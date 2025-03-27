@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/mypage")
+@RequestMapping("/mypage")
 public class MypageController {
 
     private final MypageService mypageService;

@@ -14,7 +14,7 @@ import java.util.Map;
 //커뮤니티 댓글, 대댓글 관련 Controller
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/community/comment")
+@RequestMapping("/community/comment")
 public class CommunityCommentController {
 
     private final CommunityCommentService commentService;

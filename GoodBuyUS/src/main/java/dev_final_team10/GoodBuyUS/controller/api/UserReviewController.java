@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/community/review")
+@RequestMapping("/community/review")
 public class UserReviewController {
 
     private final UserReviewService userReviewService;

@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Log4j2
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/community")
+@RequestMapping("/community")
 public class CommunityController {
 
     private final CommunityService communityService;

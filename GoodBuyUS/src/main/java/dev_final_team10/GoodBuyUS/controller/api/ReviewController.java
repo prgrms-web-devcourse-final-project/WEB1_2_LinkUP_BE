@@ -9,7 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/review")
+@RequestMapping("/review")
 @RequiredArgsConstructor
 public class ReviewController {
     private final ProductPostService productPostService;
