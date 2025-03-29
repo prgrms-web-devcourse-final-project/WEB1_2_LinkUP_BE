@@ -32,7 +32,7 @@ public class MainPaymentRedirectController {
 
             // 프론트엔드 URL 생성
             String frontendSuccessUrl = String.format(
-                    "https://goodbuyus.store/products/payment-success/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s",
+                    "/products/payment-success/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s",
                     productId,
                     URLEncoder.encode(responseDto.getProductName(), StandardCharsets.UTF_8), // 한글 인코딩
                     responseDto.getQuantity(),
@@ -45,7 +45,7 @@ public class MainPaymentRedirectController {
                     .build();
         } catch (Exception e) {
             String frontendFailUrl = String.format(
-                    "https://goodbuyus.store/products/payment-fail/%d?error=%s",
+                    "/products/payment-fail/%d?error=%s",
                     productId,
                     e.getMessage()
             );
