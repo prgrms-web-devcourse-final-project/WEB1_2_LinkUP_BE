@@ -32,7 +32,7 @@ public class MainPaymentRedirectController {
 
             // 프론트엔드 URL 생성
             String frontendSuccessUrl = String.format(
-                    "http://goodbuyus.store/products/payment-success/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s",
+                    "https://goodbuyus.store/products/payment-success/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s",
                     productId,
                     URLEncoder.encode(responseDto.getProductName(), StandardCharsets.UTF_8), // 한글 인코딩
                     responseDto.getQuantity(),
@@ -45,7 +45,7 @@ public class MainPaymentRedirectController {
                     .build();
         } catch (Exception e) {
             String frontendFailUrl = String.format(
-                    "http://goodbuyus.store/products/payment-fail/%d?error=%s",
+                    "https://goodbuyus.store/products/payment-fail/%d?error=%s",
                     productId,
                     e.getMessage()
             );
@@ -68,7 +68,7 @@ public class MainPaymentRedirectController {
             }
 
             String frontendFailUrl = String.format(
-                    "http://goodbuyus.store/products/payment-fail/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s&error=%s",
+                    "https://goodbuyus.store/products/payment-fail/%d?productName=%s&quantity=%d&price=%d&totalAmount=%d&status=%s&error=%s",
                     productId,
                     responseDto != null ? URLEncoder.encode(responseDto.getProductName(), StandardCharsets.UTF_8) : "Unknown",
                     responseDto != null ? responseDto.getQuantity() : 0,
@@ -82,7 +82,7 @@ public class MainPaymentRedirectController {
                     .build();
         } catch (Exception e) {
             String fallbackFailUrl = String.format(
-                    "http://goodbuyus.store/products/payment-fail/%d?error=%s",
+                    "https://goodbuyus.store/products/payment-fail/%d?error=%s",
                     productId,
                     URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8)
             );
