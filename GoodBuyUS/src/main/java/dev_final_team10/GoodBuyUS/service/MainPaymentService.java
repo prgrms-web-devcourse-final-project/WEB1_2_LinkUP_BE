@@ -38,7 +38,7 @@ public class MainPaymentService {
     private final OrderRepository orderRepository;
 
 public String buildRedirectUrl(Long productId, String status) {
-    boolean isLocal = true; // 로컬 환경 여부
+    boolean isLocal = false; // 로컬 환경 여부
     String baseUrl = isLocal ? "https://goodbuyus.store:8080" : "https://goodbuyus.store";
 
     return String.format("%s/products/payment-%s/%d", baseUrl, status, productId);
