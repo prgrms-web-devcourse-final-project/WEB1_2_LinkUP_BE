@@ -41,7 +41,7 @@ public String buildRedirectUrl(Long productId, String status) {
     boolean isLocal = false; // 로컬 환경 여부
     String baseUrl = isLocal ? "https://goodbuyus.store:8080" : "https://goodbuyus.store";
 
-    return String.format("%s/products/payment-%s/%d", baseUrl, status, productId);
+    return String.format("%s/api/products/payment-%s/%d", baseUrl, status, productId);
 }
     @Transactional
     public MainPaymentResponseDto createAndRequestPayment(Order order) {
