@@ -15,6 +15,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -67,7 +68,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v1/virtual/success/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/wish/add").permitAll()
                         .requestMatchers(HttpMethod.GET, "/community/post/{community_post_id}/participants").permitAll()
-                        .requestMatchers("/websocket/**").permitAll()
                         .requestMatchers("/admin/**").authenticated()
                         .requestMatchers("/chat/**").authenticated()
                         .requestMatchers("/community/comment/**").authenticated()
@@ -166,5 +166,10 @@ public class SecurityConfig {
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
         return jwtAuthenticationFilter;
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/websocket/**");
     }
 }
