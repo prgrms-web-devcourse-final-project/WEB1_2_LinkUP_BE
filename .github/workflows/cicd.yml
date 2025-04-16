@@ -81,5 +81,5 @@ jobs:
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
               -e mail_username=${{ secrets.MAIL_USERNAME }} \
               -e mail_password=${{ secrets.MAIL_PASSWORD }} \
-              -v /home/ubuntu/GoodBuyUS/upload:/home/ubuntu/GoodBuyUS/upload \
+              -v /home/ubuntu/GoodBuyUS/upload:/app/upload \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}
