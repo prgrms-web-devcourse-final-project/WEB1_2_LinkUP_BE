@@ -19,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
             registry.addResourceHandler("/upload/**") //url패턴
-                    .addResourceLocations("file:/app/upload/");   //실제 파일 경로
+                    .addResourceLocations("file:/home/ubuntu/GoodBuyUS/upload/");   //실제 파일 경로
         }
 
     }
