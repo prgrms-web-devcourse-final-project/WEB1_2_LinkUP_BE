@@ -33,6 +33,7 @@ public class ProductPostDTO {
         productPostDTO.category = productPost.getProduct().getProductCategory(); //n+1문제 발생
         productPostDTO.available = productPost.isAvailable();
         productPostDTO.deadline = productPost.getProduct_period();
+        productPostDTO.url=productPost.getPostURL();
         return productPostDTO;
     }
 }
