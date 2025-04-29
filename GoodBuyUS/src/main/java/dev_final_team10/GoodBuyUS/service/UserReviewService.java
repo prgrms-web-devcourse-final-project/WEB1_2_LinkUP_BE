@@ -28,6 +28,14 @@ public class UserReviewService {
 
     //사용자 리뷰 등록
     public UserReviewDto writeUserReview(UserReviewDto userReviewDto) {
+        boolean exists = userReviewRepository.existsByReviewer_ParticipationIdAndHost_Id(
+                userReviewDto.getReviewerId(), userReviewDto.getHostId()
+        );
+
+        if (exists) {
+            throw new IllegalStateException("이미 이 사용자에 대한 리뷰를 작성하였습니다.");
+        }
+
         Participations reviewer = participationsRepository.findById(userReviewDto.getReviewerId()).orElse(null);
         User host = userRepository.findById(userReviewDto.getHostId()).orElse(null);
 

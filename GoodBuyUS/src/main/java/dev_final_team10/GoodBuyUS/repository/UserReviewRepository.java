@@ -15,5 +15,6 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Long> {
 
     List<UserReview> findByHostId(Long userId);
 
+    boolean existsByReviewer_ParticipationIdAndHost_Id(Long reviewerId, Long hostId);
 
 }
