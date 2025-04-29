@@ -6,12 +6,14 @@ import dev_final_team10.GoodBuyUS.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class UserReviewDto {
     private Long reviewerId;
     private Long hostId;
