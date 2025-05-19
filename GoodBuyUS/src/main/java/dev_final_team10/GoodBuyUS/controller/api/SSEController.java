@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api/v1/sse")
+@RequestMapping("/v1/sse")
 public class SSEController {
 
     private final SSEService sseService;

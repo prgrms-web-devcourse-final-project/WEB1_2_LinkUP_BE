@@ -30,7 +30,7 @@ import java.util.Random;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/virtual")
+@RequestMapping("/v1/virtual")
 public class CommunityPaymentController {
 
     private final CommunityPaymentService communityPaymentService;
@@ -64,8 +64,9 @@ private final CommunityController communityController;
             requestDto.setOrderName(community_post_id + "게시물에 대한 사용자" + user.getName() +"사용자의 결제");
             requestDto.setCustomerName(user.getName());
             requestDto.setCustomerEmail(user.getEmail());
-            requestDto.setSuccessUrl("http://15.164.5.135:8080/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
-            requestDto.setFailUrl("http://15.164.5.135:8080/api/v1/virtual/fail"+ community_post_id);
+            requestDto.setSuccessUrl("https://goodbuyus.store/api/v1/virtual/success/" + community_post_id + "/" + user.getId());
+            requestDto.setFailUrl("https://goodbuyus.store/api/v1/virtual/fail"+ community_post_id);
+
             requestDto.setMethod("VIRTUAL_ACCOUNT");
             CommunityPaymentResponseDto responseDto = communityPaymentService.createAndRequestPayment(requestDto);
             log.info("결제 요청 성공: {}", responseDto);
@@ -94,7 +95,7 @@ private final CommunityController communityController;
 //            communityController.sendStreamingData(community_post_id);
             // 프론트엔드 리다이렉트 URL 생성
             String frontendRedirectUrl = String.format(
-                    "http://15.164.5.135/community/success/%d?status=%s&amount=%d&recipientName=%s&accountNumber=%s&bankId=%s&recipientAddress=%s&deliveryRequest=%s",
+                    "https://goodbuyus.store/community/success/%d?status=%s&amount=%d&recipientName=%s&accountNumber=%s&bankId=%s&recipientAddress=%s&deliveryRequest=%s",
                     community_post_id,
                     responseDto.getStatus(),
                     responseDto.getTotalAmount(),
@@ -122,7 +123,7 @@ private final CommunityController communityController;
 
             // 실패 시 프론트엔드 리다이렉트 URL 생성
             String frontendFailUrl = String.format(
-                    "http://15.164.5.135/community/fail/%d?error=%s",
+                    "https://goodbuyus.store/community/fail/%d?error=%s",
                     community_post_id,
                     URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8)
             );
@@ -146,7 +147,7 @@ private final CommunityController communityController;
         try {
             // 프론트엔드 리다이렉트 URL 생성
             String frontendFailUrl = String.format(
-                    "http://15.164.5.135/community/fail/%d?orderId=%s&error=%s",
+                    "https://goodbuyus.store/community/fail/%d?orderId=%s&error=%s",
                     community_post_id,
                     URLEncoder.encode(orderId, StandardCharsets.UTF_8),
                     URLEncoder.encode(message, StandardCharsets.UTF_8)

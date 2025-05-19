@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.UUID;
 @RestController
-@RequestMapping("/api/v1/main-payments")
+@RequestMapping("/v1/main-payments")
 @RequiredArgsConstructor
 public class MainPaymentController {
 

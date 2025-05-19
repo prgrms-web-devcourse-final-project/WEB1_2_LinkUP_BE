@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:5173","http://15.164.5.135")
+                    .allowedOrigins("http://localhost:5173","https://goodbuyus.store")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);
@@ -19,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
             registry.addResourceHandler("/upload/**") //url패턴
-                    .addResourceLocations("file:/home/ubuntu/GoodBuyUS/upload/");   //실제 파일 경로
+                    .addResourceLocations("file:/app/upload/");   //실제 파일 경로
         }
 
     }

@@ -74,7 +74,7 @@
     document.getElementById('loadRoomsBtn').addEventListener('click', async () => {
         try {
             // 변경된 엔드포인트로 요청 URL 수정
-            const response = await fetch(`${baseURL}/api/mypage/chatlist`, {
+            const response = await fetch(`${baseURL}/mypage/chatlist`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`, // 헤더에 토큰 포함

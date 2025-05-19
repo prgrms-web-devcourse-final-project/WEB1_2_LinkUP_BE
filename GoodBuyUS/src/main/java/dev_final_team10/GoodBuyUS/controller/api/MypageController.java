@@ -2,6 +2,7 @@ package dev_final_team10.GoodBuyUS.controller.api;
 
 import com.auth0.jwt.JWT;
 import dev_final_team10.GoodBuyUS.domain.community.dto.PostResponseDto;
+import dev_final_team10.GoodBuyUS.domain.community.dto.UserReviewResponse;
 import dev_final_team10.GoodBuyUS.domain.community.dto.WriteModifyPostDto;
 import dev_final_team10.GoodBuyUS.domain.community.entity.CommunityPost;
 import dev_final_team10.GoodBuyUS.domain.community.entity.Participations;
@@ -11,6 +12,7 @@ import dev_final_team10.GoodBuyUS.domain.order.dto.OrdersDTO;
 import dev_final_team10.GoodBuyUS.repository.CommunityPostRepository;
 import dev_final_team10.GoodBuyUS.repository.ParticipationsRepository;
 import dev_final_team10.GoodBuyUS.service.MypageService;
+import dev_final_team10.GoodBuyUS.service.UserReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,13 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/mypage")
+@RequestMapping("/mypage")
 public class MypageController {
 
     private final MypageService mypageService;
     private final CommunityPostRepository communityPostRepository;
     private final ParticipationsRepository participationsRepository;
+    private final UserReviewService userReviewService;
 
     //현재 비밀번호 일치하는지 확인 - 비밀번호 변경 전에
     @PostMapping("/verify")
@@ -78,7 +81,7 @@ public class MypageController {
 
     //작성한 글 삭제
     @DeleteMapping("/post/{community_post_id}")
-    public ResponseEntity<?> deletePost(@PathVariable("community_post_id") Long communityPostId) throws IOException {
+    public ResponseEntity<?> deletePost(@PathVariable("community_post_id") Long communityPostId) {
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElse(null);
         communityPost.setStatus(postStatus.DELETED);
         communityPostRepository.save(communityPost);
@@ -144,9 +147,9 @@ public class MypageController {
     public ResponseEntity<?> changeNickname(@RequestParam String nickName){
         return mypageService.changeNickname(nickName);
     }
-//
-//    @GetMapping("{user_id}/reviews")
-//    public ResponseEntity<UserReviewResponse> getUserReviews(@PathVariable Long userId){
-//        return ResponseEntity.ok(userReviewService.getUserReviews(userId));
-//    }
+
+    @GetMapping("{user_id}/reviews")
+    public ResponseEntity<UserReviewResponse> getUserReviews(@PathVariable("user_id") Long userId){
+        return ResponseEntity.ok(userReviewService.getUserReviews(userId));
+    }
 }

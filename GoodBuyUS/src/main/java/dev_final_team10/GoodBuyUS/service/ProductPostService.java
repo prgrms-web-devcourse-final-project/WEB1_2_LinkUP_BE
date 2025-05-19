@@ -82,6 +82,7 @@ public class ProductPostService {
                 create_reviewDTO.setContent(productReview.getContent());
                 create_reviewDTO.setRating(productReview.getRating());
                 create_reviewDTO.setUsing(productReview.isIsused());
+                create_reviewDTO.setUserId(productReview.getUserId());
                 reviewDTOS.add(create_reviewDTO);
             }
             return ResponseEntity.ok(PostDetailDTO.of(productPost1,reviewDTOS, rating));

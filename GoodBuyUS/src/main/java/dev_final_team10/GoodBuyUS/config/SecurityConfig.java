@@ -15,6 +15,7 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,12 +64,22 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/products/payment-success/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/payment-fail/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/payment-fail/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/virtual/success/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/virtual/success/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/wish/add").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/community/post/{community_post_id}/participants").permitAll()
-                        .requestMatchers("/websocket/**").permitAll()
-                        .requestMatchers("api/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/v1/virtual/success/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/virtual/success/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/wish/add").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/community/post/{community_post_id}/participants").permitAll()
+                        .requestMatchers("/admin/**").authenticated()
+                        .requestMatchers("/chat/**").authenticated()
+                        .requestMatchers("/community/comment/**").authenticated()
+                        .requestMatchers("/community/**").authenticated()
+                        .requestMatchers("/v1/virtual/**").authenticated()
+                        .requestMatchers("/v1/main-payments/**").authenticated()
+                        .requestMatchers("/mypage/**").authenticated()
+                        .requestMatchers("/v1/orders/**").authenticated()
+                        .requestMatchers("/review/**").authenticated()
+                        .requestMatchers("/v1/sse/**").authenticated()
+                        .requestMatchers("/community/review/**").authenticated()
+                        .requestMatchers("/v1/wish/**").authenticated()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // OPTIONS 요청은 모두 허용
                         .anyRequest().permitAll()
                 );
@@ -85,9 +96,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:5173");  // 허용된 출처
-        configuration.addAllowedOrigin("http://15.164.5.135");
+        configuration.addAllowedOrigin("https://goodbuyus.store");
         configuration.addAllowedOrigin("ws://localhost:5173"); // 웹소켓 허용
-        configuration.addAllowedOrigin("ws://15.164.5.135");
+        configuration.addAllowedOrigin("wss://goodbuyus.store");
         configuration.addAllowedMethod("*");  // 모든 HTTP 메소드 허용
         configuration.addAllowedHeader("*");  // 모든 헤더 허용
         configuration.setAllowCredentials(true);  // 자격 증명 허용
@@ -155,5 +166,10 @@ public class SecurityConfig {
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
         return jwtAuthenticationFilter;
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/websocket/**");
     }
 }

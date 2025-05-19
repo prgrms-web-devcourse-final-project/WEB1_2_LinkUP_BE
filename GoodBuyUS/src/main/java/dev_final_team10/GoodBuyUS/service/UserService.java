@@ -167,7 +167,7 @@ public class UserService {
         //비밀번호 재설정 때 사용할 토큰 발급
         String token = jwtService.createAccessToken(email);
         //비밀번호 재설정 링크(이메일로 보내줄 링크)
-        String resetLink = "http://15.164.5.135:8080/users/reset?token=" + token;
+        String resetLink = "https://goodbuyus.store:8080/users/reset?token=" + token;
         //이메일 전송
         String htmlContent = "<html><body style='background-color: #ffffff !important; margin: 0 auto; max-width: 600px; word-break: break-all; padding-top: 50px; color: #000000;'>"
         + "<img class='logo' src='cid:logo'>"
