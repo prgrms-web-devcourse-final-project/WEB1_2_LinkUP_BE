@@ -99,7 +99,7 @@
       </a>
       <br />
       <sub>Backend</sub><br />
-      <sub>상단물품 결제, 커뮤니티 결제 기능</sub>
+      <sub>상단물품 결제, 커뮤니티 결제 기능, 실시간 알림 기능</sub>
     </td>
     <td align="center" width="20%">
       <a href="https://github.com/sungjun2018">
